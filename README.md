@@ -8,7 +8,7 @@ A bilingual (Simplified Chinese / English), responsive Next.js MVP for a thought
 
 The app now includes a bilingual IPIP-NEO-120 item bank (English source items and published Mandarin translation), deterministic reverse-key scoring for five broad factors, 30 four-item facet scores, browser-local progress saving, a private reflection note with TXT export, print-friendly results, and separate visual, multi-sensory, and optional auditory activities. The personality inventory has published research and Mandarin translation evidence, but this website has not independently validated it in a Singapore bilingual sample or established local norms.
 
-It has no production-grade database, authentication, admin console, payments, server-side scoring, or AI report service. An optional Google Apps Script + Sheets demo integration is provided; it stores only anonymous aggregate demo scores after explicit consent and is not suitable for sensitive or commercial production data. Do not collect sensitive assessment data or sell reports on this prototype. Demo scores are not validated measurements and must not be used for diagnosis, hiring, or consequential decisions.
+It has no production-grade database, authentication, admin console, payments, server-side scoring, or AI report service. An optional Google Apps Script + Sheets integration is provided for saving only five aggregate factor scores after explicit consent; it does not save the 120 item responses or 30 facet scores, so retrieved reports can restore only the five broad factors. This public endpoint is not suitable for sensitive or commercial production data. Do not collect sensitive assessment data or sell reports on this prototype. The inventory has published research and Mandarin translation evidence, but the website has not been independently validated in a Singapore bilingual sample and has no local norms. Results are for self-reflection and must not be used for diagnosis, hiring, or consequential decisions.
 
 ## Stack
 
@@ -61,7 +61,7 @@ GitHub Pages can host the current static demo, but it cannot run Next.js server 
 
 ## Optional Google Apps Script + Google Sheets
 
-The repository includes a minimal opt-in integration for saving aggregate demo scores to a Google Sheet and retrieving them with a code. It is intentionally separate from the static site: the browser sends a small JSON payload to the Web App URL centrally configured by the site operator.
+The repository includes a minimal opt-in integration for saving five aggregate factor scores to a Google Sheet and retrieving them with a code. It does not store item-level answers or facet scores. It is intentionally separate from the static site: the browser sends a small JSON payload to the Web App URL centrally configured by the site operator.
 
 - Setup instructions: [apps-script/README.md](https://github.com/AAKN2026/psycho/blob/main/apps-script/README.md)
 - Apps Script receiver: [apps-script/Code.gs](https://github.com/AAKN2026/psycho/blob/main/apps-script/Code.gs)
