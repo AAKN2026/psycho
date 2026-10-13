@@ -37,7 +37,7 @@ export default function PrivacyPage() {
 
       <h2>5. 保留与删除 / Retention and deletion</h2>
       <p>本地内容可通过应用提供的清除操作或浏览器设置删除。Google Sheets 中的记录需要由表格管理者手动删除，或按其配置的保留清理流程删除。当前 Apps Script 提供可选的 90 天清理函数，但该功能需要管理者自行启用，并非自动默认开启。</p>
-      <p>Local content can be removed using the app's clear controls or browser settings. Records in Google Sheets must be deleted by the sheet administrator or through a retention process they configure. The current Apps Script includes an optional 90-day cleanup function, but an administrator must enable it; it is not enabled by default.</p>
+      <p>Local content can be removed using the app&apos;s clear controls or browser settings. Records in Google Sheets must be deleted by the sheet administrator or through a retention process they configure. The current Apps Script includes an optional 90-day cleanup function, but an administrator must enable it; it is not enabled by default.</p>
 
       <h2>6. 联系与版本范围 / Contact and scope</h2>
       <p>这是 MVP 演示版隐私说明。若将产品用于商业或公开运营，请在上线前补充真实的运营主体、联系渠道、数据处理依据、用户权利流程和适用地区要求，并进行相应的隐私与安全审查。</p>
