@@ -88,6 +88,8 @@ export default function Home() {
   const [retrievedScores, setRetrievedScores] = useState<Record<Dimension, number> | null>(null);
   const [visualAnswers, setVisualAnswers] = useState<Record<number, number>>({});
   const [visualFeedback, setVisualFeedback] = useState(false);
+  const [sensoryAnswers, setSensoryAnswers] = useState<Record<string, string>>({});
+  const [sensorySummary, setSensorySummary] = useState(false);
   const t = copy[locale];
 
   useEffect(() => {
@@ -416,6 +418,65 @@ export default function Home() {
           <button className="button-secondary" onClick={() => { setVisualAnswers({}); setVisualFeedback(false); }}>{locale === "zh" ? "重新挑战" : "Try again"}</button>
         </div>
         {visualFeedback && <div className="visual-result" aria-live="polite"><strong>{locale === "zh" ? `本次正确 ${[2, 2, 2].filter((answer, i) => visualAnswers[i] === answer).length}/3` : `Your score: ${[2, 2, 2].filter((answer, i) => visualAnswers[i] === answer).length}/3`}</strong><p>{locale === "zh" ? "这只是极短的图形辨别练习。表现会受屏幕、注意力、熟悉程度和当下状态影响，不应据此给自己贴上心理或能力标签。" : "This is a very short visual discrimination exercise. Performance can vary with screen, attention, familiarity, and current state; do not use it to label your psychology or ability."}</p></div>}
+      </section>
+      <section className="sensory-lab section-wrap" id="sensory-lab" aria-labelledby="sensory-lab-title">
+        <div className="eyebrow"><span className="eyebrow-line" />{locale === "zh" ? "多感官自我观察 · 可选模块" : "MULTI-SENSORY SELF-OBSERVATION · OPTIONAL"}</div>
+        <h2 id="sensory-lab-title">{locale === "zh" ? "从颜色、画面与感受，探索自己的反应。" : "Explore your responses to colour, images, and sensations."}</h2>
+        <p className="sensory-intro">{locale === "zh" ? "这里记录的是你当下的主观偏好与联想，不是潜意识解读，也不能据此诊断人格、情绪或健康状况。没有标准答案。" : "This records your current preferences and associations—not a reading of your subconscious, and not a diagnosis of personality, mood, or health. There are no right answers."}</p>
+        <div className="sensory-card">
+          <span className="insight-kicker">{locale === "zh" ? "01 · 颜色联想" : "01 · COLOUR ASSOCIATION"}</span>
+          <h3>{locale === "zh" ? "哪一种颜色最吸引你？" : "Which colour draws you in most?"}</h3>
+          <p>{locale === "zh" ? "选一项，并用自己的感受理解它；颜色偏好会受文化、经历、环境与当下心情影响。" : "Choose one and reflect on your own response. Colour preferences can be shaped by culture, experience, context, and current mood."}</p>
+          <div className="colour-options" role="group" aria-label={locale === "zh" ? "选择喜欢的颜色" : "Choose a colour"}>
+            {[
+              { nameZh: "宁静蓝", nameEn: "Calm blue", color: "#7fabc2", key: "blue" },
+              { nameZh: "自然绿", nameEn: "Nature green", color: "#8ca887", key: "green" },
+              { nameZh: "暖阳黄", nameEn: "Warm yellow", color: "#e8c66e", key: "yellow" },
+              { nameZh: "活力橙", nameEn: "Vibrant orange", color: "#d98a61", key: "orange" },
+              { nameZh: "沉静紫", nameEn: "Quiet violet", color: "#a69ac5", key: "violet" },
+              { nameZh: "经典灰", nameEn: "Classic grey", color: "#a5aaa6", key: "grey" },
+            ].map((colour) => (
+              <button type="button" key={colour.key} className={sensoryAnswers.colour === colour.key ? "colour-choice selected" : "colour-choice"} onClick={() => setSensoryAnswers((old) => ({ ...old, colour: colour.key }))} aria-pressed={sensoryAnswers.colour === colour.key}>
+                <span className="colour-swatch" style={{ backgroundColor: colour.color }} /><span>{locale === "zh" ? colour.nameZh : colour.nameEn}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+        <div className="sensory-card">
+          <span className="insight-kicker">{locale === "zh" ? "02 · 图片联想" : "02 · IMAGE ASSOCIATION"}</span>
+          <h3>{locale === "zh" ? "看到这幅场景，你最先注意到什么？" : "What do you notice first in this scene?"}</h3>
+          <div className="scene-illustration" role="img" aria-label={locale === "zh" ? "简约插画：窗边有一把椅子、一株植物、一本书和一扇明亮的窗" : "Minimal illustration of a chair, a plant, a book, and a bright window"}>
+            <div className="scene-window"><span /><span /><span /><span /></div><div className="scene-sun" /><div className="scene-plant"><i /><i /><i /><b /></div><div className="scene-chair"><i /><b /></div><div className="scene-book" />
+          </div>
+          <p>{locale === "zh" ? "这是一幅自制的示意插画，不是投射测验。选择最接近你第一眼注意到的内容。" : "This is an original illustrative scene, not a projective test. Select what most closely matches your first observation."}</p>
+          <div className="scene-choices" role="group" aria-label={locale === "zh" ? "图片第一印象" : "First impression of the scene"}>
+            {[{key:"light",zh:"光线与窗户",en:"Light and window"},{key:"nature",zh:"植物与自然",en:"Plant and nature"},{key:"comfort",zh:"椅子与舒适感",en:"Chair and comfort"},{key:"details",zh:"书本与细节",en:"Book and details"}].map((item) => <button type="button" key={item.key} className={sensoryAnswers.scene === item.key ? "scene-choice selected" : "scene-choice"} onClick={() => setSensoryAnswers((old) => ({ ...old, scene: item.key }))} aria-pressed={sensoryAnswers.scene === item.key}>{locale === "zh" ? item.zh : item.en}</button>)}
+          </div>
+          <label className="sensory-label" htmlFor="scene-reflection">{locale === "zh" ? "你为什么先注意到它？（可选）" : "Why did it catch your attention? (optional)"}</label>
+          <textarea id="scene-reflection" className="reflection-textarea" maxLength={500} value={sensoryAnswers.sceneNote || ""} onChange={(event) => setSensoryAnswers((old) => ({ ...old, sceneNote: event.target.value }))} placeholder={locale === "zh" ? "例如：它让我想到一个熟悉的地方……" : "For example: it reminds me of a familiar place…"} />
+        </div>
+        <div className="sensory-card">
+          <span className="insight-kicker">{locale === "zh" ? "03 · 味觉偏好自述" : "03 · TASTE PREFERENCE SELF-REPORT"}</span>
+          <h3>{locale === "zh" ? "哪一种味道通常更合你口味？" : "Which taste do you usually prefer?"}</h3>
+          <p>{locale === "zh" ? "这是对日常偏好的自述，不需要真的品尝食物，也不代表性格特征。味觉还会受到文化、饮食、嗅觉与健康因素影响。" : "This is a self-report of everyday preference; you do not need to taste anything. It does not indicate a personality trait. Taste is also influenced by culture, diet, smell, and health factors."}</p>
+          <div className="taste-options" role="group" aria-label={locale === "zh" ? "味觉偏好" : "Taste preference"}>
+            {[{key:"sweet",symbol:"✳",zh:"甜",en:"Sweet"},{key:"sour",symbol:"◌",zh:"酸",en:"Sour"},{key:"salty",symbol:"⁙",zh:"咸",en:"Salty"},{key:"bitter",symbol:"⌁",zh:"苦",en:"Bitter"},{key:"umami",symbol:"❋",zh:"鲜",en:"Umami"},{key:"varies",symbol:"↔",zh:"看情境",en:"It varies"}].map((item) => <button type="button" key={item.key} className={sensoryAnswers.taste === item.key ? "taste-choice selected" : "taste-choice"} onClick={() => setSensoryAnswers((old) => ({ ...old, taste: item.key }))} aria-pressed={sensoryAnswers.taste === item.key}><span>{item.symbol}</span>{locale === "zh" ? item.zh : item.en}</button>)}
+          </div>
+        </div>
+        <div className="sensory-card">
+          <span className="insight-kicker">{locale === "zh" ? "04 · 身体感受觉察" : "04 · BODY-SENSATION CHECK-IN"}</span>
+          <h3>{locale === "zh" ? "回想最近忙碌的一天，你通常先觉察到什么？" : "After a busy day, what do you tend to notice first?"}</h3>
+          <p>{locale === "zh" ? "只需选择最贴近你近期体验的一项。身体感受不是心理诊断；若有持续或令人担忧的症状，应向合适的医疗专业人士咨询。" : "Choose what best matches your recent experience. Bodily sensations are not a psychological diagnosis; persistent or concerning symptoms should be discussed with an appropriate healthcare professional."}</p>
+          <div className="sensation-options" role="group" aria-label={locale === "zh" ? "身体感受" : "Body sensation"}>
+            {[{key:"tension",zh:"肩颈紧绷",en:"Muscle tension"},{key:"energy",zh:"精力变化",en:"Energy changes"},{key:"breathing",zh:"呼吸节奏",en:"Breathing rhythm"},{key:"stomach",zh:"胃口或胃部感觉",en:"Appetite or stomach"},{key:"rest",zh:"想休息或安静一下",en:"Need for rest or quiet"},{key:"none",zh:"没有特别注意到",en:"Nothing in particular"}].map((item) => <button type="button" key={item.key} className={sensoryAnswers.body === item.key ? "sensation-choice selected" : "sensation-choice"} onClick={() => setSensoryAnswers((old) => ({ ...old, body: item.key }))} aria-pressed={sensoryAnswers.body === item.key}>{locale === "zh" ? item.zh : item.en}</button>)}
+          </div>
+        </div>
+        <div className="sensory-actions">
+          <span>{locale === "zh" ? `已完成 ${["colour","scene","taste","body"].filter((key) => sensoryAnswers[key]).length}/4 个选择` : `${["colour","scene","taste","body"].filter((key) => sensoryAnswers[key]).length}/4 selections complete`}</span>
+          <button className="button-primary" type="button" onClick={() => setSensorySummary(true)} disabled={!sensoryAnswers.colour || !sensoryAnswers.scene || !sensoryAnswers.taste || !sensoryAnswers.body}>{locale === "zh" ? "整理我的观察记录" : "Review my observations"} ↗</button>
+          <button className="button-secondary" type="button" onClick={() => { setSensoryAnswers({}); setSensorySummary(false); }}>{locale === "zh" ? "清空重选" : "Reset choices"}</button>
+        </div>
+        {sensorySummary && <div className="sensory-result" aria-live="polite"><strong>{locale === "zh" ? "你的当下观察记录已整理" : "Your observation notes are ready"}</strong><p>{locale === "zh" ? "你选择了颜色、图片第一印象、味觉偏好和身体感受。它们是不同类别的自我报告，不应合并成单一人格分数。可以回顾：这些选择是长期偏好，还是受今天的情境影响？" : "You recorded a colour, a first impression of an image, a taste preference, and a body sensation. These are different kinds of self-report and should not be combined into one personality score. Consider whether they reflect long-term preferences or today's context."}</p><button className="button-secondary" type="button" onClick={() => GenUI.copy((locale === "zh" ? "Persona 多感官观察记录\n" : "Persona multi-sensory observation notes\n") + JSON.stringify({colour:sensoryAnswers.colour,scene:sensoryAnswers.scene,sceneNote:sensoryAnswers.sceneNote || "",taste:sensoryAnswers.taste,body:sensoryAnswers.body},null,2))}>{locale === "zh" ? "复制观察记录" : "Copy observation notes"} ↗</button></div>}
       </section>
       <section className="closing-cta">
         <div className="eyebrow light"><span className="eyebrow-line" />{locale === "zh" ? "留一点空间给自己" : "MAKE ROOM FOR REFLECTION"}</div>
