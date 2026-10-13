@@ -130,3 +130,70 @@
   .faq-item > p { font-size: 11px; }
   .closing-cta { padding: 58px 7%; }
 }
+
+
+/* Private reflection journal on the result screen */
+.personal-reflection {
+  margin-top: 30px;
+  padding: clamp(22px, 4vw, 34px);
+  background: #f2f4ed;
+  border: 1px solid #e0e6dc;
+}
+.reflection-heading h2 {
+  margin: 17px 0 10px;
+  font-family: 'Playfair Display', 'Noto Sans SC', serif;
+  font-size: clamp(28px, 3.8vw, 39px);
+  line-height: 1.25;
+  font-weight: 400;
+  letter-spacing: -.035em;
+}
+.reflection-heading > p {
+  max-width: 620px;
+  margin: 0 0 23px;
+  color: #697568;
+  font-size: 12px;
+  line-height: 1.9;
+}
+.reflection-label {
+  display: block;
+  margin-bottom: 9px;
+  color: #60745e;
+  font-size: 9px;
+  letter-spacing: 1.2px;
+  font-weight: 600;
+}
+.reflection-textarea {
+  display: block;
+  width: 100%;
+  min-height: 145px;
+  resize: vertical;
+  padding: 15px 16px;
+  border: 1px solid #d9e0d4;
+  border-radius: 0;
+  outline: none;
+  background: #fffefa;
+  color: #344336;
+  font: inherit;
+  font-size: 12px;
+  line-height: 1.9;
+}
+.reflection-textarea:focus { border-color: #789176; box-shadow: 0 0 0 3px #78917618; }
+.reflection-textarea::placeholder { color: #a0a79b; }
+.reflection-note-footer, .reflection-note-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  color: #828a7e;
+  font-size: 10px;
+  line-height: 1.7;
+}
+.reflection-note-footer { margin-top: 9px; }
+.reflection-note-actions { margin-top: 16px; }
+.reflection-note-actions .button-secondary { padding: 10px 13px; }
+@media print {
+  .personal-reflection { break-inside: avoid; background: #fff; }
+  .reflection-textarea { min-height: 90px; border-color: #bbb; }
+  .reflection-note-actions { display: none; }
+}
