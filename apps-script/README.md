@@ -37,3 +37,7 @@ When Code.gs changes, open Apps Script and use **Deploy â†’ Manage deployments â
 - Keep the Google Sheet private. Do not publish the spreadsheet or its sharing link on the website.
 - For a public commercial product, add robust abuse prevention, a privacy notice and deletion/retention process, and obtain a privacy/security review. Consider a server-side backend with authentication and rate limiting instead of a public Apps Script endpoint.
 - A Google Sheet is suitable for a small MVP, not a high-volume or high-sensitivity production database.
+
+## Optional data-retention cleanup
+
+The script also includes `purgePersonaDemoResultsOlderThan90Days()`, which deletes rows whose timestamp is older than 90 days. You can run it manually from the Apps Script editor. If you want automatic cleanup, run `installPersonaDailyRetentionTrigger()` once and authorize it; this installs a daily trigger that performs the same cleanup. Choose a retention period that matches your privacy notice and operational needs before enabling it. This cleanup is not installed automatically by the setup function.
