@@ -1,0 +1,3 @@
+# Persona is currently a pre-launch demo.
+User-agent: *
+Disallow: /
