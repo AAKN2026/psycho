@@ -197,3 +197,7 @@
   .reflection-textarea { min-height: 90px; border-color: #bbb; }
   .reflection-note-actions { display: none; }
 }
+
+.reflection-note-buttons { display: flex; flex-wrap: wrap; align-items: center; gap: 9px; }
+.reflection-note-actions .button-secondary:disabled { opacity: .42; cursor: not-allowed; }
+@media print { .reflection-note-buttons { display: none; } }
