@@ -6,7 +6,7 @@ A bilingual (Simplified Chinese / English), responsive Next.js MVP for a thought
 
 **Current release: demo only. Not a validated psychometric assessment.**
 
-The app currently includes a bilingual landing page, 15 original demo questions, illustrative five-dimension results, browser-local progress saving, print-friendly results, and branded loading/error/not-found states.
+The app currently includes a bilingual landing page, 15 original demo questions, illustrative five-dimension results, browser-local progress saving, a private browser-local reflection note, print-friendly results, and branded loading/error/not-found states.
 
 It has **no production database, authentication, admin console, payments, server-side scoring, or AI report service**. Do not collect sensitive assessment data or sell reports on this prototype. Demo scores are not validated measurements and must not be used for diagnosis, hiring, or consequential decisions.
 
@@ -78,6 +78,7 @@ GitHub Pages can host the current static demo, but it cannot run Next.js server 
 - [x] Demo questionnaire and required-answer validation
 - [x] Browser-local save/resume
 - [x] Illustrative results and reflection prompts
+- [x] Private reflection journal saved in the current browser
 - [x] Print-friendly report
 - [x] Branded loading, error, and 404 states
 - [x] Basic security response headers
