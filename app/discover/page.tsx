@@ -89,11 +89,91 @@ export default function DiscoverPage() {
     setShared(false);
   }
 
+  function createShareCard(): Promise<Blob> {
+    return new Promise((resolve, reject) => {
+      if (!result) { reject(new Error("No result to share")); return; }
+      const canvas = document.createElement("canvas");
+      canvas.width = 1200;
+      canvas.height = 630;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) { reject(new Error("Canvas is unavailable")); return; }
+      const background = ctx.createLinearGradient(0, 0, 1200, 630);
+      background.addColorStop(0, "#f7f5ee");
+      background.addColorStop(1, "#e8eee4");
+      ctx.fillStyle = background;
+      ctx.fillRect(0, 0, 1200, 630);
+      ctx.fillStyle = "#526b51";
+      ctx.fillRect(72, 72, 5, 48);
+      ctx.font = "600 25px Arial, 'Noto Sans SC', sans-serif";
+      ctx.fillText("PERSONA · SELF-DISCOVERY", 98, 103);
+      ctx.fillStyle = "#25372e";
+      ctx.font = "500 46px Arial, 'Noto Sans SC', sans-serif";
+      const titleWords = result.title.split(/\\s+/);
+      let titleLine = "";
+      let titleY = 210;
+      for (const word of titleWords) {
+        const candidate = titleLine ? titleLine + " " + word : word;
+        if (ctx.measureText(candidate).width > 1000 && titleLine) {
+          ctx.fillText(titleLine, 76, titleY);
+          titleLine = word;
+          titleY += 62;
+        } else titleLine = candidate;
+      }
+      if (titleLine) ctx.fillText(titleLine, 76, titleY);
+      ctx.fillStyle = "#58675b";
+      ctx.font = "28px Arial, 'Noto Sans SC', sans-serif";
+      const bodyWords = result.body.split(/\\s+/);
+      let bodyLine = "";
+      let bodyY = titleY + 76;
+      for (const word of bodyWords) {
+        const candidate = bodyLine ? bodyLine + " " + word : word;
+        if (ctx.measureText(candidate).width > 1030 && bodyLine) {
+          ctx.fillText(bodyLine, 78, bodyY);
+          bodyLine = word;
+          bodyY += 43;
+        } else bodyLine = candidate;
+      }
+      if (bodyLine && bodyY < 485) ctx.fillText(bodyLine, 78, bodyY);
+      ctx.strokeStyle = "#cbd6c7";
+      ctx.beginPath();
+      ctx.moveTo(78, 525);
+      ctx.lineTo(1122, 525);
+      ctx.stroke();
+      ctx.fillStyle = "#526b51";
+      ctx.font = "600 22px Arial, 'Noto Sans SC', sans-serif";
+      ctx.fillText("aakn2026.github.io/psycho/discover", 78, 570);
+      ctx.fillStyle = "#758174";
+      ctx.font = "18px Arial, 'Noto Sans SC', sans-serif";
+      ctx.fillText(isZh ? "自我反思体验 · 非心理诊断" : "Self-reflection · Not a psychological diagnosis", 700, 570);
+      canvas.toBlob((blob) => blob ? resolve(blob) : reject(new Error("Could not render share card")), "image/png");
+    });
+  }
+
+  async function downloadShareCard() {
+    try {
+      const blob = await createShareCard();
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "persona-self-discovery.png";
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+    } catch {
+      setShared(false);
+    }
+  }
+
   async function shareResult() {
     if (!result) return;
     const text = `Persona · ${result.title}\n\n${result.body}\n\n${isZh ? "这是一项自我反思体验，不是心理诊断。你也来试试：" : "A self-reflection activity, not a psychological diagnosis. Try it yourself:"}\nhttps://aakn2026.github.io/psycho/discover/`;
     try {
-      if (typeof navigator !== "undefined" && navigator.share) {
+      const blob = await createShareCard();
+      const file = new File([blob], "persona-self-discovery.png", { type: "image/png" });
+      if (typeof navigator !== "undefined" && navigator.share && navigator.canShare?.({ files: [file] })) {
+        await navigator.share({ title: "Persona · Self-discovery", text, files: [file] });
+      } else if (typeof navigator !== "undefined" && navigator.share) {
         await navigator.share({ title: "Persona · Self-discovery", text });
       } else if (navigator.clipboard) {
         await navigator.clipboard.writeText(text);
@@ -146,7 +226,7 @@ export default function DiscoverPage() {
           <p>{result.body}</p>
           <div className="discover-reflection"><span>{isZh ? "带走一个问题" : "A QUESTION TO TAKE WITH YOU"}</span><strong>{result.prompt}</strong></div>
           <p className="discover-boundary">{isZh ? "解释边界：这只是你在三个假设情境中的选择摘要，不是经过验证的人格量表，不用于推断人格类型、心理健康、动机或能力。疲劳、情境理解和选项设计都可能影响选择。" : "Interpretation boundary: this summarises choices in three hypothetical scenarios. It is not a validated personality measure and cannot establish personality type, mental health, motives or ability. Fatigue, interpretation and option design can affect choices."}</p>
-          <div className="discover-result-actions"><button className="button-primary" onClick={shareResult}>{isZh ? "分享我的探索卡" : "Share my reflection"} <span>↗</span></button><button className="button-secondary" onClick={restart}>{isZh ? "再试一次" : "Try again"} ↻</button></div>
+          <div className="discover-result-actions"><button className="button-primary" onClick={shareResult}>{isZh ? "分享我的探索卡" : "Share my reflection"} <span>↗</span></button><button className="button-secondary" onClick={downloadShareCard}>{isZh ? "保存图片卡片" : "Save image card"} ↓</button><button className="button-secondary" onClick={restart}>{isZh ? "再试一次" : "Try again"} ↻</button></div>
           {shared && <p className="discover-share-status" role="status">{isZh ? "已复制分享文案，可以粘贴到你选择的平台。" : "Share text copied. Paste it into your preferred app."}</p>}
           <a className="discover-full-test" href="/psycho/">{isZh ? "想了解更完整的人格维度？进入 IPIP-NEO-120 测评 →" : "Want a fuller personality profile? Explore the IPIP-NEO-120 assessment →"}</a>
         </section>
