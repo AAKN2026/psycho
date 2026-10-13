@@ -14,7 +14,7 @@ It has no production-grade database, authentication, admin console, payments, se
 
 - Next.js 15.5.24 + React 18 + TypeScript (framework version upgraded to a patched release before deployment)
 - Responsive CSS; demo content currently lives in the frontend
-- Vercel-compatible deployment configuration
+- GitHub Pages static-export deployment configuration
 - No environment variables are required to run the demo
 
 ## Local development
@@ -39,7 +39,7 @@ npm start
 npm run smoke
 ```
 
-The smoke check verifies the homepage, favicon, robots policy, and `/api/health` endpoint. For a deployed site, run it with `BASE_URL=https://your-deployment.example npm run smoke`. It does not replace full browser end-to-end testing. Run the type check, lint, production build, and browser flow checks before calling the release verified.
+The static-export smoke check verifies the generated homepage, 404 page, favicon, robots policy, and GitHub Pages asset base path in `out/`. It does not call a server API because GitHub Pages is static hosting. The check does not replace full browser end-to-end testing. Run the type check, lint, production build, and browser flow checks before calling the release verified.
 
 ## Automated verification
 
