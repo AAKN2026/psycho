@@ -112,7 +112,7 @@ export default function DiscoverPage() {
       let titleLine = "";
       let titleY = 210;
       for (const word of titleWords) {
-        const candidate = titleLine ? titleLine + " " + word : word;
+        const candidate = titleLine ? titleLine + (isZh ? "" : " ") + word : word;
         if (ctx.measureText(candidate).width > 1000 && titleLine) {
           ctx.fillText(titleLine, 76, titleY);
           titleLine = word;
@@ -126,7 +126,7 @@ export default function DiscoverPage() {
       let bodyLine = "";
       let bodyY = titleY + 76;
       for (const word of bodyWords) {
-        const candidate = bodyLine ? bodyLine + " " + word : word;
+        const candidate = bodyLine ? bodyLine + (isZh ? "" : " ") + word : word;
         if (ctx.measureText(candidate).width > 1030 && bodyLine) {
           ctx.fillText(bodyLine, 78, bodyY);
           bodyLine = word;
