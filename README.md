@@ -61,14 +61,14 @@ GitHub Pages can host the current static demo, but it cannot run Next.js server 
 
 ## Optional Google Apps Script + Google Sheets
 
-The repository includes a minimal opt-in integration for saving aggregate demo scores to a Google Sheet. It is intentionally separate from the static site: the browser sends a small JSON payload to a Web App URL that you deploy and own.
+The repository includes a minimal opt-in integration for saving aggregate demo scores to a Google Sheet and retrieving them with a code. It is intentionally separate from the static site: the browser sends a small JSON payload to the Web App URL centrally configured by the site operator.
 
 - Setup instructions: [apps-script/README.md](https://github.com/AAKN2026/psycho/blob/main/apps-script/README.md)
 - Apps Script receiver: [apps-script/Code.gs](https://github.com/AAKN2026/psycho/blob/main/apps-script/Code.gs)
 
-Only a random record ID, timestamp, language, schema version, five illustrative dimension scores, and a consent flag are sent. Individual answers, reflection notes, names, email addresses, and phone numbers are excluded. The user must enter their own Apps Script deployment URL and explicitly tick consent before submitting.
+Only a random record ID, timestamp, language, schema version, five illustrative dimension scores, a retrieval code, and a consent flag are sent. Individual answers, reflection notes, names, email addresses, and phone numbers are excluded. The endpoint is configured by the site operator in `app/page.tsx`; visitors do not enter a Google URL. A visitor must explicitly tick consent and click save. The retrieval code can be used to look up the saved aggregate scores on another device.
 
-**Important:** you must create and deploy the Apps Script in your Google account; committing Code.gs to GitHub does not deploy it to Google. The website uses a no-CORS request, so it cannot confirm the row was written; verify it in the Google Sheet. A public Apps Script endpoint is not a private API and should only be used for low-risk demo data. Do not use it for identifiable or sensitive psychological data. For a commercial launch, use a properly secured backend with authentication, abuse prevention, retention/deletion controls, and a reviewed privacy notice.
+**Setup:** create or open your Apps Script project, copy `apps-script/Code.gs`, run `setupPersonaDatabase()` once to authorize spreadsheet access and create/upgrade the sheet, then deploy a Web App (execute as you, access available to anyone). Update the existing Web App deployment to a new version whenever you change the script. The endpoint must match `PUBLIC_APPS_SCRIPT_ENDPOINT` in `app/page.tsx`. Test by saving a demo report, confirming the `access_code` and score columns in `DemoResults`, then retrieving that code in a private/incognito window or another device. Committing Code.gs to GitHub does not deploy it to Google. The website uses a no-CORS save request, so it cannot confirm the row was written; verify it in the Google Sheet. A public Apps Script endpoint is not a private API and should only be used for low-risk demo data. Do not use it for identifiable or sensitive psychological data. For a commercial launch, use a properly secured backend with authentication, abuse prevention, retention/deletion controls, and a reviewed privacy notice.
 
 ## Environment configuration for future backend work
 
