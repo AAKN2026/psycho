@@ -6,7 +6,7 @@ A bilingual (Simplified Chinese / English), responsive Next.js MVP for a thought
 
 **Current release: demo only. Not a validated psychometric assessment.**
 
-The app currently includes a bilingual landing page, 15 original demo questions, illustrative five-dimension results, browser-local progress saving, a private browser-local reflection note with TXT export, print-friendly results, and branded loading/error/not-found states.
+The app currently includes a bilingual landing page, 15 original demo questions, illustrative five-dimension results, browser-local progress saving, a private browser-local reflection note with TXT export, print-friendly results, a visual discrimination mini-task, multi-sensory self-observation, and an optional browser-generated sound-pair activity.
 
 It has no production-grade database, authentication, admin console, payments, server-side scoring, or AI report service. An optional Google Apps Script + Sheets demo integration is provided; it stores only anonymous aggregate demo scores after explicit consent and is not suitable for sensitive or commercial production data. Do not collect sensitive assessment data or sell reports on this prototype. Demo scores are not validated measurements and must not be used for diagnosis, hiring, or consequential decisions.
 
@@ -76,10 +76,10 @@ Only a random record ID, timestamp, language, schema version, five illustrative 
 
 ## Scientific, privacy, and product guardrails
 
-1. Review the exact assessment instrument, scoring rules, language rights, interpretation boundaries, and norms (if any) before offering a formal assessment.
+1. Review the exact assessment instrument, scoring rules, language rights, interpretation boundaries, and norms (if any) before offering a formal assessment. The current self-report items are original demo content, not a validated Big Five instrument.
 2. Evidence for English items does not automatically validate a Chinese translation.
 3. Never invent scores, norms, percentiles, diagnoses, or scientific validity.
-4. State clearly that personality insights are not a clinical diagnosis.
+4. State clearly that personality insights are not a clinical diagnosis. The sound activity records only a six-trial same/different auditory task; it is not a personality, intelligence, or hearing test.
 5. Before storing real responses, implement least-privilege access, row-level security, retention limits, deletion workflows, and security testing.
 6. Before charging users, implement server-verified payment webhooks, entitlement checks, and secure report access.
 
