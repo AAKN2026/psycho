@@ -78,6 +78,7 @@ export default function Home() {
   const [retrievedScores, setRetrievedScores] = useState<Record<Dimension, number> | null>(null);
   const [visualAnswers, setVisualAnswers] = useState<Record<number, number>>({});
   const [visualFeedback, setVisualFeedback] = useState(false);
+  const [visualMeaning, setVisualMeaning] = useState<string | null>(null);
   const [sensoryAnswers, setSensoryAnswers] = useState<Record<string, string>>({});
   const [sensorySummary, setSensorySummary] = useState(false);
   const [soundStarted, setSoundStarted] = useState(false);
@@ -509,7 +510,7 @@ export default function Home() {
         <div className="visual-actions">
           <span>{locale === "zh" ? `已完成 ${Object.keys(visualAnswers).length}/8 幕` : `${Object.keys(visualAnswers).length}/8 scenes completed`}</span>
           <button className="button-primary" onClick={() => setVisualFeedback(true)} disabled={Object.keys(visualAnswers).length < 8}>{locale === "zh" ? "查看心理探索结果" : "Explore my patterns"} ↗</button>
-          <button className="button-secondary" onClick={() => { setVisualAnswers({}); setVisualFeedback(false); }}>{locale === "zh" ? "重新体验" : "Start again"}</button>
+          <button className="button-secondary" onClick={() => { setVisualAnswers({}); setVisualFeedback(false); setVisualMeaning(null); }}>{locale === "zh" ? "重新体验" : "Start again"}</button>
         </div>
         {visualFeedback && Object.keys(visualAnswers).length === 8 && <div className="visual-result" aria-live="polite">
           <strong>{locale === "zh" ? "你的情境选择倾向" : "Your contextual choice patterns"}</strong>
@@ -526,6 +527,34 @@ export default function Home() {
               ][0].options.reduce((total, themes, index) => total + (themes[visualAnswers[index]] === theme.key ? 1 : 0), 0);
               return <p key={theme.key}><strong>{locale === "zh" ? theme.zh : theme.en} · {selectedCount}/8</strong><br />{locale === "zh" ? theme.explainZh : theme.explainEn}</p>;
             })}
+          </div>
+
+          <div className="method-debrief">
+            <h4>{locale === "zh" ? "把观察结果交还给你" : "You make the meaning"}</h4>
+            <p>{locale === "zh" ? "从上面的主题中，哪一种最贴近你最近真正重视的事情？可以与选择次数最多的主题相同，也可以完全不同。" : "Which theme best reflects what truly matters to you right now? It may match your most-selected theme, or be completely different."}</p>
+            <div className="visual-options" role="group" aria-label={locale === "zh" ? "选择当前最重要的主题" : "Choose the theme that matters most right now"}>
+              {[
+                { key: "space", zh: "自主空间", en: "Autonomy" },
+                { key: "connection", zh: "关系联结", en: "Connection" },
+                { key: "structure", zh: "清晰秩序", en: "Structure" },
+                { key: "explore", zh: "探索变化", en: "Exploration" },
+                { key: "context", zh: "视情境而定", en: "It depends" }
+              ].map((item) => <button type="button" key={item.key} className={visualMeaning === item.key ? "visual-option chosen" : "visual-option"} onClick={() => setVisualMeaning(item.key)} aria-pressed={visualMeaning === item.key}><span>{locale === "zh" ? item.zh : item.en}</span></button>)}
+            </div>
+            {visualMeaning && <p>{locale === "zh" ? ({
+              space: "你的自我判断更重视自主与选择空间。可以继续问自己：我在哪个领域需要更多决定权？",
+              connection: "你的自我判断更重视关系与支持。可以继续问自己：我希望谁怎样理解或支持我？",
+              structure: "你的自我判断更重视清晰与稳定。可以继续问自己：哪一件事只要更明确一点，就会更容易推进？",
+              explore: "你的自我判断更重视新可能与变化。可以继续问自己：有什么小尝试值得在安全范围内开始？",
+              context: "你认为需求会随情境变化。可以继续问自己：什么条件改变时，我的优先次序也会改变？"
+            } as Record<string, string>)[visualMeaning] : ({
+              space: "Your own interpretation gives more weight to autonomy and choice. Ask yourself: where would more agency matter to me?",
+              connection: "Your own interpretation gives more weight to connection and support. Ask yourself: who could understand or support me, and how?",
+              structure: "Your own interpretation gives more weight to clarity and stability. Ask yourself: what would become easier if one thing were clearer?",
+              explore: "Your own interpretation gives more weight to possibility and change. Ask yourself: what small, safe experiment could I try?",
+              context: "You see your needs as context-dependent. Ask yourself: what changing condition would shift my priorities?"
+            } as Record<string, string>)[visualMeaning]}</p>}
+            <p>{locale === "zh" ? "这一步是自我确认，不会被当作正确答案，也不会改写人格分数。反思内容不会上传或保存。" : "This is self-interpretation, not a correct answer. It does not change personality scores; reflection is not uploaded or stored."}</p>
           </div>
           <p>{locale === "zh" ? "心理学边界：自主与关系联结是重要的心理需求研究主题；但本活动的图形选择与主题归类是探索性设计，尚未验证信度或效度。结果只适合自我反思。图形本身没有固定含义，选择也可能受当下心情、题目措辞、文化经验和视觉偏好影响。" : "Psychological boundary: autonomy and relatedness are established topics in motivation research, but this activity's visual choices and theme mapping are exploratory and have not been validated for reliability or validity. Use the results for reflection only. Shapes have no fixed meaning; choices may also reflect mood, wording, culture, or visual taste."}</p>
           <p>{locale === "zh" ? "本模块只在当前页面记录选择，不上传、不写入本地存储，也不会改变 IPIP 人格分数。" : "Choices stay in the current page only; they are not uploaded or stored locally and do not affect IPIP personality scores."}</p>
