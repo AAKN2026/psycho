@@ -395,7 +395,7 @@ export default function Home() {
             <article className="insight-highlight">
               <span className="insight-kicker">{locale === "zh" ? "值得多留意的维度" : "A DIMENSION TO EXPLORE"}</span>
               <h3>{locale === "zh" ? [...scores].sort((a, b) => a.value - b.value)[0].zh : [...scores].sort((a, b) => a.value - b.value)[0].en}</h3>
-              <p>{locale === "zh" ? [...scores].sort((a, b) => a.value - b.value)[0].value + "% · 这不代表缺点；想想在什么情境下，你会希望采用不同做法。" : [...scores].sort((a, b) => a.value - b.value)[0].value + "% · This is not a weakness; consider when a different approach might help."}</p>
+              <p>{locale === "zh" ? [...scores].sort((a, b) => a.value - b.value)[0 ].value + "/100 · 这不代表缺点；想想在什么情境下，你会希望采用不同做法。" : [...scores].sort((a, b) => a.value - b.value)[0 ].value + "/100 · This is not a weakness; consider when a different approach might help."}</p>
             </article>
           </div>
           <div className="insight-practice">
