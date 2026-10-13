@@ -470,3 +470,42 @@
 .method-debrief strong { color: #344336; }
 @media (max-width: 600px) { .method-debrief { padding: 16px; } }
 @media print { .method-debrief { break-inside: avoid; } }
+
+
+/* Shareable self-discovery entry */
+.hero-extra-links{display:flex;flex-wrap:wrap;align-items:center;gap:10px 24px;margin-top:18px}
+.discover-entry-link{font-weight:600;color:#34483c}
+.discover-page{min-height:100vh;background:var(--paper);color:var(--ink)}
+.discover-nav{height:78px;padding:0 7%;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);gap:20px}
+.discover-nav-actions{display:flex;align-items:center;gap:18px;color:var(--muted);font-size:11px}
+.discover-hero{max-width:800px;margin:0 auto;padding:72px 24px 36px;text-align:center}
+.discover-hero .eyebrow{justify-content:center}
+.discover-hero h1{font-family:'Playfair Display','Noto Sans SC',serif;font-size:clamp(38px,6vw,66px);font-weight:400;line-height:1.18;letter-spacing:-1.5px;margin:25px 0 20px}
+.discover-hero>p{max-width:590px;margin:0 auto;color:var(--muted);font-size:14px;line-height:1.9}
+.discover-pills{display:flex;justify-content:center;flex-wrap:wrap;gap:9px;margin-top:25px}
+.discover-pills span{border:1px solid var(--line);background:#fffefa;border-radius:30px;padding:9px 13px;font-size:10px;color:#657064}
+.discover-card{width:min(100% - 32px,700px);margin:0 auto 70px;background:#fffefa;border:1px solid #e4e7dd;padding:clamp(24px,5vw,48px);box-shadow:0 18px 50px #29392d0a}
+.discover-card-top{display:flex;justify-content:space-between;gap:20px;font-size:10px;letter-spacing:1px;color:#68786a}
+.discover-progress{height:3px;background:#e7eae2;margin-top:14px}
+.discover-progress span{display:block;height:100%;background:#829a7e;transition:width .2s}
+.discover-card h2{font-family:'Playfair Display','Noto Sans SC',serif;font-size:clamp(25px,4vw,35px);font-weight:400;line-height:1.4;margin:30px 0 10px;letter-spacing:-.5px}
+.discover-question-note,.discover-card>p{font-size:12px;line-height:1.9;color:#737a72}
+.discover-choices{display:grid;gap:10px;margin-top:26px}
+.discover-choice{display:grid;grid-template-columns:32px 1fr 20px;gap:14px;align-items:center;text-align:left;width:100%;min-height:70px;padding:16px;border:1px solid #e3e7de;background:#fbfaf6;color:var(--ink);cursor:pointer;transition:border-color .15s,transform .15s}
+.discover-choice:hover,.discover-choice:focus-visible{border-color:#839a7e;transform:translateY(-1px);outline:none}
+.discover-choice-index{width:30px;height:30px;display:grid;place-items:center;border-radius:50%;background:#e8eee4;color:#50684f;font-size:11px}
+.discover-choice>span:nth-child(2){font-size:13px;line-height:1.7}
+.discover-choice-arrow{color:#829a7e}
+.discover-back{margin-top:20px;background:none;border:0;padding:8px 0;color:#68786a;cursor:pointer;font-size:12px}
+.discover-privacy{margin-top:25px;padding-top:17px;border-top:1px solid #e7e9e2;font-size:10px!important}
+.discover-result h2{margin-top:22px}
+.discover-reflection{display:grid;gap:10px;padding:22px;margin:25px 0;background:#e9eee5;border-left:2px solid #829a7e}
+.discover-reflection span,.discover-result .eyebrow{font-size:9px;letter-spacing:1.2px;color:#647761}
+.discover-reflection strong{font-size:14px;font-weight:500;line-height:1.8}
+.discover-boundary{border-top:1px solid #e7e9e2;padding-top:18px}
+.discover-result-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:24px}
+.discover-share-status{color:#526e50}
+.discover-full-test{display:block;margin-top:25px;padding-top:20px;border-top:1px solid #e7e9e2;color:#50684f;font-size:12px;line-height:1.8}
+.discover-footer{display:flex;justify-content:space-between;gap:20px;padding:24px 7%;border-top:1px solid var(--line);font-size:10px;color:#7c847b}
+.discover-footer a{color:#526b51}
+@media(max-width:700px){.hero-extra-links{align-items:flex-start;flex-direction:column;gap:14px}.discover-nav{padding:0 18px;height:70px}.discover-nav-actions{gap:8px}.discover-nav-actions>span{max-width:145px;text-align:right;font-size:9px}.discover-hero{padding-top:54px}.discover-card{margin-bottom:42px;padding:24px 20px}.discover-choice{grid-template-columns:30px 1fr 14px;gap:10px;min-height:76px}.discover-result-actions{flex-direction:column;align-items:stretch}.discover-result-actions button{justify-content:center}.discover-footer{padding:22px 20px}}
