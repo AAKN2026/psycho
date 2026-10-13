@@ -78,6 +78,7 @@ export default function Home() {
   const [retrievedScores, setRetrievedScores] = useState<Record<Dimension, number> | null>(null);
   const [visualAnswers, setVisualAnswers] = useState<Record<number, number>>({});
   const [visualFeedback, setVisualFeedback] = useState(false);
+  const [visualBehavior, setVisualBehavior] = useState<{ startedAt: number | null; lastActionAt: number | null; changes: number; repeatClicks: number; intervalsMs: number[] }>({ startedAt: null, lastActionAt: null, changes: 0, repeatClicks: 0, intervalsMs: [] });
   const [sensoryAnswers, setSensoryAnswers] = useState<Record<string, string>>({});
   const [sensorySummary, setSensorySummary] = useState(false);
   const [soundStarted, setSoundStarted] = useState(false);
@@ -496,7 +497,23 @@ export default function Home() {
               <p>{locale === "zh" ? round.noteZh : round.noteEn}</p>
               <div className="visual-options" role="group" aria-label={locale === "zh" ? round.titleZh : round.titleEn}>
                 {round.glyphs.map((glyph, optionIndex) => (
-                  <button key={optionIndex} className={visualAnswers[roundIndex] === optionIndex ? "visual-option chosen" : "visual-option"} onClick={() => { setVisualAnswers((old) => ({ ...old, [roundIndex]: optionIndex })); setVisualFeedback(false); }} aria-pressed={visualAnswers[roundIndex] === optionIndex} aria-label={`${locale === "zh" ? "选择第" : "Select option"} ${optionIndex + 1}`}>
+                  <button key={optionIndex} className={visualAnswers[roundIndex] === optionIndex ? "visual-option chosen" : "visual-option"} onClick={() => {
+                    const now = Date.now();
+                    setVisualAnswers((old) => {
+                      const hadAnswer = Object.prototype.hasOwnProperty.call(old, roundIndex);
+                      const previous = old[roundIndex];
+                      setVisualBehavior((metrics) => ({
+                        ...metrics,
+                        startedAt: metrics.startedAt ?? now,
+                        lastActionAt: now,
+                        changes: metrics.changes + (hadAnswer && previous !== optionIndex ? 1 : 0),
+                        repeatClicks: metrics.repeatClicks + (hadAnswer && previous === optionIndex ? 1 : 0),
+                        intervalsMs: metrics.lastActionAt === null ? metrics.intervalsMs : [...metrics.intervalsMs, Math.max(0, now - metrics.lastActionAt)],
+                      }));
+                      return { ...old, [roundIndex]: optionIndex };
+                    });
+                    setVisualFeedback(false);
+                  }} aria-pressed={visualAnswers[roundIndex] === optionIndex} aria-label={`${locale === "zh" ? "选择第" : "Select option"} ${optionIndex + 1}`}>
                     <span>{glyph}</span><small>{optionIndex + 1}</small>
                   </button>
                 ))}
@@ -508,9 +525,9 @@ export default function Home() {
         <div className="visual-actions">
           <span>{locale === "zh" ? `已完成 ${Object.keys(visualAnswers).length}/8 题` : `${Object.keys(visualAnswers).length}/8 completed`}</span>
           <button className="button-primary" onClick={() => setVisualFeedback(true)} disabled={Object.keys(visualAnswers).length < 8}>{locale === "zh" ? "查看观察结果" : "Review answers"} ↗</button>
-          <button className="button-secondary" onClick={() => { setVisualAnswers({}); setVisualFeedback(false); }}>{locale === "zh" ? "重新挑战" : "Try again"}</button>
+          <button className="button-secondary" onClick={() => { setVisualAnswers({}); setVisualFeedback(false); setVisualBehavior({ startedAt: null, lastActionAt: null, changes: 0, repeatClicks: 0, intervalsMs: [] }); }}>{locale === "zh" ? "重新挑战" : "Try again"}</button>
         </div>
-        {visualFeedback && <div className="visual-result" aria-live="polite"><strong>{locale === "zh" ? `本次正确 ${[2, 1, 1, 2, 2, 1, 2, 2].filter((answer, i) => visualAnswers[i] === answer).length}/8` : `Your score: ${[2, 1, 1, 2, 2, 1, 2, 2].filter((answer, i) => visualAnswers[i] === answer).length}/8`}</strong><p>{locale === "zh" ? "这只是极短的图形辨别练习。表现会受屏幕、注意力、熟悉程度和当下状态影响，不应据此给自己贴上心理或能力标签。" : "This is a very short visual discrimination exercise. Performance can vary with screen, attention, familiarity, and current state; do not use it to label your psychology or ability."}</p><div className="method-debrief"><h4>{locale === "zh" ? "心理学依据与测量目的" : "Psychological basis & purpose"}</h4><p><strong>{locale === "zh" ? "依据：" : "Basis: "}</strong>{locale === "zh" ? "知觉心理学中的视觉辨别与选择性注意研究关注人如何发现目标特征。当前题目是自编的示范任务，并非标准化注意力测验。" : "Perceptual psychology studies visual discrimination and selective attention—how people detect target features. These custom items are a demonstration, not a standardized attention test."}</p><p><strong>{locale === "zh" ? "观察指标：" : "Observable measure: "}</strong>{locale === "zh" ? "八道图形题的正确数（0–8）；不测反应时，也不推算稳定能力。" : "Number correct across eight visual items (0–8); reaction time is not measured and stable ability is not estimated."}</p><p><strong>{locale === "zh" ? "专业解释边界：" : "Interpretation boundary: "}</strong>{locale === "zh" ? "题目难度分为基础辨别与复合特征两类，但题目仍是自编练习，尚未建立难度参数、信度、常模或效度证据。结果只用于描述本次任务表现，不用于推断人格、智力、注意障碍或临床状况。" : "Items range from basic discrimination to combined-feature comparisons, but this is still a custom exercise without calibrated difficulty, reliability, norms, or validity evidence. Use it only to describe performance on this task—not to infer personality, intelligence, attention disorders, or clinical status."}</p></div></div>}
+        {visualFeedback && <div className="visual-result" aria-live="polite"><strong>{locale === "zh" ? `本次正确 ${[2, 1, 1, 2, 2, 1, 2, 2].filter((answer, i) => visualAnswers[i] === answer).length}/8` : `Your score: ${[2, 1, 1, 2, 2, 1, 2, 2].filter((answer, i) => visualAnswers[i] === answer).length}/8`}</strong><div className="method-debrief"><h4>{locale === "zh" ? "本次互动行为记录（探索性）" : "Interaction patterns in this session (exploratory)"}</h4><p>{locale === "zh" ? `改选次数：${visualBehavior.changes}；同一选项重复点击：${visualBehavior.repeatClicks}。` : `Answer changes: ${visualBehavior.changes}; repeated clicks on the same option: ${visualBehavior.repeatClicks}.`}</p><p>{locale === "zh" ? "这些指标只描述本次操作。改选可能代表复核，也可能是误触；重复点击可能来自按钮反馈不明显。它们不是急躁、犹豫或人格特质的直接证据。" : "These indicators describe only this session. Changing an answer may reflect checking or a misclick; repeated clicks may mean feedback was unclear. Neither is direct evidence of impatience, hesitation, or a personality trait."}</p><p>{locale === "zh" ? "为了避免误判，数据仅保留在当前页面内存中，不上传、不写入本地存储，也不影响人格分数。" : "To reduce misinterpretation, these data stay in page memory only: they are not uploaded, saved to local storage, or used in personality scores."}</p></div><p>{locale === "zh" ? "这只是极短的图形辨别练习。表现会受屏幕、注意力、熟悉程度和当下状态影响，不应据此给自己贴上心理或能力标签。" : "This is a very short visual discrimination exercise. Performance can vary with screen, attention, familiarity, and current state; do not use it to label your psychology or ability."}</p><div className="method-debrief"><h4>{locale === "zh" ? "心理学依据与测量目的" : "Psychological basis & purpose"}</h4><p><strong>{locale === "zh" ? "依据：" : "Basis: "}</strong>{locale === "zh" ? "知觉心理学中的视觉辨别与选择性注意研究关注人如何发现目标特征。当前题目是自编的示范任务，并非标准化注意力测验。" : "Perceptual psychology studies visual discrimination and selective attention—how people detect target features. These custom items are a demonstration, not a standardized attention test."}</p><p><strong>{locale === "zh" ? "观察指标：" : "Observable measure: "}</strong>{locale === "zh" ? "八道图形题的正确数（0–8）；不测反应时，也不推算稳定能力。" : "Number correct across eight visual items (0–8); reaction time is not measured and stable ability is not estimated."}</p><p><strong>{locale === "zh" ? "专业解释边界：" : "Interpretation boundary: "}</strong>{locale === "zh" ? "题目难度分为基础辨别与复合特征两类，但题目仍是自编练习，尚未建立难度参数、信度、常模或效度证据。结果只用于描述本次任务表现，不用于推断人格、智力、注意障碍或临床状况。" : "Items range from basic discrimination to combined-feature comparisons, but this is still a custom exercise without calibrated difficulty, reliability, norms, or validity evidence. Use it only to describe performance on this task—not to infer personality, intelligence, attention disorders, or clinical status."}</p></div></div>}
       </section>
       <section className="sensory-lab section-wrap" id="sensory-lab" aria-labelledby="sensory-lab-title">
         <div className="eyebrow"><span className="eyebrow-line" />{locale === "zh" ? "多感官自我观察 · 可选模块" : "MULTI-SENSORY SELF-OBSERVATION · OPTIONAL"}</div>
