@@ -22,7 +22,7 @@ const dimensions: { key: Dimension; zh: string; en: string; zhLow: string; enLow
   { key: "conscientiousness", zh: "计划与执行", en: "Planning & follow-through", zhLow: "更偏向灵活、随性地推进", enLow: "May prefer a flexible, spontaneous approach", zhHigh: "更重视计划、组织与落实", enHigh: "May value planning, organisation, and follow-through", zhPrompt: "哪一件小事，如果提前安排，会让你这一周更轻松？", enPrompt: "What small task could you plan ahead to make this week easier?" },
   { key: "extraversion", zh: "社交能量", en: "Social energy", zhLow: "可能更需要独处或小范围交流", enLow: "May prefer solitude or smaller conversations", zhHigh: "可能从更多社交互动中获得能量", enHigh: "May draw energy from more social interaction", zhPrompt: "什么样的交流方式最能让你感到自在、有连接感？", enPrompt: "What kind of interaction helps you feel comfortable and connected?" },
   { key: "agreeableness", zh: "合作与体谅", en: "Cooperation & consideration", zhLow: "可能更直接地坚持自己的判断", enLow: "May express independent views more directly", zhHigh: "可能更重视协调与理解他人", enHigh: "May place greater emphasis on harmony and understanding", zhPrompt: "当意见不同时，你怎样既表达自己，也理解对方？", enPrompt: "When views differ, how can you express yourself and understand the other person?" },
-  { key: "emotionalBalance", zh: "压力应对", en: "Stress response", zhLow: "近期自我感受可能更容易受压力影响", enLow: "Your current self-view may be more affected by stress", zhHigh: "近期自我感受可能更能保持稳定", enHigh: "Your current self-view may feel relatively steady", zhPrompt: "当压力出现时，哪一种支持或习惯能帮助你恢复？", enPrompt: "When stress appears, what support or habit helps you recover?" },
+  { key: "emotionalBalance", zh: "情绪稳定性", en: "Emotional stability", zhLow: "近期自我报告显示，你可能更容易受到负面情绪影响", enLow: "Your responses suggest negative emotions may affect you more readily", zhHigh: "近期自我报告显示，你可能更容易恢复情绪平衡", enHigh: "Your responses suggest you may recover emotional balance more readily", zhPrompt: "面对压力时，什么能帮助你恢复平衡？", enPrompt: "When under stress, what helps you regain balance?" },
 ];
 
 const copy = {
@@ -294,6 +294,19 @@ export default function Home() {
     return { ...dimension, value: Math.round(((average - 1) / 4) * 100) };
   }), [answers, retrievedScores]);
 
+  const facetScores = useMemo(() => IPIP_FACETS.map((facet, facetPosition) => {
+    const offsets: Record<string, number> = { emotionalBalance: 1, extraversion: 2, openness: 3, agreeableness: 4, conscientiousness: 5 };
+    const offset = offsets[facet.trait];
+    const withinTraitFacet = facetPosition % 6;
+    const ids = [0, 1, 2, 3].map((step) => offset + (withinTraitFacet * 4 + step) * 5);
+    const values = ids.map((id) => {
+      const answer = answers[id] as Answer;
+      return IPIP_REVERSE_KEYED.has(id) ? 6 - answer : answer;
+    });
+    const average = values.reduce((sum, value) => sum + value, 0) / values.length;
+    return { ...facet, value: Math.round(((average - 1) / 4) * 100) };
+  }), [answers]);
+
   function startAssessment(resume = false) {
     if (!resume && Object.keys(answers).length > 0) {
       const message = locale === "zh"
@@ -363,10 +376,16 @@ export default function Home() {
       <header className="topbar"><a className="brand" href="#" onClick={(e) => { e.preventDefault(); goHome(); }}><span className="brand-mark">P</span><span>persona<span className="brand-dot">.</span></span></a><div className="nav-actions"><button className="language-toggle" onClick={() => setLocale(locale === "zh" ? "en" : "zh")}>{locale === "zh" ? "EN" : "中文"} ↗</button><button className="language-toggle" onClick={goHome}>{t.exit} ×</button></div></header>
       <section className="results-wrap"><div className="eyebrow"><span className="eyebrow-line" />{t.resultLabel}</div><h1>{t.resultTitle}</h1><p className="results-intro">{t.resultIntro}</p>
         <div className="results-grid">{scores.map((score) => <article className="result-card" key={score.key}><div className="result-title-row"><h2>{locale === "zh" ? score.zh : score.en}</h2><span>{score.value}%</span></div><div className="result-track"><span style={{ width: `${score.value}%` }} /></div><div className="result-range"><span>{t.lower}</span><span>{t.higher}</span></div><p>{score.value < 40 ? (locale === "zh" ? score.zhLow : score.enLow) : score.value > 60 ? (locale === "zh" ? score.zhHigh : score.enHigh) : t.middle}</p><div className="reflection-prompt"><span>{t.reflection}</span><p>{locale === "zh" ? score.zhPrompt : score.enPrompt}</p></div></article>)}</div>
+         <section className="facet-results" aria-labelledby="facet-results-title">
+           <div className="eyebrow"><span className="eyebrow-line" />{locale === "zh" ? "30 个细分侧面" : "30 PERSONALITY FACETS"}</div>
+           <h2 id="facet-results-title">{locale === "zh" ? "更细致地看见人格倾向" : "A more detailed view of your tendencies"}</h2>
+           <p className="facet-intro">{locale === "zh" ? "每个侧面由 4 道相关题目汇总。分数是根据 1–5 平均作答换算的显示值，不是百分位、诊断或与他人比较的排名。情绪相关侧面按原量表的神经质方向计分（越高代表该倾向自述越明显）；上方总维度显示的是反向的情绪稳定性。" : "Each facet summarises four related items. Scores convert average 1–5 responses for display; they are not percentiles, diagnoses, or rankings against other people. Emotion-related facets follow the original Neuroticism direction (higher means more of that self-reported tendency); the broad factor above is shown as reverse-keyed Emotional Stability."}</p>
+           <div className="facet-grid">{facetScores.map((facet) => <article className="facet-card" key={facet.id}><div className="facet-title-row"><span>{locale === "zh" ? facet.zh : facet.en}</span><strong>{facet.value}</strong></div><div className="facet-track"><span style={{ width: `${facet.value}%` }} /></div><small>{locale === "zh" ? "原始作答换算分" : "Response-scale index"}</small></article>)}</div>
+         </section>
         <section className="insight-summary" aria-labelledby="insight-summary-title">
           <div className="eyebrow"><span className="eyebrow-line" />{locale === "zh" ? "把分数转化为行动" : "FROM SCORES TO ACTION"}</div>
           <h2 id="insight-summary-title">{locale === "zh" ? "你的本次观察重点" : "Your reflection highlights"}</h2>
-          <p className="insight-summary-intro">{locale === "zh" ? "以下内容只根据本次演示分数生成，用来帮助你提出问题，而不是给你定型。" : "Generated from this demo's scores to help you ask better questions—not to define you."}</p>
+          <p className="insight-summary-intro">{locale === "zh" ? "以下反思提示根据本次量表分数生成，用来帮助你提出问题，而不是给你定型。" : "These prompts use your inventory scores to help you ask better questions—not to define you."}</p>
           <div className="insight-highlight-grid">
             <article className="insight-highlight">
               <span className="insight-kicker">{locale === "zh" ? "相对突出的维度" : "RELATIVE HIGH POINT"}</span>
@@ -384,16 +403,16 @@ export default function Home() {
             <div><span>02</span><p>{locale === "zh" ? "换个情境思考：如果对象、压力或目标改变，结果会不同吗？" : "Change the context: would things differ with another person, level of pressure, or goal?"}</p></div>
             <div><span>03</span><p>{locale === "zh" ? "选一个微行动：未来七天尝试一次，并记录实际感受。" : "Choose one small experiment for the next seven days and note what you actually experience."}</p></div>
           </div>
-          <p className="insight-footnote">{locale === "zh" ? "提示：分数相近时，不必强行区分高低。人格表现会随情境、角色与时间变化；本演示结果未经心理测量验证。" : "When scores are close, there may be no meaningful distinction. Behaviour varies by context, role, and time; this demo is not a validated psychometric assessment."}</p>
+          <p className="insight-footnote">{locale === "zh" ? "提示：分数相近时，不必强行区分高低。人格表现会随情境、角色与时间变化；分数不是百分位，且本网站尚未完成新加坡本地独立验证。" : "When scores are close, there may be no meaningful distinction. Behaviour varies by context, role, and time; the site has not completed independent validation in Singapore."}</p>
         </section>
         <section className="cloud-save-panel" aria-labelledby="cloud-save-title">
           <div className="reflection-heading">
             <div className="eyebrow"><span className="eyebrow-line" />{locale === "zh" ? "可选 · Google Sheets" : "OPTIONAL · GOOGLE SHEETS"}</div>
-            <h2 id="cloud-save-title">{locale === "zh" ? "保存这份演示结果。" : "Save this demo result."}</h2>
+            <h2 id="cloud-save-title">{locale === "zh" ? "保存这份测评结果。" : "Save this assessment result."}</h2>
             <p>{locale === "zh" ? "经你同意后，本网站会尝试把匿名维度分数保存到网站运营者管理的 Google 表格，而不是访客自己的表格。不会上传逐题答案、姓名、邮箱或个人反思笔记。" : "With your consent, this site will attempt to save anonymous dimension scores to a Google Sheet managed by the site operator, not your own sheet. Individual answers, names, email addresses, and reflection notes are not sent."}</p>
           </div>
           <p className="cloud-save-hint">{locale === "zh" ? "数据接收端由网站统一配置，访客无需输入 Google 链接。只有勾选同意并主动点击保存后才会发送。" : "The endpoint is configured by the site operator. Visitors do not need to enter a Google URL. Data is sent only after consent and an explicit save click."}</p>
-          <label className="cloud-consent-row"><input type="checkbox" checked={cloudConsent} onChange={(event) => { setCloudConsent(event.target.checked); setCloudSaveStatus("idle"); }} /><span>{locale === "zh" ? "我同意将本次演示的匿名维度分数、语言和提交时间保存到本网站运营者管理的 Google Sheets。" : "I agree to save my anonymous demo dimension scores, language, and submission time to a Google Sheet managed by this website operator."}</span></label>
+          <label className="cloud-consent-row"><input type="checkbox" checked={cloudConsent} onChange={(event) => { setCloudConsent(event.target.checked); setCloudSaveStatus("idle"); }} /><span>{locale === "zh" ? "我同意将本次测评的匿名维度分数、语言和提交时间保存到本网站运营者管理的 Google Sheets。" : "I agree to save my anonymous assessment dimension scores, language, and submission time to a Google Sheet managed by this website operator."}</span></label>
           <div className="cloud-save-actions"><button className="button-primary" onClick={saveResultToGoogleSheets} disabled={cloudSaveStatus === "sending"}>{cloudSaveStatus === "sending" ? (locale === "zh" ? "正在发送…" : "Sending…") : (locale === "zh" ? "保存到 Google Sheets" : "Save to Google Sheets")} <span>↗</span></button><span className="cloud-save-hint">{locale === "zh" ? "需先勾选同意，再主动点击保存。" : "Consent and an explicit save click are required."}</span></div>
           {cloudSaveStatus !== "idle" && <p className={cloudSaveStatus === "error" || cloudSaveStatus === "invalid" || cloudSaveStatus === "consent" ? "cloud-save-status error" : "cloud-save-status"} role="status">{cloudSaveStatus === "invalid" ? (locale === "zh" ? "保存配置无效。" : "Save configuration is invalid.") : cloudSaveStatus === "consent" ? (locale === "zh" ? "请先勾选同意项，再提交。" : "Please check the consent box before submitting.") : cloudSaveStatus === "sending" ? (locale === "zh" ? "正在发送请求…" : "Sending request…") : cloudSaveStatus === "sent" ? (locale === "zh" ? "保存请求已发送，但网页暂时无法确认后台是否写入。请妥善保存提取码，并先测试能否找回结果。" : "Save request sent, but the page cannot confirm storage. Keep the code and test that retrieval works.") : (locale === "zh" ? "发送失败，请检查网络。" : "Could not send. Check your connection.")}</p>}
           {cloudSaveStatus === "sent" && accessCode && <div className="access-code-card"><strong>{locale === "zh" ? "你的报告提取码" : "Your report retrieval code"}</strong><code>{accessCode}</code><p>{locale === "zh" ? "请立即复制保存。以后打开首页的「找回我的报告」，输入此码即可尝试取回本次结果。" : "Copy and keep this code. Later, use “Retrieve my report” on the home page to look up this result."}</p><button className="button-secondary" onClick={() => navigator.clipboard.writeText(accessCode)}>{locale === "zh" ? "复制提取码" : "Copy code"} ↗</button></div>}
