@@ -28,10 +28,10 @@ Every activity must be recorded in this registry before being used in reports.
 | Activity | Observable data | Defensible interpretation | Prohibited inference | Evidence status |
 |---|---|---|---|---|
 | IPIP-NEO-120 self-report | 120 item ratings, 5 broad factors, 30 four-item facets | Score profile under the published inventory key; self-reflection only pending local validation | Diagnosis, percentile, Singapore norm ranking, consequential decisions | Published instrument and Mandarin translation evidence; website implementation/local bilingual sample not independently validated |
-| Colour selection | Selected colour | Stated preference in this context | Personality, emotional state, intelligence | Exploratory only |
-| Scene first-noticed choice | Selected element and optional explanation | Self-reported attention/association | Projective personality interpretation | Exploratory only |
-| Taste preference | Stated preference; no tasting required | Preference report | Personality or health inference | Exploratory only |
-| Body-sensation check-in | Self-selected current/recent sensation | Self-observation | Diagnosis or trait inference | Exploratory only |
+| Colour selection | Selected colour in this session | Context-specific preference and the user's own association | Personality, emotional state, intelligence, subconscious meaning | Reflective exercise; no validated trait inference |
+| Scene first-noticed choice | Selected scene element and optional explanation | Self-reported first impression and personal association | Projective personality interpretation or stable attention trait | Custom illustration; not a standardized task |
+| Taste preference | Stated everyday taste preference; no tasting required | Self-reported preference and reflection on context | Personality, health, or sensory ability inference | Self-report only; affected by culture and experience |
+| Body-sensation check-in | One self-reported recent bodily sensation or “nothing in particular” | Self-monitoring and experience description | Diagnosis, physiological measurement, or trait inference | Reflective exercise; not a clinical scale |
 | Visual difference task | Correct/incorrect responses | Performance on this specific visual task | IQ, diagnosis, stable attention trait | Prototype; task-specific only |
 | Tone-pair discrimination (MVP addition) | Same/different judgments over six tone pairs | Accuracy on a brief browser-based auditory discrimination activity | Personality, hearing diagnosis, intelligence, emotional traits | Prototype; unnormed and device-dependent |
 
