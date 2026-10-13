@@ -45,20 +45,19 @@ The smoke check verifies the homepage, favicon, robots policy, and `/api/health`
 
 GitHub Actions runs TypeScript checking, ESLint, and a production build on pushes to `main`, pull requests, and manual dispatch. See the [latest workflow runs](https://github.com/AAKN2026/psycho/actions). A green workflow is required before treating the code as build-verified; deployment and browser testing must still be confirmed separately.
 
-## Deploy a demo with Vercel
+## Publish with GitHub Pages
 
-1. Sign in to Vercel and choose **Add New → Project**.
-2. Import the GitHub repository `AAKN2026/psycho` and select the `main` branch.
-3. Keep the detected Next.js framework and use `npm run build` as the build command.
-4. No environment variables are needed for this demo.
-5. Deploy, then open the generated URL and test the complete flow on desktop and mobile: landing page, Chinese/English switch, every question, required-answer validation, browser refresh/resume, results, print/save PDF, and unknown-route 404.
-6. Check the deployment logs and browser console. Do not announce launch until the build succeeds and the deployed URL has been tested.
+This repository is configured for a static Next.js export and GitHub Pages deployment. The demo is frontend-only; server API routes and server-only features are not available on GitHub Pages.
 
-After initial import, Vercel can create preview deployments for commits and production deployments from the configured production branch. Deployment depends on access to the Vercel account and permission to connect this repository; repository commits alone do not publish the site.
+1. Open **Settings → Pages** in this repository: https://github.com/AAKN2026/psycho/settings/pages
+2. Under **Build and deployment**, set **Source** to **GitHub Actions**.
+3. Open **Actions** and check the **Deploy to GitHub Pages** workflow. It runs automatically after commits to `main`, or can be started manually.
+4. Wait for the deployment job to succeed. The expected project URL is https://aakn2026.github.io/psycho/ .
+5. Test the URL on desktop and mobile: landing page, Chinese/English switch, every question, required-answer validation, browser refresh/resume, results, print/save PDF, and unknown-route 404.
 
-## GitHub Pages
+The workflow builds to `out/`, checks the static artifacts, and deploys that folder. Because this is a project site, the production base path is `/psycho`. If the repository is renamed, update the base path in `next.config.mjs`.
 
-This project uses the Next.js App Router and is **not configured as a static GitHub Pages site**. Use Vercel or a compatible Node.js host rather than expecting GitHub Pages to serve the app automatically.
+GitHub Pages can host the current static demo, but it cannot run Next.js server routes, a database, authentication endpoints, payment webhooks, or server-side AI report generation. Those require a separate backend or a server-capable host.
 
 ## Environment configuration for future backend work
 
