@@ -35,9 +35,11 @@ npm run typecheck
 npm run lint
 npm run build
 npm start
+# In a separate terminal, after the server is running:
+npm run smoke
 ```
 
-A successful type check or lint is not a substitute for a production build and browser-based end-to-end checks. Run all commands in an environment with dependencies installed before calling the release verified.
+The smoke check verifies the homepage, favicon, robots policy, and `/api/health` endpoint. For a deployed site, run it with `BASE_URL=https://your-deployment.example npm run smoke`. It does not replace full browser end-to-end testing. Run the type check, lint, production build, and browser flow checks before calling the release verified.
 
 ## Deploy a demo with Vercel
 
@@ -77,6 +79,7 @@ This project uses the Next.js App Router and is **not configured as a static Git
 - [x] Branded loading, error, and 404 states
 - [x] Basic security response headers
 - [x] Vercel deployment configuration and documented release checklist
+- [x] Non-sensitive health endpoint and deployed-site smoke-check script
 - [ ] Production build and browser E2E tests executed
 - [ ] Successful hosted deployment verified
 - [ ] Expert-reviewed and licensed assessment instrument
