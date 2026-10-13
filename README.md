@@ -12,7 +12,7 @@ It has **no production database, authentication, admin console, payments, server
 
 ## Stack
 
-- Next.js App Router 14 + React 18 + TypeScript
+- Next.js 15.5.24 + React 18 + TypeScript (framework version upgraded to a patched release before deployment)
 - Responsive CSS; demo content currently lives in the frontend
 - Vercel-compatible deployment configuration
 - No environment variables are required to run the demo
