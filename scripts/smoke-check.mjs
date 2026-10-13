@@ -57,6 +57,8 @@ try {
     "随机提取码相关记录",
     "has no cloud-record deletion control",
     "没有云端记录删除功能",
+    "not encrypted",
+    "未加密",
   ]) {
     if (!appSource.includes(phrase)) {
       failed = true;
