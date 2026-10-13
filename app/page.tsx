@@ -521,9 +521,6 @@ export default function Home() {
               { key: "structure", zh: "清晰与秩序", en: "Structure and clarity", explainZh: "你选择了步骤、规则、稳定节奏或明确预期的画面。可以反思：在什么情况下，清晰的结构能帮助你安心行动？", explainEn: "You chose scenes emphasizing steps, rules, routine, or clear expectations. Reflect: when does structure help you feel ready to act?" },
               { key: "explore", zh: "探索与变化", en: "Exploration and novelty", explainZh: "你选择了新鲜体验、开放可能或尝试不同路径的画面。可以反思：你希望在哪个领域给自己更多尝试空间？", explainEn: "You chose scenes emphasizing novelty, open possibilities, or trying another path. Reflect: where would you like to give yourself more room to experiment?" }
             ].map((theme) => {
-              const count = [
-                { theme: "space", sceneIndex: 0, optionIndex: 0 }, { theme: "connection", sceneIndex: 0, optionIndex: 1 }, { theme: "structure", sceneIndex: 0, optionIndex: 2 }, { theme: "explore", sceneIndex: 0, optionIndex: 3 }
-              ];
               const selectedCount = [
                 { theme: "space", options: [["space", "connection", "structure", "explore"], ["explore", "structure", "space", "connection"], ["connection", "structure", "explore", "space"], ["structure", "space", "connection", "explore"], ["connection", "explore", "structure", "space"], ["structure", "explore", "connection", "space"], ["explore", "connection", "space", "structure"], ["connection", "explore", "structure", "space"] }
               ][0].options.reduce((total, themes, index) => total + (themes[visualAnswers[index]] === theme.key ? 1 : 0), 0);
