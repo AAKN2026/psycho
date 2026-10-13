@@ -8,7 +8,7 @@ A bilingual (Simplified Chinese / English), responsive Next.js MVP for a thought
 
 The app currently includes a bilingual landing page, 15 original demo questions, illustrative five-dimension results, browser-local progress saving, a private browser-local reflection note with TXT export, print-friendly results, and branded loading/error/not-found states.
 
-It has **no production database, authentication, admin console, payments, server-side scoring, or AI report service**. Do not collect sensitive assessment data or sell reports on this prototype. Demo scores are not validated measurements and must not be used for diagnosis, hiring, or consequential decisions.
+It has no production-grade database, authentication, admin console, payments, server-side scoring, or AI report service. An optional Google Apps Script + Sheets demo integration is provided; it stores only anonymous aggregate demo scores after explicit consent and is not suitable for sensitive or commercial production data. Do not collect sensitive assessment data or sell reports on this prototype. Demo scores are not validated measurements and must not be used for diagnosis, hiring, or consequential decisions.
 
 ## Stack
 
@@ -59,6 +59,17 @@ The workflow builds to `out/`, checks the static artifacts, and deploys that fol
 
 GitHub Pages can host the current static demo, but it cannot run Next.js server routes, a database, authentication endpoints, payment webhooks, or server-side AI report generation. Those require a separate backend or a server-capable host.
 
+## Optional Google Apps Script + Google Sheets
+
+The repository includes a minimal opt-in integration for saving aggregate demo scores to a Google Sheet. It is intentionally separate from the static site: the browser sends a small JSON payload to a Web App URL that you deploy and own.
+
+- Setup instructions: [apps-script/README.md](https://github.com/AAKN2026/psycho/blob/main/apps-script/README.md)
+- Apps Script receiver: [apps-script/Code.gs](https://github.com/AAKN2026/psycho/blob/main/apps-script/Code.gs)
+
+Only a random record ID, timestamp, language, schema version, five illustrative dimension scores, and a consent flag are sent. Individual answers, reflection notes, names, email addresses, and phone numbers are excluded. The user must enter their own Apps Script deployment URL and explicitly tick consent before submitting.
+
+**Important:** you must create and deploy the Apps Script in your Google account; committing Code.gs to GitHub does not deploy it to Google. The website uses a no-CORS request, so it cannot confirm the row was written; verify it in the Google Sheet. A public Apps Script endpoint is not a private API and should only be used for low-risk demo data. Do not use it for identifiable or sensitive psychological data. For a commercial launch, use a properly secured backend with authentication, abuse prevention, retention/deletion controls, and a reviewed privacy notice.
+
 ## Environment configuration for future backend work
 
 `.env.example` is a planning template only. Do not add placeholder secrets or copy server-only secrets into variables prefixed with `NEXT_PUBLIC_`. Before connecting real services, configure them in the hosting provider's encrypted environment settings and implement authentication, authorization, server-side validation, data retention, and deletion flows.
@@ -88,4 +99,4 @@ GitHub Pages can host the current static demo, but it cannot run Next.js server 
 - [ ] Production build and browser E2E tests executed
 - [ ] Successful hosted deployment verified
 - [ ] Expert-reviewed and licensed assessment instrument
-- [ ] Backend, authentication, privacy controls, payments, and paid reports
+- [x] Optional Google Apps Script + Sheets integration for anonymous demo scores (manual setup required)\n- [ ] Production-grade backend, authentication, privacy controls, payments, and paid reports
