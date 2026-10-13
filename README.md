@@ -6,12 +6,16 @@ A bilingual (Simplified Chinese / English), responsive web app MVP for evidence-
 
 - [x] Initial Next.js + TypeScript scaffold
 - [x] Responsive bilingual landing page prototype
+- [x] Interactive bilingual demo questionnaire (15 original demo items)
+- [x] Previous / next navigation, progress indicator and required-answer validation
+- [x] Browser-local progress saving and resume
+- [x] Demo result visualisation across five illustrative dimensions
 - [x] MVP disclaimer and science-first positioning
 - [ ] Expert-approved assessment instrument and licensed/verified language versions
 - [ ] Supabase Auth, schema, RLS policies and migrations
-- [ ] Assessment sessions, item delivery and response persistence
+- [ ] Server-backed assessment sessions, item delivery and response persistence (the current demo is browser-local only)
 - [ ] Deterministic scoring engine with versioned scoring keys
-- [ ] Free results page
+- [x] Demo results page (illustrative only; not validated psychometric scores)
 - [ ] Payment provider, verified webhooks and paid report entitlements
 - [ ] AI report generation with schema validation and audit trail
 - [ ] Secure PDF delivery, deletion workflow and admin dashboard
@@ -23,7 +27,7 @@ A bilingual (Simplified Chinese / English), responsive web app MVP for evidence-
 - Supabase (Auth + PostgreSQL + Row Level Security), to be configured
 - Server-side scoring and AI report generation
 - Payment provider integration, to be selected and configured
-- Responsive CSS; Chinese / English copy currently held in the landing page prototype
+- Responsive CSS; bilingual copy and demo items are currently held in the frontend
 
 ## Local development
 
@@ -39,6 +43,10 @@ Open http://localhost:3000.
 ## Environment configuration
 
 Copy `.env.example` to `.env.local` and fill in values only after the corresponding services are created. Never expose `SUPABASE_SERVICE_ROLE_KEY`, payment secrets, webhook secrets, or AI provider keys to browser code.
+
+## Demo limitations
+
+The current questionnaire is a product-flow prototype. Its original demo items, simple illustrative scoring, and dimension descriptions are not a validated psychometric instrument, do not use population norms, and must not be used for diagnosis, hiring, or consequential decisions. Progress is saved only in the current browser and is not sent to a database. Clearing browser storage removes the saved demo progress.
 
 ## Scientific and safety guardrails
 
