@@ -16,10 +16,13 @@ A bilingual (Simplified Chinese / English), responsive web app MVP for evidence-
 - [ ] Server-backed assessment sessions, item delivery and response persistence (the current demo is browser-local only)
 - [ ] Deterministic scoring engine with versioned scoring keys
 - [x] Demo results page (illustrative only; not validated psychometric scores)
+- [x] Dimension-specific reflection prompts in the demo report
+- [x] Browser print / Save as PDF action with print-friendly layout
 - [ ] Payment provider, verified webhooks and paid report entitlements
 - [ ] AI report generation with schema validation and audit trail
 - [ ] Secure PDF delivery, deletion workflow and admin dashboard
 - [ ] Psychometric, security, accessibility and bilingual QA
+- [ ] Run production build and browser end-to-end checks before public launch
 
 ## Stack
 
