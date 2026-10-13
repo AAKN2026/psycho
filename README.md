@@ -41,6 +41,10 @@ npm run smoke
 
 The smoke check verifies the homepage, favicon, robots policy, and `/api/health` endpoint. For a deployed site, run it with `BASE_URL=https://your-deployment.example npm run smoke`. It does not replace full browser end-to-end testing. Run the type check, lint, production build, and browser flow checks before calling the release verified.
 
+## Automated verification
+
+GitHub Actions runs TypeScript checking, ESLint, and a production build on pushes to `main`, pull requests, and manual dispatch. See the [latest workflow runs](https://github.com/AAKN2026/psycho/actions). A green workflow is required before treating the code as build-verified; deployment and browser testing must still be confirmed separately.
+
 ## Deploy a demo with Vercel
 
 1. Sign in to Vercel and choose **Add New → Project**.
