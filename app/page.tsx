@@ -82,6 +82,10 @@ export default function Home() {
   const [reflectionNote, setReflectionNote] = useState("");
   const [cloudConsent, setCloudConsent] = useState(false);
   const [cloudSaveStatus, setCloudSaveStatus] = useState<"idle" | "invalid" | "consent" | "sending" | "sent" | "error">("idle");
+  const [accessCode, setAccessCode] = useState("");
+  const [lookupCode, setLookupCode] = useState("");
+  const [lookupStatus, setLookupStatus] = useState<"idle" | "loading" | "error">("idle");
+  const [retrievedScores, setRetrievedScores] = useState<Record<Dimension, number> | null>(null);
   const t = copy[locale];
 
   useEffect(() => {
@@ -122,10 +126,17 @@ export default function Home() {
     const endpoint = PUBLIC_APPS_SCRIPT_ENDPOINT;
     setCloudSaveStatus("sending");
     const recordId = `psn_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 10)}`;
+    const alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+    const randomBytes = new Uint8Array(12);
+    window.crypto.getRandomValues(randomBytes);
+    const rawCode = Array.from(randomBytes, (byte) => alphabet[byte % alphabet.length]).join("");
+    const generatedCode = `${rawCode.slice(0,4)}-${rawCode.slice(4,8)}-${rawCode.slice(8,12)}`;
+    setAccessCode(generatedCode);
     const payload = {
       action: "save_demo_result",
       schemaVersion: 1,
       recordId,
+      accessCode: generatedCode,
       locale,
       createdAt: new Date().toISOString(),
       scores: Object.fromEntries(scores.map((score) => [score.key, score.value])),
@@ -144,6 +155,28 @@ export default function Home() {
     } catch {
       setCloudSaveStatus("error");
     }
+  }
+
+  function retrieveResultByCode() {
+    const code = lookupCode.toUpperCase().replace(/[^A-Z0-9]/g, "");
+    if (code.length !== 12) { setLookupStatus("error"); return; }
+    setLookupStatus("loading");
+    const formattedCode = `${code.slice(0,4)}-${code.slice(4,8)}-${code.slice(8,12)}`;
+    const callbackName = `personaCallback_${Date.now()}_${Math.random().toString(36).slice(2,8)}`;
+    const globalWindow = window as unknown as Record<string, unknown>;
+    const callback = (result: { ok?: boolean; locale?: Locale; scores?: Record<Dimension, number> }) => {
+      delete globalWindow[callbackName];
+      if (!result?.ok || !result.scores) { setLookupStatus("error"); return; }
+      setRetrievedScores(result.scores);
+      if (result.locale === "zh" || result.locale === "en") setLocale(result.locale);
+      setLookupStatus("idle");
+      setView("results");
+    };
+    globalWindow[callbackName] = callback;
+    const script = document.createElement("script");
+    script.src = `${PUBLIC_APPS_SCRIPT_ENDPOINT}?action=retrieve&code=${encodeURIComponent(formattedCode)}&callback=${callbackName}`;
+    script.onerror = () => { delete globalWindow[callbackName]; setLookupStatus("error"); };
+    document.body.appendChild(script);
   }
 
   function saveReflectionNote(value: string) {
@@ -171,12 +204,12 @@ export default function Home() {
 
   const answeredCount = Object.keys(answers).length;
   const current = questions[index];
-  const scores = useMemo(() => dimensions.map((dimension) => {
+  const scores = useMemo(() => retrievedScores ? dimensions.map((dimension) => ({ ...dimension, value: retrievedScores[dimension.key] })) : dimensions.map((dimension) => {
     const related = questions.filter((q) => q.dimension === dimension.key);
     const values = related.filter((q) => answers[q.id] !== undefined).map((q) => { const answer = answers[q.id] as Answer; return q.reverse ? 6 - answer : answer; });
     const average = values.length ? values.reduce((sum, value) => sum + value, 0) / values.length : 3;
     return { ...dimension, value: Math.round(((average - 1) / 4) * 100) };
-  }), [answers]);
+  }), [answers, retrievedScores]);
 
   function startAssessment(resume = false) {
     if (!resume) { setAnswers({}); setIndex(0); try { window.localStorage.removeItem(STORAGE_KEY); } catch { /* Ignore unavailable storage. */ } }
@@ -195,7 +228,7 @@ export default function Home() {
   }
   function goHome() { setView("home"); setShowValidation(false); }
   function restart() {
-    setAnswers({}); setIndex(0); setHasSaved(false); setView("assessment"); setShowValidation(false);
+    setRetrievedScores(null); setAccessCode(""); setAnswers({}); setIndex(0); setHasSaved(false); setView("assessment"); setShowValidation(false);
     try { window.localStorage.removeItem(STORAGE_KEY); } catch { /* Ignore unavailable storage. */ }
   }
 
@@ -231,7 +264,8 @@ export default function Home() {
           <p className="cloud-save-hint">{locale === "zh" ? "数据接收端由网站统一配置，访客无需输入 Google 链接。只有勾选同意并主动点击保存后才会发送。" : "The endpoint is configured by the site operator. Visitors do not need to enter a Google URL. Data is sent only after consent and an explicit save click."}</p>
           <label className="cloud-consent-row"><input type="checkbox" checked={cloudConsent} onChange={(event) => { setCloudConsent(event.target.checked); setCloudSaveStatus("idle"); }} /><span>{locale === "zh" ? "我同意将本次演示的匿名维度分数、语言和提交时间保存到本网站运营者管理的 Google Sheets。" : "I agree to save my anonymous demo dimension scores, language, and submission time to a Google Sheet managed by this website operator."}</span></label>
           <div className="cloud-save-actions"><button className="button-primary" onClick={saveResultToGoogleSheets} disabled={cloudSaveStatus === "sending"}>{cloudSaveStatus === "sending" ? (locale === "zh" ? "正在发送…" : "Sending…") : (locale === "zh" ? "保存到 Google Sheets" : "Save to Google Sheets")} <span>↗</span></button><span className="cloud-save-hint">{locale === "zh" ? "需先勾选同意，再主动点击保存。" : "Consent and an explicit save click are required."}</span></div>
-          {cloudSaveStatus !== "idle" && <p className={cloudSaveStatus === "error" || cloudSaveStatus === "invalid" || cloudSaveStatus === "consent" ? "cloud-save-status error" : "cloud-save-status"} role="status">{cloudSaveStatus === "invalid" ? (locale === "zh" ? "请输入有效的 Google Apps Script /exec 部署网址。" : "Enter a valid Google Apps Script /exec deployment URL.") : cloudSaveStatus === "consent" ? (locale === "zh" ? "请先勾选同意项，再提交。" : "Please check the consent box before submitting.") : cloudSaveStatus === "sending" ? (locale === "zh" ? "正在发送请求…" : "Sending request…") : cloudSaveStatus === "sent" ? (locale === "zh" ? "请求已发送。由于 Google 跨域响应限制，页面无法确认表格是否已写入；请到你的 Google Sheet 核对。" : "Request sent. Due to Google cross-origin response limits, this page cannot confirm the row was written; please verify it in your Google Sheet.") : (locale === "zh" ? "发送失败，请检查网络和部署网址。" : "Could not send. Check your connection and deployment URL.")}</p>}
+          {cloudSaveStatus !== "idle" && <p className={cloudSaveStatus === "error" || cloudSaveStatus === "invalid" || cloudSaveStatus === "consent" ? "cloud-save-status error" : "cloud-save-status"} role="status">{cloudSaveStatus === "invalid" ? (locale === "zh" ? "保存配置无效。" : "Save configuration is invalid.") : cloudSaveStatus === "consent" ? (locale === "zh" ? "请先勾选同意项，再提交。" : "Please check the consent box before submitting.") : cloudSaveStatus === "sending" ? (locale === "zh" ? "正在发送请求…" : "Sending request…") : cloudSaveStatus === "sent" ? (locale === "zh" ? "保存请求已发送。请妥善保存下面的提取码；首次上线测试时，请确认后台确实新增了记录。" : "Save request sent. Keep the extraction code below. During launch testing, verify the record was actually stored.") : (locale === "zh" ? "发送失败，请检查网络。" : "Could not send. Check your connection.")}</p>}
+          {cloudSaveStatus === "sent" && accessCode && <div className="access-code-card"><strong>{locale === "zh" ? "你的报告提取码" : "Your report retrieval code"}</strong><code>{accessCode}</code><p>{locale === "zh" ? "请立即复制保存。以后打开首页的「找回我的报告」，输入此码即可尝试取回本次结果。" : "Copy and keep this code. Later, use “Retrieve my report” on the home page to look up this result."}</p><button className="button-secondary" onClick={() => navigator.clipboard.writeText(accessCode)}>{locale === "zh" ? "复制提取码" : "Copy code"} ↗</button></div>}
           <p className="cloud-security-note">{locale === "zh" ? "重要：Apps Script 的公开 Web App 接口不是私密 API。当前仅适合低风险演示数据；不要提交真实心理健康信息或可识别个人身份的数据。正式公开运营前应增加服务端滥用防护和隐私评估。" : "Important: a public Apps Script web app is not a private API. This is for low-risk demo data only; do not submit real mental-health information or identifying data. Add server-side abuse controls and a privacy review before public production use."}</p>
         </section>
         <section className="personal-reflection" aria-labelledby="personal-reflection-title">
@@ -283,6 +317,13 @@ export default function Home() {
           <details className="faq-item"><summary>{locale === "zh" ? "结果可以用来判断我适合什么工作或关系吗？" : "Can the results tell me which job or relationship suits me?"}<span>＋</span></summary><p>{locale === "zh" ? "不可以。这里的结果不是经过验证的测量，不能作为招聘、诊断、升学、关系或其他重大决定的依据。你可以把反思问题当作自我观察的起点，再结合真实经历与具体情境。" : "No. These results are not validated measurements and should not guide hiring, diagnosis, education, relationship, or other consequential decisions. Use the reflection prompts only as a starting point for self-observation alongside real experiences and context."}</p></details>
           <details className="faq-item"><summary>{locale === "zh" ? "为什么提供中英文切换？" : "Why offer both Chinese and English?"}<span>＋</span></summary><p>{locale === "zh" ? "为了让不同语言背景的使用者更容易体验产品。不过，同一题目的翻译并不自动代表两种语言版本具有相同的测量效果；正式发布前仍需进行语言审校与相应验证。" : "To make the experience accessible across language preferences. However, translating an item does not automatically make both language versions equivalent measures; language review and appropriate validation are still needed before formal release."}</p></details>
         </div>
+      </section>
+      <section className="retrieve-report section-wrap" aria-labelledby="retrieve-report-title">
+        <div className="eyebrow"><span className="eyebrow-line" />{locale === "zh" ? "无需注册" : "NO ACCOUNT REQUIRED"}</div>
+        <h2 id="retrieve-report-title">{locale === "zh" ? "找回我的报告" : "Retrieve my report"}</h2>
+        <p>{locale === "zh" ? "输入保存结果时获得的提取码，即可尝试在其他设备找回原来的维度分数。" : "Enter the code you received when saving to retrieve your original dimension scores, even on another device."}</p>
+        <div className="retrieve-form"><input aria-label={locale === "zh" ? "报告提取码" : "Report retrieval code"} value={lookupCode} onChange={(event) => { setLookupCode(event.target.value.toUpperCase()); setLookupStatus("idle"); }} placeholder="XXXX-XXXX-XXXX" maxLength={14} /><button className="button-primary" onClick={retrieveResultByCode} disabled={lookupStatus === "loading"}>{lookupStatus === "loading" ? (locale === "zh" ? "正在查询…" : "Looking up…") : (locale === "zh" ? "找回结果" : "Retrieve result")} ↗</button></div>
+        {lookupStatus === "error" && <p className="cloud-save-status error">{locale === "zh" ? "未找到记录，或服务暂时不可用。请检查提取码，并确认后台部署已更新。" : "Record not found or service unavailable. Check the code and confirm the backend deployment is updated."}</p>}
       </section>
       <section className="closing-cta">
         <div className="eyebrow light"><span className="eyebrow-line" />{locale === "zh" ? "留一点空间给自己" : "MAKE ROOM FOR REFLECTION"}</div>
