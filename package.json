@@ -9,7 +9,8 @@
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "check": "npm run typecheck && npm run lint",
-    "smoke": "node scripts/smoke-check.mjs"
+    "smoke": "node scripts/smoke-check.mjs",
+    "audit": "node scripts/audit-scoring.mjs"
   },
   "dependencies": {
     "next": "15.5.24",
