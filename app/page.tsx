@@ -90,7 +90,86 @@ export default function Home() {
   const [visualFeedback, setVisualFeedback] = useState(false);
   const [sensoryAnswers, setSensoryAnswers] = useState<Record<string, string>>({});
   const [sensorySummary, setSensorySummary] = useState(false);
+  const [soundStarted, setSoundStarted] = useState(false);
+  const [soundTrials, setSoundTrials] = useState<boolean[]>([]);
+  const [soundAnswers, setSoundAnswers] = useState<(boolean | null)[]>([]);
+  const [soundIndex, setSoundIndex] = useState(0);
+  const [soundPlayed, setSoundPlayed] = useState(false);
+  const [soundPlaying, setSoundPlaying] = useState(false);
+  const [soundComplete, setSoundComplete] = useState(false);
+  const [soundError, setSoundError] = useState(false);
   const t = copy[locale];
+
+  function startSoundActivity() {
+    const trials = [false, false, false, true, true, true];
+    for (let i = trials.length - 1; i > 0; i -= 1) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [trials[i], trials[j]] = [trials[j], trials[i]];
+    }
+    setSoundTrials(trials);
+    setSoundAnswers(Array(6).fill(null));
+    setSoundIndex(0);
+    setSoundPlayed(false);
+    setSoundPlaying(false);
+    setSoundComplete(false);
+    setSoundError(false);
+    setSoundStarted(true);
+  }
+
+  async function playSoundPair() {
+    if (soundPlaying || soundComplete || soundTrials.length !== 6) return;
+    setSoundPlaying(true);
+    setSoundError(false);
+    let context: AudioContext | undefined;
+    try {
+      const AudioContextConstructor = window.AudioContext;
+      if (!AudioContextConstructor) throw new Error("Web Audio is unavailable");
+      context = new AudioContextConstructor();
+      await context.resume();
+      const firstStart = context.currentTime + 0.08;
+      const duration = 0.24;
+      const gap = 0.18;
+      const frequencies = soundTrials[soundIndex] ? [440, 523.25] : [440, 440];
+      frequencies.forEach((frequency, i) => {
+        const startAt = firstStart + i * (duration + gap);
+        const oscillator = context!.createOscillator();
+        const gain = context!.createGain();
+        oscillator.type = "sine";
+        oscillator.frequency.setValueAtTime(frequency, startAt);
+        gain.gain.setValueAtTime(0.0001, startAt);
+        gain.gain.exponentialRampToValueAtTime(0.055, startAt + 0.025);
+        gain.gain.setValueAtTime(0.055, startAt + duration - 0.035);
+        gain.gain.exponentialRampToValueAtTime(0.0001, startAt + duration);
+        oscillator.connect(gain);
+        gain.connect(context!.destination);
+        oscillator.start(startAt);
+        oscillator.stop(startAt + duration + 0.01);
+      });
+      await new Promise<void>((resolve) => window.setTimeout(resolve, 850));
+      await context.close();
+      setSoundPlayed(true);
+    } catch {
+      if (context && context.state !== "closed") {
+        try { await context.close(); } catch { /* Audio context may already be closed. */ }
+      }
+      setSoundError(true);
+    } finally {
+      setSoundPlaying(false);
+    }
+  }
+
+  function answerSoundPair(different: boolean) {
+    if (!soundPlayed || soundComplete || soundTrials.length !== 6) return;
+    const nextAnswers = soundAnswers.slice();
+    nextAnswers[soundIndex] = different;
+    setSoundAnswers(nextAnswers);
+    setSoundPlayed(false);
+    if (soundIndex === soundTrials.length - 1) {
+      setSoundComplete(true);
+    } else {
+      setSoundIndex((current) => current + 1);
+    }
+  }
 
   useEffect(() => {
     document.documentElement.lang = locale === "zh" ? "zh-CN" : "en";
@@ -477,6 +556,41 @@ export default function Home() {
           <button className="button-secondary" type="button" onClick={() => { setSensoryAnswers({}); setSensorySummary(false); }}>{locale === "zh" ? "清空重选" : "Reset choices"}</button>
         </div>
         {sensorySummary && <div className="sensory-result" aria-live="polite"><strong>{locale === "zh" ? "你的当下观察记录已整理" : "Your observation notes are ready"}</strong><p>{locale === "zh" ? "你选择了颜色、图片第一印象、味觉偏好和身体感受。它们是不同类别的自我报告，不应合并成单一人格分数。可以回顾：这些选择是长期偏好，还是受今天的情境影响？" : "You recorded a colour, a first impression of an image, a taste preference, and a body sensation. These are different kinds of self-report and should not be combined into one personality score. Consider whether they reflect long-term preferences or today's context."}</p><button className="button-secondary" type="button" onClick={() => GenUI.copy((locale === "zh" ? "Persona 多感官观察记录\n" : "Persona multi-sensory observation notes\n") + JSON.stringify({colour:sensoryAnswers.colour,scene:sensoryAnswers.scene,sceneNote:sensoryAnswers.sceneNote || "",taste:sensoryAnswers.taste,body:sensoryAnswers.body},null,2))}>{locale === "zh" ? "复制观察记录" : "Copy observation notes"} ↗</button></div>}
+      </section>
+      <section className="sound-lab section-wrap" id="sound-exploration" aria-labelledby="sound-lab-title">
+        <div className="eyebrow"><span className="eyebrow-line" />{locale === "zh" ? "声音探索 · 可选体验" : "SOUND EXPLORATION · OPTIONAL"}</div>
+        <h2 id="sound-lab-title">{locale === "zh" ? "听一听，感受声音之间的差别。" : "Listen closely to the differences between sounds."}</h2>
+        <p className="sound-intro">{locale === "zh" ? "这是一个简短的声音互动。请在安静、舒适的音量下体验；不需要麦克风，不会录音或上传声音。你可以随时跳过，结束后会说明这项活动观察的内容。" : "A short listening activity. Use a comfortable volume in a quiet setting. No microphone is needed, and no audio is recorded or uploaded. You can skip it at any time; the activity's purpose will be explained afterward."}</p>
+        <div className="sound-card">
+          {!soundStarted && <div className="sound-start">
+            <div className="sound-art" aria-hidden="true"><span /><span /><span /><span /><span /></div>
+            <h3>{locale === "zh" ? "准备好探索声音了吗？" : "Ready to explore sound?"}</h3>
+            <p>{locale === "zh" ? "你会听到 6 组短音。每组听完后，选择你觉得它们是“相同”还是“不同”。可以重播，不需要赶时间。" : "You will hear six short pairs of tones. After each pair, choose whether they sounded the same or different. You can replay each pair; there is no need to rush."}</p>
+            <button type="button" className="button-primary" onClick={startSoundActivity}>{locale === "zh" ? "开始声音体验" : "Begin sound activity"} ↗</button>
+          </div>}
+          {soundStarted && !soundComplete && <div className="sound-task">
+            <div className="sound-progress"><span>{locale === "zh" ? `声音片段 ${soundIndex + 1} / ${soundTrials.length}` : `Sound pair ${soundIndex + 1} of ${soundTrials.length}`}</span><span className="sound-progress-track"><i style={{ width: `${((soundIndex + 1) / soundTrials.length) * 100}%` }} /></span></div>
+            <div className="sound-wave" aria-hidden="true"><span /><span /><span /><span /><span /><span /><span /><span /><span /></div>
+            <p>{locale === "zh" ? "点击播放，然后凭自己的听觉作出选择。" : "Play the pair, then make your own judgment."}</p>
+            <div className="sound-controls">
+              <button type="button" className="button-primary" onClick={playSoundPair} disabled={soundPlaying}>{soundPlaying ? (locale === "zh" ? "播放中…" : "Playing…") : (soundPlayed ? (locale === "zh" ? "重新播放" : "Play again") : (locale === "zh" ? "播放声音" : "Play tones"))} <span>♪</span></button>
+              <button type="button" className="sound-choice" onClick={() => answerSoundPair(false)} disabled={!soundPlayed}>{locale === "zh" ? "听起来相同" : "Same"}</button>
+              <button type="button" className="sound-choice" onClick={() => answerSoundPair(true)} disabled={!soundPlayed}>{locale === "zh" ? "听起来不同" : "Different"}</button>
+            </div>
+            {soundError && <p className="sound-error" role="alert">{locale === "zh" ? "当前浏览器无法播放声音。请检查浏览器设置，或跳过此体验。" : "This browser could not play the tones. Check browser settings or skip this activity."}</p>}
+            <button type="button" className="sound-skip" onClick={() => { setSoundStarted(false); setSoundComplete(false); setSoundTrials([]); setSoundAnswers([]); setSoundPlayed(false); setSoundError(false); }}>{locale === "zh" ? "退出这项体验" : "Exit this activity"}</button>
+          </div>}
+          {soundStarted && soundComplete && <div className="sound-result" aria-live="polite">
+            <span className="insight-kicker">{locale === "zh" ? "体验完成 · 结果说明" : "ACTIVITY COMPLETE · WHAT IT MEANS"}</span>
+            <h3>{locale === "zh" ? "你的声音辨别记录" : "Your sound activity result"}</h3>
+            <div className="sound-score"><strong>{soundAnswers.reduce((total, answer, i) => total + (answer === soundTrials[i] ? 1 : 0), 0)}</strong><span>/ 6</span></div>
+            <p>{locale === "zh" ? "这项活动记录的是一次简短的听觉同异辨别表现。它不是人格测验、智力测验或听力检查，也不能据此推断你的情绪或心理特征。结果会受到设备、环境噪声、听觉差异和注意状态影响；六次任务不足以作出稳定能力判断。" : "This activity records performance on a brief same/different auditory discrimination task. It is not a personality test, intelligence test, or hearing examination, and it cannot establish emotional or psychological traits. Device output, background noise, hearing differences, and attention can affect performance; six trials are not enough to estimate a stable ability."}</p>
+            <div className="sound-result-actions">
+              <button type="button" className="button-secondary" onClick={() => { setSoundStarted(false); setSoundComplete(false); setSoundTrials([]); setSoundAnswers([]); setSoundPlayed(false); }}>{locale === "zh" ? "结束并返回" : "Finish"}</button>
+              <button type="button" className="button-secondary" onClick={startSoundActivity}>{locale === "zh" ? "再体验一次" : "Try again"}</button>
+            </div>
+          </div>}
+        </div>
       </section>
       <section className="closing-cta">
         <div className="eyebrow light"><span className="eyebrow-line" />{locale === "zh" ? "留一点空间给自己" : "MAKE ROOM FOR REFLECTION"}</div>
