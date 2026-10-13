@@ -499,19 +499,17 @@ export default function Home() {
                 {round.glyphs.map((glyph, optionIndex) => (
                   <button key={optionIndex} className={visualAnswers[roundIndex] === optionIndex ? "visual-option chosen" : "visual-option"} onClick={() => {
                     const now = Date.now();
-                    setVisualAnswers((old) => {
-                      const hadAnswer = Object.prototype.hasOwnProperty.call(old, roundIndex);
-                      const previous = old[roundIndex];
-                      setVisualBehavior((metrics) => ({
-                        ...metrics,
-                        startedAt: metrics.startedAt ?? now,
-                        lastActionAt: now,
-                        changes: metrics.changes + (hadAnswer && previous !== optionIndex ? 1 : 0),
-                        repeatClicks: metrics.repeatClicks + (hadAnswer && previous === optionIndex ? 1 : 0),
-                        intervalsMs: metrics.lastActionAt === null ? metrics.intervalsMs : [...metrics.intervalsMs, Math.max(0, now - metrics.lastActionAt)],
-                      }));
-                      return { ...old, [roundIndex]: optionIndex };
-                    });
+                    const hadAnswer = Object.prototype.hasOwnProperty.call(visualAnswers, roundIndex);
+                    const previous = visualAnswers[roundIndex];
+                    setVisualBehavior((metrics) => ({
+                      ...metrics,
+                      startedAt: metrics.startedAt ?? now,
+                      lastActionAt: now,
+                      changes: metrics.changes + (hadAnswer && previous !== optionIndex ? 1 : 0),
+                      repeatClicks: metrics.repeatClicks + (hadAnswer && previous === optionIndex ? 1 : 0),
+                      intervalsMs: metrics.lastActionAt === null ? metrics.intervalsMs : [...metrics.intervalsMs, Math.max(0, now - metrics.lastActionAt)],
+                    }));
+                    setVisualAnswers((old) => ({ ...old, [roundIndex]: optionIndex }));
                     setVisualFeedback(false);
                   }} aria-pressed={visualAnswers[roundIndex] === optionIndex} aria-label={`${locale === "zh" ? "选择第" : "Select option"} ${optionIndex + 1}`}>
                     <span>{glyph}</span><small>{optionIndex + 1}</small>
