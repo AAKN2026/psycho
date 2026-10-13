@@ -79,6 +79,9 @@ export default function Home() {
   const [hasSaved, setHasSaved] = useState(false);
   const [showValidation, setShowValidation] = useState(false);
   const [reflectionNote, setReflectionNote] = useState("");
+  const [appsScriptUrl, setAppsScriptUrl] = useState("");
+  const [cloudConsent, setCloudConsent] = useState(false);
+  const [cloudSaveStatus, setCloudSaveStatus] = useState<"idle" | "invalid" | "consent" | "sending" | "sent" | "error">("idle");
   const t = copy[locale];
 
   useEffect(() => {
@@ -113,6 +116,54 @@ export default function Home() {
       setReflectionNote(window.localStorage.getItem("persona-reflection-note-v1") || "");
     } catch { /* Reflection notes remain optional when storage is unavailable. */ }
   }, []);
+
+  useEffect(() => {
+    try {
+      setAppsScriptUrl(window.localStorage.getItem("persona-apps-script-url-v1") || "");
+    } catch { /* Endpoint configuration is optional. */ }
+  }, []);
+
+  function updateAppsScriptUrl(value: string) {
+    setAppsScriptUrl(value);
+    setCloudSaveStatus("idle");
+    try {
+      if (value.trim()) window.localStorage.setItem("persona-apps-script-url-v1", value.trim());
+      else window.localStorage.removeItem("persona-apps-script-url-v1");
+    } catch { /* Keep endpoint configuration in memory if storage is unavailable. */ }
+  }
+
+  async function saveResultToGoogleSheets() {
+    if (!cloudConsent) { setCloudSaveStatus("consent"); return; }
+    const endpoint = appsScriptUrl.trim();
+    if (!/^https:\/\/script\.google\.com\/macros\/s\/[A-Za-z0-9_-]+\/exec$/.test(endpoint)) {
+      setCloudSaveStatus("invalid");
+      return;
+    }
+    setCloudSaveStatus("sending");
+    const recordId = `psn_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 10)}`;
+    const payload = {
+      action: "save_demo_result",
+      schemaVersion: 1,
+      recordId,
+      locale,
+      createdAt: new Date().toISOString(),
+      scores: Object.fromEntries(scores.map((score) => [score.key, score.value])),
+      consent: true,
+    };
+    try {
+      // Apps Script web apps often return an opaque cross-origin response.
+      // Do not send raw answers, names, email addresses, or reflection notes.
+      await fetch(endpoint, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify(payload),
+      });
+      setCloudSaveStatus("sent");
+    } catch {
+      setCloudSaveStatus("error");
+    }
+  }
 
   function saveReflectionNote(value: string) {
     setReflectionNote(value);
@@ -190,6 +241,19 @@ export default function Home() {
       <header className="topbar"><a className="brand" href="#" onClick={(e) => { e.preventDefault(); goHome(); }}><span className="brand-mark">P</span><span>persona<span className="brand-dot">.</span></span></a><div className="nav-actions"><button className="language-toggle" onClick={() => setLocale(locale === "zh" ? "en" : "zh")}>{locale === "zh" ? "EN" : "中文"} ↗</button><button className="language-toggle" onClick={goHome}>{t.exit} ×</button></div></header>
       <section className="results-wrap"><div className="eyebrow"><span className="eyebrow-line" />{t.resultLabel}</div><h1>{t.resultTitle}</h1><p className="results-intro">{t.resultIntro}</p>
         <div className="results-grid">{scores.map((score) => <article className="result-card" key={score.key}><div className="result-title-row"><h2>{locale === "zh" ? score.zh : score.en}</h2><span>{score.value}%</span></div><div className="result-track"><span style={{ width: `${score.value}%` }} /></div><div className="result-range"><span>{t.lower}</span><span>{t.higher}</span></div><p>{score.value < 40 ? (locale === "zh" ? score.zhLow : score.enLow) : score.value > 60 ? (locale === "zh" ? score.zhHigh : score.enHigh) : t.middle}</p><div className="reflection-prompt"><span>{t.reflection}</span><p>{locale === "zh" ? score.zhPrompt : score.enPrompt}</p></div></article>)}</div>
+        <section className="cloud-save-panel" aria-labelledby="cloud-save-title">
+          <div className="reflection-heading">
+            <div className="eyebrow"><span className="eyebrow-line" />{locale === "zh" ? "可选 · Google Sheets" : "OPTIONAL · GOOGLE SHEETS"}</div>
+            <h2 id="cloud-save-title">{locale === "zh" ? "保存这份演示结果。" : "Save this demo result."}</h2>
+            <p>{locale === "zh" ? "部署自己的 Google Apps Script 后，可以选择把匿名维度分数保存到自己的 Google 表格。不会上传逐题答案、姓名、邮箱或个人反思笔记。" : "After deploying your own Google Apps Script, you can choose to save anonymous dimension scores to your Google Sheet. Individual answers, names, email addresses, and reflection notes are not sent."}</p>
+          </div>
+          <label className="reflection-label" htmlFor="apps-script-endpoint">{locale === "zh" ? "Apps Script Web App URL" : "APPS SCRIPT WEB APP URL"}</label>
+          <input id="apps-script-endpoint" className="cloud-endpoint-input" type="url" value={appsScriptUrl} onChange={(event) => updateAppsScriptUrl(event.target.value)} placeholder="https://script.google.com/macros/s/.../exec" autoComplete="url" />
+          <label className="cloud-consent-row"><input type="checkbox" checked={cloudConsent} onChange={(event) => { setCloudConsent(event.target.checked); setCloudSaveStatus("idle"); }} /><span>{locale === "zh" ? "我同意将本次演示的匿名维度分数、语言和提交时间保存到我配置的 Google Sheets。我理解该接口由我自己部署和管理。" : "I agree to save my anonymous demo dimension scores, language, and submission time to the Google Sheet configured by me. I understand that I deploy and manage this endpoint."}</span></label>
+          <div className="cloud-save-actions"><button className="button-primary" onClick={saveResultToGoogleSheets} disabled={cloudSaveStatus === "sending"}>{cloudSaveStatus === "sending" ? (locale === "zh" ? "正在发送…" : "Sending…") : (locale === "zh" ? "保存到 Google Sheets" : "Save to Google Sheets")} <span>↗</span></button><span className="cloud-save-hint">{locale === "zh" ? "尚未配置 URL 时，此功能不会发送数据。" : "Nothing is sent until you configure a URL."}</span></div>
+          {cloudSaveStatus !== "idle" && <p className={cloudSaveStatus === "error" || cloudSaveStatus === "invalid" || cloudSaveStatus === "consent" ? "cloud-save-status error" : "cloud-save-status"} role="status">{cloudSaveStatus === "invalid" ? (locale === "zh" ? "请输入有效的 Google Apps Script /exec 部署网址。" : "Enter a valid Google Apps Script /exec deployment URL.") : cloudSaveStatus === "consent" ? (locale === "zh" ? "请先勾选同意项，再提交。" : "Please check the consent box before submitting.") : cloudSaveStatus === "sending" ? (locale === "zh" ? "正在发送请求…" : "Sending request…") : cloudSaveStatus === "sent" ? (locale === "zh" ? "请求已发送。由于 Google 跨域响应限制，页面无法确认表格是否已写入；请到你的 Google Sheet 核对。" : "Request sent. Due to Google cross-origin response limits, this page cannot confirm the row was written; please verify it in your Google Sheet.") : (locale === "zh" ? "发送失败，请检查网络和部署网址。" : "Could not send. Check your connection and deployment URL.")}</p>}
+          <p className="cloud-security-note">{locale === "zh" ? "重要：Apps Script 的公开 Web App 接口不是私密 API。当前仅适合低风险演示数据；不要提交真实心理健康信息或可识别个人身份的数据。正式公开运营前应增加服务端滥用防护和隐私评估。" : "Important: a public Apps Script web app is not a private API. This is for low-risk demo data only; do not submit real mental-health information or identifying data. Add server-side abuse controls and a privacy review before public production use."}</p>
+        </section>
         <section className="personal-reflection" aria-labelledby="personal-reflection-title">
           <div className="reflection-heading">
             <div className="eyebrow"><span className="eyebrow-line" />{locale === "zh" ? "给未来的自己" : "A NOTE TO YOURSELF"}</div>
