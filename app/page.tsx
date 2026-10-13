@@ -86,6 +86,8 @@ export default function Home() {
   const [lookupCode, setLookupCode] = useState("");
   const [lookupStatus, setLookupStatus] = useState<"idle" | "loading" | "error">("idle");
   const [retrievedScores, setRetrievedScores] = useState<Record<Dimension, number> | null>(null);
+  const [visualAnswers, setVisualAnswers] = useState<Record<number, number>>({});
+  const [visualFeedback, setVisualFeedback] = useState(false);
   const t = copy[locale];
 
   useEffect(() => {
@@ -383,6 +385,37 @@ export default function Home() {
         <p>{locale === "zh" ? "输入保存结果时获得的提取码，即可尝试在其他设备找回原来的维度分数。" : "Enter the code you received when saving to retrieve your original dimension scores, even on another device."}</p>
         <div className="retrieve-form"><input aria-label={locale === "zh" ? "报告提取码" : "Report retrieval code"} value={lookupCode} onChange={(event) => { setLookupCode(event.target.value.toUpperCase()); setLookupStatus("idle"); }} placeholder="XXXX-XXXX-XXXX" maxLength={14} /><button className="button-primary" onClick={retrieveResultByCode} disabled={lookupStatus === "loading"}>{lookupStatus === "loading" ? (locale === "zh" ? "正在查询…" : "Looking up…") : (locale === "zh" ? "找回结果" : "Retrieve result")} ↗</button></div>
         {lookupStatus === "error" && <p className="cloud-save-status error">{locale === "zh" ? "未找到记录，或服务暂时不可用。请检查提取码，并确认后台部署已更新。" : "Record not found or service unavailable. Check the code and confirm the backend deployment is updated."}</p>}
+      </section>
+      <section className="visual-lab section-wrap" id="visual-lab" aria-labelledby="visual-lab-title">
+        <div className="eyebrow"><span className="eyebrow-line" />{locale === "zh" ? "第二种观察方式 · 可选体验" : "ANOTHER WAY TO OBSERVE · OPTIONAL"}</div>
+        <h2 id="visual-lab-title">{locale === "zh" ? "试试图形观察挑战。" : "Try a visual observation challenge."}</h2>
+        <p className="visual-intro">{locale === "zh" ? "观察图形并找出与其他三个不同的一项。它只记录这组小任务的正确数，不推断人格、智力或心理健康，也不会影响人格画像分数。" : "Look at the shapes and select the one that differs from the other three. This records only your accuracy on these mini tasks; it does not infer personality, intelligence, or mental health, and does not change your profile scores."}</p>
+        <div className="visual-task-grid">
+          {[
+            { titleZh: "第 1 题 · 方向", titleEn: "Round 1 · Direction", glyphs: ["↑", "↑", "→", "↑"], answer: 2, noteZh: "找出方向不同的箭头。", noteEn: "Find the arrow facing a different direction." },
+            { titleZh: "第 2 题 · 形状", titleEn: "Round 2 · Shape", glyphs: ["●", "●", "○", "●"], answer: 2, noteZh: "找出轮廓不同的圆形。", noteEn: "Find the circle with a different outline." },
+            { titleZh: "第 3 题 · 数量", titleEn: "Round 3 · Pattern", glyphs: ["••", "••", "•••", "••"], answer: 2, noteZh: "找出点的数量不同的一项。", noteEn: "Find the item with a different number of dots." },
+          ].map((round, roundIndex) => (
+            <article className="visual-task" key={roundIndex}>
+              <span className="insight-kicker">{locale === "zh" ? round.titleZh : round.titleEn}</span>
+              <p>{locale === "zh" ? round.noteZh : round.noteEn}</p>
+              <div className="visual-options" role="group" aria-label={locale === "zh" ? round.titleZh : round.titleEn}>
+                {round.glyphs.map((glyph, optionIndex) => (
+                  <button key={optionIndex} className={visualAnswers[roundIndex] === optionIndex ? "visual-option chosen" : "visual-option"} onClick={() => { setVisualAnswers((old) => ({ ...old, [roundIndex]: optionIndex })); setVisualFeedback(false); }} aria-pressed={visualAnswers[roundIndex] === optionIndex} aria-label={`${locale === "zh" ? "选择第" : "Select option"} ${optionIndex + 1}`}>
+                    <span>{glyph}</span><small>{optionIndex + 1}</small>
+                  </button>
+                ))}
+              </div>
+              {visualFeedback && <p className={visualAnswers[roundIndex] === round.answer ? "visual-feedback correct" : "visual-feedback"} role="status">{visualAnswers[roundIndex] === round.answer ? (locale === "zh" ? "回答正确" : "Correct") : (locale === "zh" ? "正确答案是第 " + (round.answer + 1) + " 项" : "The different item is option " + (round.answer + 1))}</p>}
+            </article>
+          ))}
+        </div>
+        <div className="visual-actions">
+          <span>{locale === "zh" ? `已完成 ${Object.keys(visualAnswers).length}/3 题` : `${Object.keys(visualAnswers).length}/3 completed`}</span>
+          <button className="button-primary" onClick={() => setVisualFeedback(true)} disabled={Object.keys(visualAnswers).length < 3}>{locale === "zh" ? "查看观察结果" : "Review answers"} ↗</button>
+          <button className="button-secondary" onClick={() => { setVisualAnswers({}); setVisualFeedback(false); }}>{locale === "zh" ? "重新挑战" : "Try again"}</button>
+        </div>
+        {visualFeedback && <div className="visual-result" aria-live="polite"><strong>{locale === "zh" ? `本次正确 ${[2, 2, 2].filter((answer, i) => visualAnswers[i] === answer).length}/3` : `Your score: ${[2, 2, 2].filter((answer, i) => visualAnswers[i] === answer).length}/3`}</strong><p>{locale === "zh" ? "这只是极短的图形辨别练习。表现会受屏幕、注意力、熟悉程度和当下状态影响，不应据此给自己贴上心理或能力标签。" : "This is a very short visual discrimination exercise. Performance can vary with screen, attention, familiarity, and current state; do not use it to label your psychology or ability."}</p></div>}
       </section>
       <section className="closing-cta">
         <div className="eyebrow light"><span className="eyebrow-line" />{locale === "zh" ? "留一点空间给自己" : "MAKE ROOM FOR REFLECTION"}</div>
