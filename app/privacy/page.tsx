@@ -20,8 +20,8 @@ export default function PrivacyPage() {
       <p>Assessment progress and reflection notes may be stored locally in your browser so you can resume the assessment or revisit your notes. On a shared device, clear local progress and notes when finished. Clearing browser data may also remove them.</p>
 
       <h2>2. 可选 Google Sheets 保存 / Optional Google Sheets save</h2>
-      <p>只有在结果页输入你配置的 Google Apps Script Web App 地址、勾选同意并主动点击保存后，网站才会尝试提交演示记录。记录包括随机记录编号、时间、语言、架构版本、五项演示维度分数及同意标记。</p>
-      <p>Only after you enter a Google Apps Script Web App URL on the results page, check the consent box, and click save will the site attempt to submit a demo record. The record contains a random record ID, timestamp, language, schema version, five illustrative dimension scores, and a consent flag.</p>
+      <p>网站统一配置了 Google Apps Script Web App 接口。只有在结果页勾选同意并主动点击保存后，网站才会尝试提交演示记录。记录包括随机记录编号、时间、语言、架构版本、五项演示维度分数及同意标记。</p>
+      <p>The site operator configures the Google Apps Script Web App endpoint centrally. Only after you check the consent box on the results page and click save will the site attempt to submit a demo record. The record contains a random record ID, timestamp, language, schema version, five illustrative dimension scores, and a consent flag.</p>
       <p>此流程不会提交原始问卷答案、反思笔记、姓名、邮箱或电话号码。你配置的 Apps Script 与 Google Sheet 由你或其管理者控制；请确保表格访问权限设置恰当，不要把该演示端点用于敏感或可识别个人身份的数据。</p>
       <p>This flow does not submit raw questionnaire answers, reflection notes, your name, email, or phone number. The Apps Script and Google Sheet you configure are controlled by you or their administrator. Set sheet permissions carefully and do not use this demo endpoint for sensitive or directly identifying data.</p>
       <p>浏览器的跨域限制意味着网页可能无法读取服务器响应。显示请求已发送并不保证记录已写入；请到 Google Sheet 检查新增记录。</p>
