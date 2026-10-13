@@ -35,7 +35,35 @@ Every activity must be recorded in this registry before being used in reports.
 | Visual difference task | Correct/incorrect responses | Performance on this specific visual task | IQ, diagnosis, stable attention trait | Prototype; task-specific only |
 | Tone-pair discrimination (MVP addition) | Same/different judgments over six tone pairs | Accuracy on a brief browser-based auditory discrimination activity | Personality, hearing diagnosis, intelligence, emotional traits | Prototype; unnormed and device-dependent |
 
-## 4. Sound activity specification
+## 4. Post-activity psychological rationale and debrief standard
+
+Every interactive activity must show a debrief immediately after completion, in both Chinese and English. The debrief must identify the theoretical research area, the exact observable measure, the intended purpose, the evidence status, and the limits on interpretation. A plausible theoretical rationale must not be presented as proof that this specific implementation is validated.
+
+### Visual discrimination exercise
+- **Purpose:** Demonstrate a simple visual feature-discrimination task and help the user notice that task performance is context-sensitive.
+- **Research basis:** Visual perception and selective-attention research study detection of target features among alternatives. These three custom items are not a standardized attention measure.
+- **Observable measure:** Number correct out of three; no reaction-time inference.
+- **Evidence status and boundary:** No reliability estimate, norm group, or validation study exists for this implementation. Do not infer IQ, ADHD, stable attention, personality, or clinical status.
+
+### Multi-sensory self-observation
+- **Purpose:** Support reflective description of current preferences, associations, and bodily awareness.
+- **Research basis:** Self-monitoring and experience-focused reflection can help people describe their own experiences. This does not validate colour, scene, taste, or body choices as personality indicators.
+- **Observable measure:** User-selected options and optional self-described association, kept descriptive and separate.
+- **Evidence status and boundary:** Reflective exercise, not a psychometric instrument or projective test. No subconscious interpretation, diagnosis, or personality score is permitted.
+
+### Auditory same/different activity
+- **Purpose:** Demonstrate a simple auditory discrimination judgment.
+- **Research basis:** Psychophysics and auditory-perception research use discrimination judgments to study responses to sound stimuli. The current six-trial browser activity uses clearly separated tones and is not a calibrated threshold protocol.
+- **Observable measure:** Number correct out of six; no reaction-time inference or audio recording.
+- **Evidence status and boundary:** Unnormed prototype affected by device, output level, environment, and individual hearing differences. Do not infer hearing status, intelligence, personality, or diagnosis.
+
+### Core IPIP-NEO-120 inventory
+- **Purpose:** Describe self-reported Big Five personality tendencies using a published item bank and scoring key.
+- **Research basis:** Johnson (2014) developed and evaluated the 120-item, 30-facet public-domain inventory; published Mandarin-version evidence exists. These studies do not validate this website's implementation or establish Singapore bilingual norms.
+- **Observable measure:** 120 item ratings, five broad factors, and 30 four-item facet indices using the inventory's scoring key.
+- **Evidence status and boundary:** Use for self-reflection only until item/facet mapping and reverse keys are independently checked and local validation is performed. No diagnosis, percentile, or consequential decisions.
+
+## 5. Sound activity specification
 
 - **Experience name shown before completion:** “Sound exploration” / “声音探索”.
 - **Task:** Listen to six pairs of simple tones and judge whether the two tones sound the same or different.
@@ -46,7 +74,7 @@ Every activity must be recorded in this registry before being used in reports.
 - **Safety/accessibility:** Keep tone volume modest, provide stop/reset, do not require headphones, and let users skip. Users with hearing differences or noisy environments should be able to skip without penalty.
 - **Future validation needed:** Pilot usability, test-retest reliability, item difficulty, headphone/speaker effects, browser/device effects, accessibility, age/language differences, and comparison against an appropriately designed auditory discrimination protocol before making stronger claims.
 
-## 5. Future measurement roadmap
+## 6. Future measurement roadmap
 
 ### Phase 1 — Reliable interaction foundations
 - Use IPIP-NEO-120 as the core personality measure; preserve the published English/Mandarin item wording and fixed scoring key.
@@ -75,11 +103,11 @@ Every activity must be recorded in this registry before being used in reports.
 - Use plain-language, non-diagnostic language.
 - Provide export, clear-data controls, and transparent retention choices before adding any remote storage.
 
-## 6. Release gates
+## 7. Release gates
 
 A feature is not “psychologically validated” merely because it has a plausible theory or runs correctly. A release can be called **build-verified** after automated checks pass; **deployed** after the hosting workflow succeeds and the live page is checked; and **psychometrically validated** only after appropriate empirical evidence supports the intended interpretation and use.
 
-## 7. Evidence and references
+## 8. Evidence and references
 
 - Johnson, J. A. (2014). *Measuring thirty facets of the Five Factor Model with a 120-item public domain inventory: Development of the IPIP-NEO-120.* Journal of Research in Personality, 51, 78–89. https://doi.org/10.1016/j.jrp.2014.05.003. Reports development and psychometric evaluation of the 120-item, 30-facet inventory.
 - International Personality Item Pool (IPIP). *Mandarin Chinese Translation and Validation of Johnson's (2014) IPIP-NEO-120.* Item wording, factor/facet reliability statistics, and correlations with a Chinese-language Big Five measure: https://ipip.ori.org/Mandarin%20translation%20of%20IPIP-NEO-120.htm and https://ipip.ori.org/ChineseIPIP-120reliability.htm.
