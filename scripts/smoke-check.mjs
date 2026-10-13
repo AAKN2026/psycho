@@ -81,6 +81,12 @@ try {
     console.log("PASS homepage links to guided practice");
   }
 
+  for (const phrase of ["60-Second Self-Discovery", "When life shifts, what do you do first?", "Three everyday scenarios"]) {
+    if (!discoverHtml.includes(phrase)) {
+      failed = true;
+      console.error(`FAIL discovery social metadata: missing ${phrase}`);
+    }
+  }
   for (const phrase of ["你遇到事情时", "自我探索挑战", "你的探索反馈", "解释边界"]) {
     if (!discoverHtml.includes(phrase)) {
       failed = true;
