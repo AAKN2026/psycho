@@ -201,3 +201,62 @@
 .reflection-note-buttons { display: flex; flex-wrap: wrap; align-items: center; gap: 9px; }
 .reflection-note-actions .button-secondary:disabled { opacity: .42; cursor: not-allowed; }
 @media print { .reflection-note-buttons { display: none; } }
+
+
+/* Optional Google Sheets sync panel */
+.cloud-save-panel {
+  margin-top: 30px;
+  padding: clamp(22px, 4vw, 34px);
+  background: #fbfaf6;
+  border: 1px solid #dfe5da;
+}
+.cloud-save-panel .reflection-heading h2 {
+  margin: 17px 0 10px;
+  font-family: 'Playfair Display', 'Noto Sans SC', serif;
+  font-size: clamp(28px, 3.8vw, 39px);
+  line-height: 1.25;
+  font-weight: 400;
+  letter-spacing: -.035em;
+}
+.cloud-save-panel .reflection-heading > p {
+  max-width: 660px;
+  margin: 0 0 23px;
+  color: #697568;
+  font-size: 12px;
+  line-height: 1.9;
+}
+.cloud-endpoint-input {
+  width: 100%;
+  display: block;
+  min-height: 44px;
+  padding: 12px 14px;
+  margin: 0 0 17px;
+  border: 1px solid #d9e0d4;
+  border-radius: 0;
+  background: #fffefa;
+  color: #344336;
+  font: inherit;
+  font-size: 12px;
+}
+.cloud-endpoint-input:focus { outline: 2px solid #78917655; border-color: #789176; }
+.cloud-consent-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  color: #657063;
+  font-size: 11px;
+  line-height: 1.8;
+  cursor: pointer;
+}
+.cloud-consent-row input { margin-top: 4px; accent-color: #405b45; flex: 0 0 auto; }
+.cloud-save-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 14px; margin-top: 18px; }
+.cloud-save-actions .button-primary:disabled { opacity: .55; cursor: wait; }
+.cloud-save-hint { color: #81897d; font-size: 10px; line-height: 1.7; }
+.cloud-save-status { margin: 14px 0 0; color: #426543; font-size: 11px; line-height: 1.8; }
+.cloud-save-status.error { color: #a04d42; }
+.cloud-security-note { margin: 18px 0 0; padding-top: 14px; border-top: 1px solid #e5e8df; color: #8a7460; font-size: 10px; line-height: 1.8; }
+@media (max-width: 640px) {
+  .cloud-save-panel { padding: 22px 17px; }
+  .cloud-save-actions { align-items: flex-start; flex-direction: column; }
+}
+@media print { .cloud-save-panel { display: none !important; } }
