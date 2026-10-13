@@ -32,49 +32,22 @@ Every activity must be recorded in this registry before being used in reports.
 | Scene first-noticed choice | Selected scene element and optional explanation | Self-reported first impression and personal association | Projective personality interpretation or stable attention trait | Custom illustration; not a standardized task |
 | Taste preference | Stated everyday taste preference; no tasting required | Self-reported preference and reflection on context | Personality, health, or sensory ability inference | Self-report only; affected by culture and experience |
 | Body-sensation check-in | One self-reported recent bodily sensation or “nothing in particular” | Self-monitoring and experience description | Diagnosis, physiological measurement, or trait inference | Reflective exercise; not a clinical scale |
-| Visual difference task (8 custom items) | Choice per item and total correct (0–8); no response-time logging | Item-specific performance under this exact display and instruction | Personality, IQ, diagnosis, stable attention trait, or a general cognitive profile | Prototype only; items are not standardized; glyph rendering and spacing vary by device; no difficulty calibration, reliability, norms, or validity evidence |
+| Visual choice reflection (8 custom scenes) | Choice among visual compositions in eight everyday contexts; counts of four descriptive themes | Self-reported contextual preferences that can prompt reflection about autonomy, connection, structure, and exploration | Subconscious truth, diagnosis, fixed personality, needs inferred from a symbol alone | Exploratory product design only; theme mapping is not validated and may reflect mood, wording, culture, and visual taste |
 | Tone-pair discrimination (MVP addition) | Same/different judgments over six tone pairs | Accuracy on a brief browser-based auditory discrimination activity | Personality, hearing diagnosis, intelligence, emotional traits | Prototype; unnormed and device-dependent |
 
 ### Interaction-behaviour observation (privacy-first prototype)
 
-The visual task now counts answer changes and repeated clicks on the same option during the current page session. It also retains intervals between successive interactions in in-memory state, but these intervals are not yet used to produce a score or interpretation. The indicators are not persisted to local storage or sent to the optional cloud endpoint.
+The former visual accuracy quiz has been replaced by a visual-choice reflection activity. The current activity records the selected option for each of eight everyday scenarios in page memory and counts selections across four descriptive themes: autonomy/personal space, connection/belonging, structure/clarity, and exploration/novelty. It does not score correctness or reaction time, does not infer hidden motives, and does not affect IPIP-NEO-120 scores. Selections are not uploaded or persisted.
 
-| Indicator | Possible explanations to investigate | Do not conclude |
-|---|---|---|
-| Answer changes | Reconsideration, checking, uncertainty, misclick, unclear stimulus | “Indecisive personality” |
-| Repeated click on the same option | Button feedback unclear, impatience, double-click habit, assistive input or latency | “Impatient personality” |
-| Short interval between interactions | Familiarity, rushing, guessing, clear stimulus, accidental rapid clicks | “Impulsive personality” |
-| Long interval between interactions | Careful comparison, distraction, reading difficulty, interruption, device lag | “Hesitant personality” |
-| Repeated refresh attempts (future instrumented task only) | Perceived app failure, network delay, frustration, habit, confusion | “Low frustration tolerance” without ruling out interface failure |
+These theme labels are reflective prompts, not validated scales. Autonomy and relatedness are established topics in motivation research, but the app's visual composition-to-theme mapping is custom and unvalidated. Do not treat the most-selected theme as a stable need or personality trait. The choices may be affected by wording, current context, culture, visual preference, and order effects.
 
-**Interpretation safeguards:** do not call interaction speed “reaction time” unless stimulus onset and response timing are controlled and measured correctly. The current interval is only the time between successive clicks; it is not a per-item response latency. Any future refresh/retry signal must be captured only within the app and clearly disclosed; do not monitor browser-wide behaviour. Interface errors, accessibility needs, language, device performance, and user context must be considered before interpretation. These indicators are exploratory, not personality scores, and must not be merged with IPIP-NEO-120 scores without validation.
+### Visual-choice reflection design notes
 
-### Visual task design notes (prototype)
-
-Each visual item now exposes its intended construct, a brief research rationale, the observable response, and an interpretation limit after the user completes the task. These are **design hypotheses informed by established research areas**, not evidence that this particular item validly measures an individual difference.
-
-| Item | Intended process | Observable response | Key limitation |
-|---|---|---|---|
-| 1. Arrow direction | Selective attention to orientation | Selects the orientation singleton | Glyph rendering and display size may affect detection |
-| 2. Inner marking | Local feature discrimination | Detects the different inner mark | Symbol fonts may render details differently |
-| 3. Dot count | Small-set numerosity discrimination | Selects the option with fewer dots | Spacing, size, and arrangement are potential confounds |
-| 4. Opening direction | Shape/orientation discrimination | Detects the opposite opening | Font-dependent character; replace with standardized SVG before validation |
-| 5. Compound shape | Selecting a local cue in a compound stimulus | Uses circle fill while the triangle is constant | One response cannot reveal the strategy used |
-| 6. Dot spacing | Spatial-layout discrimination | Detects different spacing despite equal count | Whitespace and typography are uncontrolled |
-| 7. Internal fill | Distinguishing contour from internal detail | Detects a different fill | Font-dependent symbol; replace with standardized SVG before validation |
-| 8. Two-feature change | Multi-cue target detection | Detects simultaneous direction and fill changes | Cues co-vary, so their separate contributions cannot be identified |
-
-**Release gate:** this task must remain an optional exploration, not a psychological assessment score. Before using it to make individual-difference claims, replace font-dependent glyphs with controlled vector stimuli; define and preregister hypotheses; pilot with an appropriately consented sample; inspect item accuracy and ambiguity, response distributions, and accessibility/device effects; and evaluate reliability and validity for the intended population. Do not collect or upload raw responses by default. The current MVP does not log response time or use these answers to alter the IPIP-NEO-120 profile.
-
-## 4. Post-activity psychological rationale and debrief standard
-
-Every interactive activity must show a debrief immediately after completion, in both Chinese and English. The debrief must identify the theoretical research area, the exact observable measure, the intended purpose, the evidence status, and the limits on interpretation. A plausible theoretical rationale must not be presented as proof that this specific implementation is validated.
-
-### Visual discrimination exercise
-- **Purpose:** Demonstrate a simple visual feature-discrimination task and help the user notice that task performance is context-sensitive.
-- **Research basis:** Visual perception and selective-attention research study detection of target features among alternatives. These three custom items are not a standardized attention measure.
-- **Observable measure:** Number correct out of three; no reaction-time inference.
-- **Evidence status and boundary:** No reliability estimate, norm group, or validation study exists for this implementation. Do not infer IQ, ADHD, stable attention, personality, or clinical status.
+- **Purpose:** Invite users to notice which kinds of scenes they choose across different everyday contexts.
+- **Method:** Eight short scenarios with four visual compositions each. The mapping to descriptive themes is intentionally withheld until review to reduce obvious response steering, while the activity's general purpose and data handling are disclosed beforehand.
+- **Observable measure:** Choice distribution across the four descriptive themes; no correct/incorrect score, no reaction-time inference, and no “lie detection”.
+- **Psychological rationale:** Autonomy and relatedness are relevant in self-determination/motivation research. Structure and exploration are treated here as contextual preferences, not validated psychological needs.
+- **Evidence status and boundary:** Exploratory, custom-made activity. No reliability, validity, norms, or evidence for individual-level psychological inference has been established. Use only for self-reflection and future research design.
 
 ### Multi-sensory self-observation
 - **Purpose:** Support reflective description of current preferences, associations, and bodily awareness.
