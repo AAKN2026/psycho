@@ -18,6 +18,7 @@ A bilingual (Simplified Chinese / English), responsive web app MVP for evidence-
 - [x] Demo results page (illustrative only; not validated psychometric scores)
 - [x] Dimension-specific reflection prompts in the demo report
 - [x] Browser print / Save as PDF action with print-friendly layout
+- [x] Branded responsive 404 page
 - [ ] Payment provider, verified webhooks and paid report entitlements
 - [ ] AI report generation with schema validation and audit trail
 - [ ] Secure PDF delivery, deletion workflow and admin dashboard
