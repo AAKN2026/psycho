@@ -30,7 +30,7 @@ try {
     "练习内容只保存在当前页面的内存中",
     "此网站不进行危机监测",
     "national mindline 1771",
-    "SOS · Thought Record",
+    "Singapore · SOS crisis support",
   ];
   for (const phrase of practiceRequired) {
     if (!practiceHtml.includes(phrase)) {
@@ -55,7 +55,7 @@ try {
   for (const phrase of [
     "random retrieval-code metadata",
     "随机提取码相关记录",
-    "does not have cloud-record deletion control",
+    "has no cloud-record deletion control",
     "没有云端记录删除功能",
   ]) {
     if (!appSource.includes(phrase)) {
