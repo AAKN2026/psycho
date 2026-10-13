@@ -522,7 +522,7 @@ export default function Home() {
               { key: "explore", zh: "探索与变化", en: "Exploration and novelty", explainZh: "你选择了新鲜体验、开放可能或尝试不同路径的画面。可以反思：你希望在哪个领域给自己更多尝试空间？", explainEn: "You chose scenes emphasizing novelty, open possibilities, or trying another path. Reflect: where would you like to give yourself more room to experiment?" }
             ].map((theme) => {
               const selectedCount = [
-                { theme: "space", options: [["space", "connection", "structure", "explore"], ["explore", "structure", "space", "connection"], ["connection", "structure", "explore", "space"], ["structure", "space", "connection", "explore"], ["connection", "explore", "structure", "space"], ["structure", "explore", "connection", "space"], ["explore", "connection", "space", "structure"], ["connection", "explore", "structure", "space"] }
+                { theme: "space", options: [["space", "connection", "structure", "explore"], ["explore", "structure", "space", "connection"], ["connection", "structure", "explore", "space"], ["structure", "space", "connection", "explore"], ["connection", "explore", "structure", "space"], ["structure", "explore", "connection", "space"], ["explore", "connection", "space", "structure"], ["connection", "explore", "structure", "space"]] } 
               ][0].options.reduce((total, themes, index) => total + (themes[visualAnswers[index]] === theme.key ? 1 : 0), 0);
               return <p key={theme.key}><strong>{locale === "zh" ? theme.zh : theme.en} · {selectedCount}/8</strong><br />{locale === "zh" ? theme.explainZh : theme.explainEn}</p>;
             })}
