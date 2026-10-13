@@ -5,6 +5,7 @@ const outDir = join(process.cwd(), "out");
 const checks = [
   { path: "index.html", label: "homepage export" },
   { path: "practice/index.html", label: "guided practice route export" },
+  { path: "discover/index.html", label: "60-second discovery route export" },
   { path: "404.html", label: "not-found export" },
   { path: "favicon.svg", label: "favicon export" },
   { path: "robots.txt", label: "robots policy export" },
@@ -24,6 +25,8 @@ for (const check of checks) {
 try {
   const html = await readFile(join(outDir, "index.html"), "utf8");
   const practiceHtml = await readFile(join(outDir, "practice/index.html"), "utf8");
+  const discoverHtml = await readFile(join(outDir, "discover/index.html"), "utf8");
+  const discoverSource = await readFile(new URL("../app/discover/page.tsx", import.meta.url), "utf8");
   const practiceSource = await readFile(new URL("../app/practice/page.tsx", import.meta.url), "utf8");
   const appSource = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
   const practiceRequired = [
@@ -76,6 +79,29 @@ try {
     console.error("FAIL homepage practice entry: expected /psycho/practice/ link");
   } else {
     console.log("PASS homepage links to guided practice");
+  }
+
+  for (const phrase of ["你遇到事情时", "自我探索挑战", "你的探索反馈", "解释边界"]) {
+    if (!discoverHtml.includes(phrase)) {
+      failed = true;
+      console.error(`FAIL discovery route content: missing ${phrase}`);
+    }
+  }
+  if (!discoverSource.includes("When an unfamiliar opportunity appears") ||
+      !discoverSource.includes("not a validated personality measure") ||
+      !discoverSource.includes("does not save or upload") ||
+      discoverSource.includes("localStorage") ||
+      discoverSource.includes("fetch(")) {
+    failed = true;
+    console.error("FAIL discovery bilingual, interpretation-boundary, or privacy checks");
+  } else {
+    console.log("PASS discovery bilingual copy, interpretation boundary, and no persistence/upload");
+  }
+  if (!html.includes("/psycho/discover/")) {
+    failed = true;
+    console.error("FAIL homepage discovery entry: expected /psycho/discover/ link");
+  } else {
+    console.log("PASS homepage links to 60-second discovery");
   }
   if (!html.includes("Persona")) {
     failed = true;
