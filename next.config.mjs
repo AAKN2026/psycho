@@ -1,18 +1,15 @@
 /** @type {import('next').NextConfig} */
+const isProduction = process.env.NODE_ENV === "production";
+
 const nextConfig = {
+  output: "export",
+  trailingSlash: true,
   poweredByHeader: false,
-  async headers() {
-    return [
-      {
-        source: "/:path*",
-        headers: [
-          { key: "X-Content-Type-Options", value: "nosniff" },
-          { key: "X-Frame-Options", value: "DENY" },
-          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
-          { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" }
-        ]
-      }
-    ];
-  }
+  // GitHub Pages serves this project under /psycho, not the domain root.
+  basePath: isProduction ? "/psycho" : "",
+  images: {
+    unoptimized: true,
+  },
 };
+
 export default nextConfig;
