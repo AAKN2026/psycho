@@ -6,7 +6,7 @@
 
 ## 1. Product definition
 
-Persona is an opt-in, bilingual, multimethod self-exploration experience. It uses short interactive activities (visual, auditory, decision scenarios, and optional self-reflection) to make the experience engaging and to collect different kinds of evidence. It is not a clinical diagnostic tool and must not be used for hiring, school placement, or other consequential decisions.
+Persona is a bilingual personality self-exploration experience with a research-based self-report instrument as its core. The current implementation uses the public-domain IPIP-NEO-120 item bank and a published Mandarin translation, with deterministic five-factor scoring and 30 four-item facet scores. Additional visual, auditory, and sensory activities remain separate task-specific or descriptive modules; they do not change personality scores. The website has not independently validated the inventory in a Singapore bilingual sample or established local norms. It is not a clinical diagnostic tool and must not be used for hiring, school placement, or other consequential decisions.
 
 The experience may avoid revealing the *specific hypothesis of an individual activity* until the end to reduce demand characteristics. It must not conceal that the experience may observe choices or task performance, what categories of data are collected, whether recording is used, or how data are stored. Each activity receives a plain-language debrief after completion.
 
@@ -27,7 +27,7 @@ Every activity must be recorded in this registry before being used in reports.
 
 | Activity | Observable data | Defensible interpretation | Prohibited inference | Evidence status |
 |---|---|---|---|---|
-| Existing 15-item personality self-report | User ratings | Illustrative self-description only | Validated Big Five score, diagnosis, percentile | Original demo items; unvalidated |
+| IPIP-NEO-120 self-report | 120 item ratings, 5 broad factors, 30 four-item facets | Score profile under the published inventory key; self-reflection only pending local validation | Diagnosis, percentile, Singapore norm ranking, consequential decisions | Published instrument and Mandarin translation evidence; website implementation/local bilingual sample not independently validated |
 | Colour selection | Selected colour | Stated preference in this context | Personality, emotional state, intelligence | Exploratory only |
 | Scene first-noticed choice | Selected element and optional explanation | Self-reported attention/association | Projective personality interpretation | Exploratory only |
 | Taste preference | Stated preference; no tasting required | Preference report | Personality or health inference | Exploratory only |
@@ -49,7 +49,9 @@ Every activity must be recorded in this registry before being used in reports.
 ## 5. Future measurement roadmap
 
 ### Phase 1 — Reliable interaction foundations
-- Keep all existing demo features but label the self-report and preference modules accurately.
+- Use IPIP-NEO-120 as the core personality measure; preserve the published English/Mandarin item wording and fixed scoring key.
+- Show five broad factors and 30 facet scores, label 0–100 values as transformed response-scale indices rather than percentiles, and explain the Neuroticism/Emotional Stability direction difference.
+- Keep sensory preferences descriptive and separate from personality scoring.
 - Add the auditory same/different activity as a separate, optional task.
 - Keep each activity's raw result in a separate data namespace; no composite personality score.
 - Add a post-activity debrief and an accessible skip route.
