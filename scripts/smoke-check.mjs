@@ -1,41 +1,47 @@
-const baseUrl = (process.env.BASE_URL || "http://localhost:3000").replace(/\/$/, "");
+import { access, readFile } from "node:fs/promises";
+import { join } from "node:path";
+
+const outDir = join(process.cwd(), "out");
 const checks = [
-  { path: "/", label: "homepage" },
-  { path: "/favicon.svg", label: "favicon" },
-  { path: "/robots.txt", label: "robots policy" },
-  { path: "/api/health", label: "health endpoint" },
+  { path: "index.html", label: "homepage export" },
+  { path: "404.html", label: "not-found export" },
+  { path: "favicon.svg", label: "favicon export" },
+  { path: "robots.txt", label: "robots policy export" },
 ];
 
 let failed = false;
 for (const check of checks) {
   try {
-    const response = await fetch(new URL(check.path, baseUrl), {
-      redirect: "manual",
-      signal: AbortSignal.timeout(10000),
-    });
-    if (!response.ok) {
-      failed = true;
-      console.error(`FAIL ${check.label}: HTTP ${response.status}`);
-      continue;
-    }
-    if (check.path === "/api/health") {
-      const payload = await response.json();
-      if (payload.status !== "ok" || payload.service !== "persona") {
-        failed = true;
-        console.error("FAIL health endpoint: unexpected response payload");
-        continue;
-      }
-    }
-    console.log(`PASS ${check.label}: HTTP ${response.status}`);
-  } catch (error) {
+    await access(join(outDir, check.path));
+    console.log(`PASS ${check.label}`);
+  } catch {
     failed = true;
-    console.error(`FAIL ${check.label}: ${error instanceof Error ? error.message : String(error)}`);
+    console.error(`FAIL ${check.label}: missing out/${check.path}`);
   }
 }
 
+try {
+  const html = await readFile(join(outDir, "index.html"), "utf8");
+  if (!html.includes("/psycho/_next/")) {
+    failed = true;
+    console.error("FAIL GitHub Pages asset base path: expected /psycho/_next/");
+  } else {
+    console.log("PASS GitHub Pages asset base path");
+  }
+  if (!html.includes("Persona")) {
+    failed = true;
+    console.error("FAIL homepage content: expected Persona title text");
+  } else {
+    console.log("PASS homepage content");
+  }
+} catch (error) {
+  failed = true;
+  console.error(`FAIL homepage content: ${error instanceof Error ? error.message : String(error)}`);
+}
+
 if (failed) {
-  console.error(`Smoke checks failed for ${baseUrl}`);
+  console.error("Static export checks failed.");
   process.exitCode = 1;
 } else {
-  console.log(`All smoke checks passed for ${baseUrl}`);
+  console.log("All static export checks passed.");
 }
