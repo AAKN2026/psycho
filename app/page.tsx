@@ -1,31 +1,21 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { IPIP_FACETS, IPIP_NEO_120, IPIP_REVERSE_KEYED } from "../data/ipip-neo-120";
 
 type Locale = "en" | "zh";
 type Answer = 1 | 2 | 3 | 4 | 5;
 type Dimension = "openness" | "conscientiousness" | "extraversion" | "agreeableness" | "emotionalBalance";
 type Question = { id: number; dimension: Dimension; reverse?: boolean; zh: string; en: string };
-const STORAGE_KEY = "persona-demo-assessment-v1";
+const STORAGE_KEY = "persona-ipip-neo-120-v1";
 const PUBLIC_APPS_SCRIPT_ENDPOINT = "https://script.google.com/macros/s/AKfycbx3pfNcWNE5ocr2jrMi-ttthLjW16B-ujscREoTwogT8Mpkn7TT-kAJ7xa2gXDDQDBq9Q/exec";
 
-const questions: Question[] = [
-  { id: 1, dimension: "openness", zh: "我喜欢接触新的想法、观点或体验。", en: "I enjoy exploring new ideas, perspectives, or experiences." },
-  { id: 2, dimension: "conscientiousness", zh: "做事时，我通常会提前计划并安排好步骤。", en: "I usually plan ahead and organise the steps before starting a task." },
-  { id: 3, dimension: "extraversion", zh: "和一群人交流时，我通常会感到精力充沛。", en: "I generally feel energised when talking with a group of people." },
-  { id: 4, dimension: "agreeableness", zh: "即使意见不同，我也会努力理解对方的立场。", en: "Even when I disagree, I try to understand the other person's point of view." },
-  { id: 5, dimension: "emotionalBalance", reverse: true, zh: "遇到突发状况时，我很容易陷入焦虑。", en: "Unexpected situations easily leave me feeling anxious." },
-  { id: 6, dimension: "openness", zh: "我愿意尝试与自己熟悉方式不同的做法。", en: "I am willing to try approaches that differ from what I am used to." },
-  { id: 7, dimension: "conscientiousness", reverse: true, zh: "我经常把事情拖到最后一刻才处理。", en: "I often leave tasks until the last minute." },
-  { id: 8, dimension: "extraversion", reverse: true, zh: "在社交场合，我更倾向于先观察而不是主动交谈。", en: "In social settings, I tend to observe before starting conversations." },
-  { id: 9, dimension: "agreeableness", zh: "合作时，我愿意在合理范围内作出妥协。", en: "When working with others, I am willing to compromise where reasonable." },
-  { id: 10, dimension: "emotionalBalance", zh: "压力过后，我通常能逐渐恢复平静。", en: "After a stressful moment, I can usually regain my calm over time." },
-  { id: 11, dimension: "openness", reverse: true, zh: "比起探索未知，我更喜欢一直沿用熟悉的方法。", en: "I prefer familiar methods over exploring the unknown." },
-  { id: 12, dimension: "conscientiousness", zh: "即使没有人提醒，我也会尽量完成自己答应的事。", en: "Even without reminders, I try to follow through on my commitments." },
-  { id: 13, dimension: "extraversion", zh: "在熟悉的环境里，我通常会主动表达自己的想法。", en: "In a familiar setting, I usually speak up about my ideas." },
-  { id: 14, dimension: "agreeableness", reverse: true, zh: "当别人犯错时，我很难不马上批评对方。", en: "When someone makes a mistake, I find it hard not to criticise them immediately." },
-  { id: 15, dimension: "emotionalBalance", reverse: true, zh: "事情不顺利时，我会长时间反复想着它。", en: "When things go wrong, I dwell on them for a long time." },
-];
+const questions: Question[] = IPIP_NEO_120.map((item) => {
+  const dimension = (["emotionalBalance", "extraversion", "openness", "agreeableness", "conscientiousness"] as const)[(item.id - 1) % 5];
+  const originalReverse = IPIP_REVERSE_KEYED.has(item.id);
+  // The inventory's Neuroticism items are inverted for the app's Emotional Stability factor.
+  return { id: item.id, dimension, reverse: dimension === "emotionalBalance" ? !originalReverse : originalReverse, zh: item.zh, en: item.en };
+});
 
 const dimensions: { key: Dimension; zh: string; en: string; zhLow: string; enLow: string; zhHigh: string; enHigh: string; zhPrompt: string; enPrompt: string }[] = [
   { key: "openness", zh: "开放探索", en: "Openness", zhLow: "偏好熟悉、具体的方式", enLow: "May prefer familiar, concrete approaches", zhHigh: "乐于探索新想法与体验", enHigh: "May enjoy exploring new ideas and experiences", zhPrompt: "最近有什么新想法，值得你花一点时间去探索？", enPrompt: "What new idea might be worth exploring a little further?" },
@@ -38,36 +28,36 @@ const dimensions: { key: Dimension; zh: string; en: string; zhLow: string; enLow
 const copy = {
   zh: {
     navAbout: "产品理念", navScience: "科学原则", navPrivacy: "隐私保护", eyebrow: "人格探索 · 更有深度",
-    title: "理解自己，\n不被标签定义。", subtitle: "以成熟测评方法为基础，清晰说明测评局限，并将人格洞察转化为值得实践的自我反思。",
-    start: "开始体验测评", learn: "了解科学原则", note: "演示体验 · 题目与结果仅用于测试交互，不是经过验证的正式心理测评。",
+    title: "理解自己，\n不被标签定义。", subtitle: "以有研究依据的人格量表为核心，查看五大人格维度与细分侧面，并把结果转化为具体的自我反思。",
+    start: "开始体验测评", learn: "了解科学原则", note: "基于公开研究的人格量表 · 结果用于自我理解；新加坡双语常模与本地验证仍需进一步研究。",
     trust1: "以证据为基础", trust2: "隐私优先设计", trust3: "洞察而非诊断", sectionLabel: "更审慎的人格测评体验",
     sectionTitle: "不急着给你贴标签，\n而是帮助你理解自己。", card1Title: "看见更完整的自己", card1Text: "探索不同人格维度及其可能呈现的倾向，而不是用一个结果定义你是谁。",
     card2Title: "方法有据可查", card2Text: "正式上线前，题目、评分规则和解释方式都将经过相应审核。", card3Title: "让洞察走进生活", card3Text: "把自我反思转化为工作、人际关系和日常选择中的小行动。",
     processLabel: "测评体验", processTitle: "每一步，都认真对待", step1: "按自己的节奏作答", step1Text: "为手机和电脑设计的清晰双语体验。",
     step2: "了解人格画像", step2Text: "查看本次测评有依据支持的人格维度结果。", step3: "深入理解与实践", step3Text: "未来的深度报告将基于已核实的结果，提供审慎而实用的解释。",
-    disclaimer: "人格洞察用于个人反思，不构成心理健康诊断。当前演示题目和分数不具备临床或正式心理测评效力。",
+    disclaimer: "本体验采用 IPIP-NEO-120 公开人格量表的普通话题目与英文原题。结果用于个人反思，不是诊断；新加坡本地双语常模与独立验证尚未建立。",
     footer: "PERSONA · 人格洞察实验室", footerText: "认真构建，帮助你看见更多可能。",
-    assessmentLabel: "演示测评 · 约 3 分钟", qOf: "第", of: "/", question: "题", scale: ["完全不符合", "比较不符合", "说不清 / 一般", "比较符合", "非常符合"],
-    back: "上一题", next: "下一题", finish: "查看演示结果", resume: "继续上次进度", restart: "重新开始", exit: "返回首页",
-    required: "请选择一个选项后继续。", resultLabel: "你的演示画像", resultTitle: "一份用于反思的起点", resultIntro: "这些条形图只汇总你在本次演示题目中的选择，不代表经过验证的人格分数，也不与任何人群常模比较。",
-    lower: "相对较低", higher: "相对较高", middle: "中间范围", resultDisclaimer: "请注意：这是用于测试产品流程的自编演示题目，不是经验证的心理测量工具。结果不用于诊断、招聘筛选或重大决策。",
+    assessmentLabel: "IPIP-NEO-120 · 约 15–20 分钟", qOf: "第", of: "/", question: "题", scale: ["非常不准确", "比较不准确", "中等 / 不确定", "比较准确", "非常准确"],
+    back: "上一题", next: "下一题", finish: "查看测评结果", resume: "继续上次进度", restart: "重新开始", exit: "返回首页",
+    required: "请选择一个选项后继续。", resultLabel: "你的五大人格画像", resultTitle: "理解倾向，而不是给自己定型", resultIntro: "分数按量表评分规则计算，并将 1–5 的平均反应换算为 0–100 方便阅读；这不是百分位，也不代表你相对于新加坡人群的位置。",
+    lower: "相对较低", higher: "相对较高", middle: "中间范围", resultDisclaimer: "本报告不是临床诊断，也不应用于招聘、升学筛选或其他重大决策。量表虽有公开研究及普通话版本资料，但本网站尚未完成新加坡样本的独立验证；分数会受作答情境、语言理解和当下状态影响。",
     localSave: "答题进度仅保存在当前浏览器中。", progress: "完成进度", agree: "我了解这是演示版本", startAgain: "再体验一次", reportSave: "打印 / 保存为 PDF", reflection: "自我反思", clearLocal: "清除本机保存的数据",
   },
   en: {
     navAbout: "Our approach", navScience: "Scientific principles", navPrivacy: "Privacy", eyebrow: "PERSONALITY · WITH PERSPECTIVE",
-    title: "Understand yourself.\nBeyond a label.", subtitle: "A considered personality insight experience built around established assessment methods, transparent limitations, and practical reflection.",
-    start: "Try the demo assessment", learn: "Our scientific approach", note: "Demo experience · Items and results are for interaction testing, not a validated psychological assessment.",
+    title: "Understand yourself.\nBeyond a label.", subtitle: "A research-based personality inventory with five broad factors, 30 facets, transparent limitations, and practical reflection.",
+    start: "Try the demo assessment", learn: "Our scientific approach", note: "Research-based personality inventory · For self-understanding; local Singapore bilingual norms and validation remain to be established.",
     trust1: "Evidence-informed", trust2: "Private by design", trust3: "Insight, not diagnosis", sectionLabel: "A more thoughtful kind of assessment",
     sectionTitle: "Not a personality box.\nA starting point for insight.", card1Title: "A clearer picture", card1Text: "Explore broad personality dimensions and the patterns they may describe—not a fixed definition of who you are.",
     card2Title: "Grounded in method", card2Text: "Assessment items, scoring rules, and interpretations will be reviewed before release.", card3Title: "Made for real life", card3Text: "Turn reflection into small, practical experiments for work, relationships, and everyday choices.",
     processLabel: "THE EXPERIENCE", processTitle: "Considered at every step", step1: "Answer at your own pace", step1Text: "A clear, bilingual experience designed for mobile and desktop.",
     step2: "See your profile", step2Text: "Review the dimensions shown by this demo experience.", step3: "Go deeper, thoughtfully", step3Text: "Future in-depth reports will connect verified results to careful, practical explanations.",
-    disclaimer: "Personality insights are for personal reflection and are not a mental health diagnosis. These demo items and scores have no clinical or formal assessment validity.",
+    disclaimer: "This experience uses the public-domain IPIP-NEO-120 items in English and Mandarin. Results are for reflection, not diagnosis; independent Singapore bilingual norms and validation have not been established.",
     footer: "PERSONA · PERSONALITY INSIGHT LAB", footerText: "Built with care. Designed for perspective.",
-    assessmentLabel: "DEMO ASSESSMENT · ABOUT 3 MIN", qOf: "Question", of: "of", question: "", scale: ["Strongly disagree", "Disagree", "Neither / unsure", "Agree", "Strongly agree"],
-    back: "Previous", next: "Next", finish: "View demo results", resume: "Resume previous progress", restart: "Start over", exit: "Home",
-    required: "Choose an option to continue.", resultLabel: "YOUR DEMO PROFILE", resultTitle: "A starting point for reflection", resultIntro: "These bars summarise your choices in this demo only. They are not validated personality scores and are not compared with population norms.",
-    lower: "Relatively lower", higher: "Relatively higher", middle: "Middle range", resultDisclaimer: "Please note: these original demo items are for testing the product flow, not a validated psychometric instrument. Do not use these results for diagnosis, hiring, or major decisions.",
+    assessmentLabel: "IPIP-NEO-120 · ABOUT 15–20 MIN", qOf: "Question", of: "of", question: "", scale: ["Very inaccurate", "Somewhat inaccurate", "Neither / unsure", "Somewhat accurate", "Very accurate"],
+    back: "Previous", next: "Next", finish: "View results", resume: "Resume previous progress", restart: "Start over", exit: "Home",
+    required: "Choose an option to continue.", resultLabel: "YOUR FIVE-FACTOR PROFILE", resultTitle: "Understand tendencies, not labels", resultIntro: "Scores follow the inventory scoring key. Mean responses on the 1–5 scale are displayed as 0–100 for readability; these are not percentiles and do not rank you against a Singapore population norm.",
+    lower: "Relatively lower", higher: "Relatively higher", middle: "Middle range", resultDisclaimer: "This is not a clinical diagnosis and should not be used for hiring, admissions screening, or other consequential decisions. Although the inventory has published research and Mandarin-version evidence, this site has not independently validated it in a Singapore sample; responses can vary with context, language, and current state.",
     localSave: "Your progress is saved only in this browser.", progress: "Progress", agree: "I understand this is a demo", startAgain: "Try again", reportSave: "Print / Save as PDF", reflection: "Reflection prompt", clearLocal: "Clear data on this device",
   },
 };
@@ -454,7 +444,7 @@ export default function Home() {
           <p>{locale === "zh" ? "好的测评不仅要提供结果，也要解释结果能说明什么、不能说明什么。" : "A thoughtful assessment explains not only what a result says, but also what it cannot tell you."}</p>
         </div>
         <div className="faq-list">
-          <details className="faq-item"><summary>{locale === "zh" ? "这是一份正式、经过科学验证的心理测评吗？" : "Is this a validated psychological assessment?"}<span>＋</span></summary><p>{locale === "zh" ? "不是。当前版本是用于体验产品流程的自编演示问卷，题目与分数尚未经过正式信效度研究，也没有人群常模。正式测评需要先核实量表、授权、翻译与评分方法。" : "No. This is an original demo questionnaire for testing the product experience. Its items and scores have not undergone formal reliability or validity studies and have no population norms. A formal assessment requires a reviewed instrument, appropriate licensing, translation review, and scoring methodology."}</p></details>
+          <details className="faq-item"><summary>{locale === "zh" ? "这是一份正式、经过科学验证的心理测评吗？" : "Is this a validated psychological assessment?"}<span>＋</span></summary><p>{locale === "zh" ? "当前版本已改用 IPIP-NEO-120 的公开题目与固定评分规则；原始研究及普通话翻译资料提供了心理测量证据。但本网站尚未在新加坡双语人群中独立验证，也没有在此网站建立本地常模，因此结果用于个人反思，而非诊断或重大决策。" : "The current version uses the public IPIP-NEO-120 items and a fixed scoring key, supported by published research and Mandarin translation evidence. However, this site has not independently validated the inventory in a Singapore bilingual sample or established local norms. Results are for reflection, not diagnosis or consequential decisions."}</p></details>
           <details className="faq-item"><summary>{locale === "zh" ? "我的回答会被上传或分享吗？" : "Are my answers uploaded or shared?"}<span>＋</span></summary><p>{locale === "zh" ? "答题进度与反思笔记保存在当前浏览器本地。只有当你在结果页勾选同意并点击保存时，系统才会尝试把演示分数与基本记录写入网站统一配置的 Google Sheets；不会发送原始答案、反思笔记、姓名、邮箱或电话。由于浏览器跨域限制，页面提示发送后仍需到表格确认是否新增记录。" : "Assessment progress and reflection notes are stored locally in your current browser. Only after you give consent and click save on the results page will the app attempt to send demo scores and a basic record to the Google Sheet configured by the site operator. It does not send raw answers, reflection notes, your name, email, or phone number. Because of browser cross-origin limits, verify the new row in the sheet even if the page says the request was sent."}</p></details>
           <details className="faq-item"><summary>{locale === "zh" ? "结果可以用来判断我适合什么工作或关系吗？" : "Can the results tell me which job or relationship suits me?"}<span>＋</span></summary><p>{locale === "zh" ? "不可以。这里的结果不是经过验证的测量，不能作为招聘、诊断、升学、关系或其他重大决定的依据。你可以把反思问题当作自我观察的起点，再结合真实经历与具体情境。" : "No. These results are not validated measurements and should not guide hiring, diagnosis, education, relationship, or other consequential decisions. Use the reflection prompts only as a starting point for self-observation alongside real experiences and context."}</p></details>
           <details className="faq-item"><summary>{locale === "zh" ? "为什么提供中英文切换？" : "Why offer both Chinese and English?"}<span>＋</span></summary><p>{locale === "zh" ? "为了让不同语言背景的使用者更容易体验产品。不过，同一题目的翻译并不自动代表两种语言版本具有相同的测量效果；正式发布前仍需进行语言审校与相应验证。" : "To make the experience accessible across language preferences. However, translating an item does not automatically make both language versions equivalent measures; language review and appropriate validation are still needed before formal release."}</p></details>
