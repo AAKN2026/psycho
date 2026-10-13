@@ -35,6 +35,20 @@ Every activity must be recorded in this registry before being used in reports.
 | Visual difference task (8 custom items) | Choice per item and total correct (0–8); no response-time logging | Item-specific performance under this exact display and instruction | Personality, IQ, diagnosis, stable attention trait, or a general cognitive profile | Prototype only; items are not standardized; glyph rendering and spacing vary by device; no difficulty calibration, reliability, norms, or validity evidence |
 | Tone-pair discrimination (MVP addition) | Same/different judgments over six tone pairs | Accuracy on a brief browser-based auditory discrimination activity | Personality, hearing diagnosis, intelligence, emotional traits | Prototype; unnormed and device-dependent |
 
+### Interaction-behaviour observation (privacy-first prototype)
+
+The visual task now counts answer changes and repeated clicks on the same option during the current page session. It also retains intervals between successive interactions in in-memory state, but these intervals are not yet used to produce a score or interpretation. The indicators are not persisted to local storage or sent to the optional cloud endpoint.
+
+| Indicator | Possible explanations to investigate | Do not conclude |
+|---|---|---|
+| Answer changes | Reconsideration, checking, uncertainty, misclick, unclear stimulus | “Indecisive personality” |
+| Repeated click on the same option | Button feedback unclear, impatience, double-click habit, assistive input or latency | “Impatient personality” |
+| Short interval between interactions | Familiarity, rushing, guessing, clear stimulus, accidental rapid clicks | “Impulsive personality” |
+| Long interval between interactions | Careful comparison, distraction, reading difficulty, interruption, device lag | “Hesitant personality” |
+| Repeated refresh attempts (future instrumented task only) | Perceived app failure, network delay, frustration, habit, confusion | “Low frustration tolerance” without ruling out interface failure |
+
+**Interpretation safeguards:** do not call interaction speed “reaction time” unless stimulus onset and response timing are controlled and measured correctly. The current interval is only the time between successive clicks; it is not a per-item response latency. Any future refresh/retry signal must be captured only within the app and clearly disclosed; do not monitor browser-wide behaviour. Interface errors, accessibility needs, language, device performance, and user context must be considered before interpretation. These indicators are exploratory, not personality scores, and must not be merged with IPIP-NEO-120 scores without validation.
+
 ### Visual task design notes (prototype)
 
 Each visual item now exposes its intended construct, a brief research rationale, the observable response, and an interpretation limit after the user completes the task. These are **design hypotheses informed by established research areas**, not evidence that this particular item validly measures an individual difference.
