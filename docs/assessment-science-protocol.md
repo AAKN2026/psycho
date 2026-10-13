@@ -32,8 +32,25 @@ Every activity must be recorded in this registry before being used in reports.
 | Scene first-noticed choice | Selected scene element and optional explanation | Self-reported first impression and personal association | Projective personality interpretation or stable attention trait | Custom illustration; not a standardized task |
 | Taste preference | Stated everyday taste preference; no tasting required | Self-reported preference and reflection on context | Personality, health, or sensory ability inference | Self-report only; affected by culture and experience |
 | Body-sensation check-in | One self-reported recent bodily sensation or “nothing in particular” | Self-monitoring and experience description | Diagnosis, physiological measurement, or trait inference | Reflective exercise; not a clinical scale |
-| Visual difference task | Correct/incorrect responses | Performance on this specific visual task | IQ, diagnosis, stable attention trait | Prototype; task-specific only |
+| Visual difference task (8 custom items) | Choice per item and total correct (0–8); no response-time logging | Item-specific performance under this exact display and instruction | Personality, IQ, diagnosis, stable attention trait, or a general cognitive profile | Prototype only; items are not standardized; glyph rendering and spacing vary by device; no difficulty calibration, reliability, norms, or validity evidence |
 | Tone-pair discrimination (MVP addition) | Same/different judgments over six tone pairs | Accuracy on a brief browser-based auditory discrimination activity | Personality, hearing diagnosis, intelligence, emotional traits | Prototype; unnormed and device-dependent |
+
+### Visual task design notes (prototype)
+
+Each visual item now exposes its intended construct, a brief research rationale, the observable response, and an interpretation limit after the user completes the task. These are **design hypotheses informed by established research areas**, not evidence that this particular item validly measures an individual difference.
+
+| Item | Intended process | Observable response | Key limitation |
+|---|---|---|---|
+| 1. Arrow direction | Selective attention to orientation | Selects the orientation singleton | Glyph rendering and display size may affect detection |
+| 2. Inner marking | Local feature discrimination | Detects the different inner mark | Symbol fonts may render details differently |
+| 3. Dot count | Small-set numerosity discrimination | Selects the option with fewer dots | Spacing, size, and arrangement are potential confounds |
+| 4. Opening direction | Shape/orientation discrimination | Detects the opposite opening | Font-dependent character; replace with standardized SVG before validation |
+| 5. Compound shape | Selecting a local cue in a compound stimulus | Uses circle fill while the triangle is constant | One response cannot reveal the strategy used |
+| 6. Dot spacing | Spatial-layout discrimination | Detects different spacing despite equal count | Whitespace and typography are uncontrolled |
+| 7. Internal fill | Distinguishing contour from internal detail | Detects a different fill | Font-dependent symbol; replace with standardized SVG before validation |
+| 8. Two-feature change | Multi-cue target detection | Detects simultaneous direction and fill changes | Cues co-vary, so their separate contributions cannot be identified |
+
+**Release gate:** this task must remain an optional exploration, not a psychological assessment score. Before using it to make individual-difference claims, replace font-dependent glyphs with controlled vector stimuli; define and preregister hypotheses; pilot with an appropriately consented sample; inspect item accuracy and ambiguity, response distributions, and accessibility/device effects; and evaluate reliability and validity for the intended population. Do not collect or upload raw responses by default. The current MVP does not log response time or use these answers to alter the IPIP-NEO-120 profile.
 
 ## 4. Post-activity psychological rationale and debrief standard
 
