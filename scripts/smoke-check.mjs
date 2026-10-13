@@ -23,6 +23,46 @@ for (const check of checks) {
 
 try {
   const html = await readFile(join(outDir, "index.html"), "utf8");
+  const practiceHtml = await readFile(join(outDir, "practice/index.html"), "utf8");
+  const practiceSource = await readFile(new URL("../app/practice/page.tsx", import.meta.url), "utf8");
+  const appSource = await readFile(new URL("../app/page.tsx", import.meta.url), "utf8");
+  const practiceRequired = [
+    "练习内容只保存在当前页面的内存中",
+    "此网站不进行危机监测",
+    "national mindline 1771",
+    "SOS · Thought Record",
+  ];
+  for (const phrase of practiceRequired) {
+    if (!practiceHtml.includes(phrase)) {
+      failed = true;
+      console.error(`FAIL practice safety/privacy content: missing ${phrase}`);
+    }
+  }
+  if (!practiceSource.includes("What would you most like to explore right now?") ||
+      !practiceSource.includes("What happened?") ||
+      !practiceSource.includes("Stop at any time if this exercise makes you feel worse.")) {
+    failed = true;
+    console.error("FAIL practice bilingual prompts or stop/safety copy");
+  } else {
+    console.log("PASS practice bilingual prompts and stop/safety copy");
+  }
+  if (practiceSource.includes("localStorage") || practiceSource.includes("fetch(")) {
+    failed = true;
+    console.error("FAIL practice privacy boundary: unexpected browser persistence or network request");
+  } else {
+    console.log("PASS practice notes are not persisted or uploaded by the practice page");
+  }
+  for (const phrase of [
+    "random retrieval-code metadata",
+    "随机提取码相关记录",
+    "does not have cloud-record deletion control",
+    "没有云端记录删除功能",
+  ]) {
+    if (!appSource.includes(phrase)) {
+      failed = true;
+      console.error(`FAIL assessment cloud privacy disclosure: missing ${phrase}`);
+    }
+  }
   if (!html.includes("/psycho/_next/")) {
     failed = true;
     console.error("FAIL GitHub Pages asset base path: expected /psycho/_next/");
