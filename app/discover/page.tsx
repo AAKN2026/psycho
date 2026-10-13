@@ -108,7 +108,7 @@ export default function DiscoverPage() {
       ctx.fillText("PERSONA · SELF-DISCOVERY", 98, 103);
       ctx.fillStyle = "#25372e";
       ctx.font = "500 46px Arial, 'Noto Sans SC', sans-serif";
-      const titleWords = result.title.split(/\\s+/);
+      const titleWords = isZh ? Array.from(result.title) : result.title.split(" ");
       let titleLine = "";
       let titleY = 210;
       for (const word of titleWords) {
@@ -122,7 +122,7 @@ export default function DiscoverPage() {
       if (titleLine) ctx.fillText(titleLine, 76, titleY);
       ctx.fillStyle = "#58675b";
       ctx.font = "28px Arial, 'Noto Sans SC', sans-serif";
-      const bodyWords = result.body.split(/\\s+/);
+      const bodyWords = isZh ? Array.from(result.body) : result.body.split(" ");
       let bodyLine = "";
       let bodyY = titleY + 76;
       for (const word of bodyWords) {
