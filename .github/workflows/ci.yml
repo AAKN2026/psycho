@@ -26,6 +26,8 @@ jobs:
         run: npm run typecheck
       - name: Lint
         run: npm run lint
+      - name: Audit assessment scoring structure
+        run: npm run audit
       - name: Production static export
         run: npm run build
       - name: Check exported site
