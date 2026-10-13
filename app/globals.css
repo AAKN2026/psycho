@@ -413,3 +413,49 @@
  .sensory-actions > span { width: 100%; }
 }
 @media print { .sensory-actions button { display: none; } .sensory-card { break-inside: avoid; } }
+
+
+/* Sound exploration: a task-specific auditory activity, not a personality measure. */
+.sound-lab { padding: 76px 0 84px; border-top: 1px solid var(--line, #dfe2d9); }
+.sound-lab h2 { margin: 18px 0 12px; font-family: 'Playfair Display', 'Noto Sans SC', serif; font-size: clamp(32px, 4.5vw, 48px); line-height: 1.2; font-weight: 400; letter-spacing: -.04em; }
+.sound-intro { max-width: 780px; margin-bottom: 26px; color: var(--muted, #68716a); font-size: 13px; line-height: 1.9; }
+.sound-card { border: 1px solid #e0e5db; background: #fffefa; padding: clamp(22px, 4vw, 42px); }
+.sound-start { max-width: 680px; margin: 0 auto; text-align: center; }
+.sound-start h3, .sound-result h3 { margin: 16px 0 10px; color: #344336; font-size: 22px; font-weight: 500; }
+.sound-start p, .sound-task > p, .sound-result > p { max-width: 660px; margin: 0 auto 20px; color: #748071; font-size: 12px; line-height: 1.9; }
+.sound-art { height: 74px; display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 18px; }
+.sound-art span { width: 5px; border-radius: 8px; background: #819b7b; }
+.sound-art span:nth-child(1), .sound-art span:nth-child(5) { height: 20px; }
+.sound-art span:nth-child(2), .sound-art span:nth-child(4) { height: 42px; }
+.sound-art span:nth-child(3) { height: 65px; }
+.sound-art span:nth-child(odd) { opacity: .65; }
+.sound-task { max-width: 760px; margin: 0 auto; text-align: center; }
+.sound-progress { display: flex; align-items: center; justify-content: space-between; gap: 18px; color: #748071; font-size: 11px; text-align: left; }
+.sound-progress-track { display: block; width: 55%; height: 5px; overflow: hidden; border-radius: 5px; background: #e9ece4; }
+.sound-progress-track i { display: block; height: 100%; background: #7c9876; transition: width .2s ease; }
+.sound-wave { min-height: 124px; display: flex; align-items: center; justify-content: center; gap: clamp(5px, 1.5vw, 12px); margin: 20px 0 8px; }
+.sound-wave span { width: clamp(5px, 1vw, 9px); height: 30px; border-radius: 10px; background: #93aa8d; opacity: .82; }
+.sound-wave span:nth-child(3n + 1) { height: 48px; }
+.sound-wave span:nth-child(3n + 2) { height: 76px; }
+.sound-wave span:nth-child(4n) { height: 98px; background: #c7d5bd; }
+.sound-controls, .sound-result-actions { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 10px; margin: 22px 0 12px; }
+.sound-choice { min-height: 44px; padding: 12px 20px; border: 1px solid #dfe4da; background: #fffefa; color: #344336; cursor: pointer; font-size: 12px; }
+.sound-choice:disabled, .sound-controls button:disabled { opacity: .45; cursor: not-allowed; }
+.sound-choice:not(:disabled):hover { background: #edf2e8; border-color: #8ca586; }
+.sound-error { color: #8b443a !important; }
+.sound-skip { margin-top: 10px; padding: 8px 12px; border: 0; background: transparent; color: #778173; text-decoration: underline; cursor: pointer; font-size: 11px; }
+.sound-result { max-width: 760px; margin: 0 auto; text-align: center; }
+.sound-score { display: flex; align-items: baseline; justify-content: center; gap: 5px; margin: 18px 0; color: #344336; }
+.sound-score strong { font-size: 54px; font-weight: 500; letter-spacing: -.04em; }
+.sound-score span { color: #748071; font-size: 18px; }
+.sound-result > p { text-align: left; }
+@media (max-width: 600px) {
+ .sound-lab { padding-top: 54px; padding-bottom: 60px; }
+ .sound-card { padding: 22px 16px; }
+ .sound-progress { align-items: flex-start; flex-direction: column; gap: 8px; }
+ .sound-progress-track { width: 100%; }
+ .sound-controls { display: grid; grid-template-columns: 1fr 1fr; }
+ .sound-controls .button-primary { grid-column: 1 / -1; justify-content: center; }
+ .sound-choice { padding: 11px 8px; }
+}
+@media print { .sound-lab { break-inside: avoid; } .sound-controls, .sound-skip, .sound-result-actions, .sound-start button { display: none; } }
