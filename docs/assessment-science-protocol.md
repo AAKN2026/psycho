@@ -33,7 +33,7 @@ Every activity must be recorded in this registry before being used in reports.
 | Taste preference | Stated everyday taste preference; no tasting required | Self-reported preference and reflection on context | Personality, health, or sensory ability inference | Self-report only; affected by culture and experience |
 | Body-sensation check-in | One self-reported recent bodily sensation or “nothing in particular” | Self-monitoring and experience description | Diagnosis, physiological measurement, or trait inference | Reflective exercise; not a clinical scale |
 | Visual choice reflection (8 custom scenes) | Choice among visual compositions in eight everyday contexts; counts of four descriptive themes | Self-reported contextual preferences that can prompt reflection about autonomy, connection, structure, and exploration | Subconscious truth, diagnosis, fixed personality, needs inferred from a symbol alone | Exploratory product design only; theme mapping is not validated and may reflect mood, wording, culture, and visual taste |
-| Tone-pair discrimination (MVP addition) | Same/different judgments over six tone pairs | Accuracy on a brief browser-based auditory discrimination activity | Personality, hearing diagnosis, intelligence, emotional traits | Prototype; unnormed and device-dependent |
+| Sound preference reflection | Preference for the first or second simple tone across six pairs | Current subjective auditory preference, used as a reflection prompt | Personality, subconscious motives, hearing diagnosis, intelligence, emotional traits | Exploratory prompt; not a validated psychological measure |
 
 ### Interaction-behaviour observation (privacy-first prototype)
 
@@ -55,11 +55,12 @@ These theme labels are reflective prompts, not validated scales. Autonomy and re
 - **Observable measure:** User-selected options and optional self-described association, kept descriptive and separate.
 - **Evidence status and boundary:** Reflective exercise, not a psychometric instrument or projective test. No subconscious interpretation, diagnosis, or personality score is permitted.
 
-### Auditory same/different activity
-- **Purpose:** Demonstrate a simple auditory discrimination judgment.
-- **Research basis:** Psychophysics and auditory-perception research use discrimination judgments to study responses to sound stimuli. The current six-trial browser activity uses clearly separated tones and is not a calibrated threshold protocol.
-- **Observable measure:** Number correct out of six; no reaction-time inference or audio recording.
-- **Evidence status and boundary:** Unnormed prototype affected by device, output level, environment, and individual hearing differences. Do not infer hearing status, intelligence, personality, or diagnosis.
+### Sound preference reflection
+
+- **Purpose:** Invite users to notice a current subjective preference between simple tones; there are no right or wrong answers.
+- **Method:** Six pairs of tones are presented in varied order. The user indicates which tone they prefer, not whether the tones are objectively the same or different.
+- **Observable measure:** Descriptive counts of first-tone versus second-tone preferences.
+- **Evidence status and boundary:** A custom reflection prompt, not a psychometric instrument. The tone choices have no validated relationship to personality, emotional state, or subconscious motives. Device output, environment, hearing differences, and mood can influence choices. Do not add this to personality scores.
 
 ### Core IPIP-NEO-120 inventory
 - **Purpose:** Describe self-reported Big Five personality tendencies using a published item bank and scoring key.
