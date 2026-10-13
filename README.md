@@ -6,7 +6,7 @@ A bilingual (Simplified Chinese / English), responsive Next.js MVP for a thought
 
 **Current release: demo only. Not a validated psychometric assessment.**
 
-The app currently includes a bilingual landing page, 15 original demo questions, illustrative five-dimension results, browser-local progress saving, a private browser-local reflection note with TXT export, print-friendly results, a visual discrimination mini-task, multi-sensory self-observation, and an optional browser-generated sound-pair activity.
+The app now includes a bilingual IPIP-NEO-120 item bank (English source items and published Mandarin translation), deterministic reverse-key scoring for five broad factors, 30 four-item facet scores, browser-local progress saving, a private reflection note with TXT export, print-friendly results, and separate visual, multi-sensory, and optional auditory activities. The personality inventory has published research and Mandarin translation evidence, but this website has not independently validated it in a Singapore bilingual sample or established local norms.
 
 It has no production-grade database, authentication, admin console, payments, server-side scoring, or AI report service. An optional Google Apps Script + Sheets demo integration is provided; it stores only anonymous aggregate demo scores after explicit consent and is not suitable for sensitive or commercial production data. Do not collect sensitive assessment data or sell reports on this prototype. Demo scores are not validated measurements and must not be used for diagnosis, hiring, or consequential decisions.
 
@@ -76,7 +76,7 @@ Only a random record ID, timestamp, language, schema version, five illustrative 
 
 ## Scientific, privacy, and product guardrails
 
-1. Review the exact assessment instrument, scoring rules, language rights, interpretation boundaries, and norms (if any) before offering a formal assessment. The current self-report items are original demo content, not a validated Big Five instrument.
+1. Review the exact assessment instrument, scoring rules, language rights, interpretation boundaries, and norms (if any) before offering a formal assessment. The core personality items now use the public-domain IPIP-NEO-120 inventory and a published Mandarin translation. The site's implementation and score presentation still require independent verification, and Singapore bilingual norms have not been established.
 2. Evidence for English items does not automatically validate a Chinese translation.
 3. Never invent scores, norms, percentiles, diagnoses, or scientific validity.
 4. State clearly that personality insights are not a clinical diagnosis. The sound activity records only a six-trial same/different auditory task; it is not a personality, intelligence, or hearing test.
@@ -86,9 +86,10 @@ Only a random record ID, timestamp, language, schema version, five illustrative 
 ## Current feature checklist
 
 - [x] Responsive bilingual landing page
-- [x] Demo questionnaire and required-answer validation
+- [x] IPIP-NEO-120 bilingual item bank and required-answer validation
+- [x] Deterministic five-factor and 30-facet scoring (not percentiles)
 - [x] Browser-local save/resume
-- [x] Illustrative results and reflection prompts
+- [x] Five-factor results, 30 facet results, and reflection prompts
 - [x] Private reflection journal saved in the current browser
 - [x] Download reflection note as a plain-text file
 - [x] Print-friendly report
@@ -98,5 +99,6 @@ Only a random record ID, timestamp, language, schema version, five illustrative 
 - [x] Non-sensitive health endpoint and deployed-site smoke-check script
 - [ ] Production build and browser E2E tests executed
 - [ ] Successful hosted deployment verified
-- [ ] Expert-reviewed and licensed assessment instrument
-- [x] Optional Google Apps Script + Sheets integration for anonymous demo scores (manual setup required)\n- [ ] Production-grade backend, authentication, privacy controls, payments, and paid reports
+- [x] Public-domain IPIP-NEO-120 source items and published Mandarin translation selected
+- [ ] Independent Singapore bilingual validation and local norms
+- [x] Optional Google Apps Script + Sheets integration for anonymous aggregate scores (manual setup required)\n- [ ] Production-grade backend, authentication, privacy controls, payments, and paid reports
