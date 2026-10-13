@@ -65,6 +65,48 @@ function setupPersonaDatabase() {
   return spreadsheet.getUrl();
 }
 
+/**
+ * Optional retention cleanup: delete demo records older than 90 days.
+ * Run manually from the editor, or install the daily trigger below.
+ */
+function purgePersonaDemoResultsOlderThan90Days() {
+  const spreadsheetId = PropertiesService.getScriptProperties().getProperty(CONFIG.spreadsheetProperty);
+  if (!spreadsheetId) throw new Error("Run setupPersonaDatabase() first.");
+
+  const sheet = SpreadsheetApp.openById(spreadsheetId).getSheetByName(CONFIG.sheetName);
+  if (!sheet || sheet.getLastRow() < 2) return 0;
+
+  const cutoff = Date.now() - 90 * 24 * 60 * 60 * 1000;
+  const timestamps = sheet.getRange(2, 2, sheet.getLastRow() - 1, 1).getValues();
+  let deleted = 0;
+
+  // Delete bottom-up so row indexes remain valid.
+  for (let i = timestamps.length - 1; i >= 0; i--) {
+    const parsed = Date.parse(String(timestamps[i][0]));
+    if (Number.isFinite(parsed) && parsed < cutoff) {
+      sheet.deleteRow(i + 2);
+      deleted++;
+    }
+  }
+  Logger.log("Deleted " + deleted + " demo result rows older than 90 days.");
+  return deleted;
+}
+
+/**
+ * Optional: run once to install a daily retention-cleanup trigger.
+ * Google will ask you to authorize trigger execution.
+ */
+function installPersonaDailyRetentionTrigger() {
+  const handler = "purgePersonaDemoResultsOlderThan90Days";
+  const exists = ScriptApp.getProjectTriggers().some(function(trigger) {
+    return trigger.getHandlerFunction() === handler;
+  });
+  if (!exists) {
+    ScriptApp.newTrigger(handler).timeBased().everyDays(1).atHour(3).create();
+  }
+  Logger.log("Daily 90-day retention cleanup is " + (exists ? "already installed." : "installed."));
+}
+
 function doGet() {
   return jsonResponse({
     ok: true,
