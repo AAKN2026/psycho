@@ -26,25 +26,7 @@ jobs:
         run: npm run typecheck
       - name: Lint
         run: npm run lint
-      - name: Production build
+      - name: Production static export
         run: npm run build
-      - name: Smoke test production server
-        shell: bash
-        run: |
-          npm run start > /tmp/persona-next.log 2>&1 &
-          server_pid=$!
-          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
-          ready=0
-          for attempt in {1..30}; do
-            if curl --fail --silent http://localhost:3000/api/health >/dev/null; then
-              ready=1
-              break
-            fi
-            sleep 2
-          done
-          if [ "$ready" -ne 1 ]; then
-            cat /tmp/persona-next.log
-            echo "Production server did not become ready"
-            exit 1
-          fi
-          npm run smoke
+      - name: Check exported site
+        run: npm run smoke
