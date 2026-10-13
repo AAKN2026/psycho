@@ -174,7 +174,7 @@ export default function Home() {
     const callback = (result: { ok?: boolean; locale?: Locale; scores?: Record<Dimension, number> }) => {
       cleanup();
       const keys: Dimension[] = ["openness", "conscientiousness", "extraversion", "agreeableness", "emotionalBalance"];
-      const validScores = result?.scores && keys.every((key) => Number.isFinite(result.scores?.[key]) && result.scores![key] >= 0 && result.scores![key] <= 100);
+      const validScores = result?.scores && keys.every((key) => { const value = result.scores?.[key]; return typeof value === "number" && Number.isFinite(value) && value >= 0 && value <= 100; });
       if (!result?.ok || !validScores) { setLookupStatus("error"); return; }
       setRetrievedScores(result.scores as Record<Dimension, number>);
       if (result.locale === "zh" || result.locale === "en") setLocale(result.locale);
