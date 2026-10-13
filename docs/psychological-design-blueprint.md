@@ -66,3 +66,38 @@ For every task, document:
 - [ ] Privacy notice accurately describes actual data flows.
 - [ ] No exploratory task affects the IPIP-NEO-120 score.
 - [ ] Build, accessibility checks, and deployment pass before claiming release.
+
+
+## Product direction: assessment, psychological development, and care boundaries
+
+The product is a guided psychological self-understanding and self-development system, not just a personality quiz. Its loop is:
+
+1. **Check in:** ask what the participant wants help understanding today (e.g. stress, emotions, relationships, habits, self-confidence, or general self-understanding). Offer “not sure yet”.
+2. **Assess:** select only an appropriate, evidence-supported questionnaire or clearly labelled reflective exercise. Explain its purpose and limits before starting.
+3. **Reflect together:** separate (a) observed response data, (b) cautious hypotheses, and (c) the participant's own interpretation. Ask for a concrete recent example and invite disagreement.
+4. **Choose a skill:** recommend one low-risk, theory-based practice matched to the stated goal—not merely to a personality label.
+5. **Practise:** provide a short guided exercise with clear steps, accessibility alternatives, and a stop/skip option.
+6. **Review:** after a user-chosen interval, ask what they noticed, what helped, what did not, and what context changed. Do not automatically re-score traits from exercise completion.
+7. **Route appropriately:** if the person describes immediate danger, self-harm intent, severe distress, or inability to stay safe, pause ordinary exercises and provide supportive language and locally appropriate urgent-help guidance. Do not claim an automated risk assessment is a diagnosis.
+
+### Evidence-aligned practice library
+
+Each exercise must have a record containing: target skill, intended audience, rationale and citations, step-by-step script, expected benefit stated cautiously, contraindications/stop conditions, accessibility and cultural adaptations, feedback questions, privacy/data flow, and evidence level.
+
+Candidate practice families for professional review:
+- **CBT-informed thought record:** situation → automatic thought → emotion → evidence for/against → balanced alternative → next small step. Label as psychoeducation/self-help, not therapy delivery.
+- **Behavioural activation-inspired small action:** select a personally meaningful, feasible activity; predict mood/effort; do it if appropriate; reflect on actual experience. Never imply it treats depression on its own.
+- **Grounding / paced breathing:** offer as optional regulation practice, not a universal solution; stop if dizziness, panic, or discomfort increases.
+- **Values clarification and committed action:** identify what matters to the participant, choose one feasible action, and review fit rather than performance.
+- **Self-compassionate reflection:** replace global self-condemnation with specific, contextual and humane language; do not force positive reframing or invalidate real harm.
+- **Communication rehearsal:** clarify the situation, need, boundary, and respectful request; avoid advice that could increase danger in abusive or coercive situations.
+
+### Clinical and ethical boundaries
+
+- The product may offer psychoeducation, self-reflection, and low-risk skills practice. It must not advertise itself as a replacement for a licensed mental-health professional or imply that completing exercises is clinical treatment.
+- Do not diagnose conditions, infer trauma or unconscious motives, promise outcomes, or make high-stakes recommendations from quiz scores.
+- A participant can skip any question or exercise, pause, or stop without penalty. Avoid guilt, streak pressure, and manipulative engagement.
+- Do not interpret silence, missed check-ins, task latency, or exercise completion as evidence of a mental state.
+- Keep sensitive notes on-device by default. Do not send free-text reflection or crisis disclosures to analytics or a third-party sheet. Any cloud feature needs separate, explicit consent, minimal collection, clear retention/deletion and a security review.
+- Any crisis-support flow needs professional review, current country-specific resources, and clear limits. Do not claim continuous monitoring or that a human is alerted unless that is truly implemented.
+- Before describing a feature as “therapy”, obtain clinical governance, expert review, and appropriate evidence and regulatory review for intended markets.
