@@ -27,11 +27,11 @@ const questions: Question[] = [
 ];
 
 const dimensions: { key: Dimension; zh: string; en: string; zhLow: string; enLow: string; zhHigh: string; enHigh: string }[] = [
-  { key: "openness", zh: "开放探索", en: "Openness", zhLow: "偏好熟悉、具体的方式", enLow: "May prefer familiar, concrete approaches", zhHigh: "乐于探索新想法与体验", enHigh: "May enjoy exploring new ideas and experiences" },
-  { key: "conscientiousness", zh: "计划与执行", en: "Planning & follow-through", zhLow: "更偏向灵活、随性地推进", enLow: "May prefer a flexible, spontaneous approach", zhHigh: "更重视计划、组织与落实", enHigh: "May value planning, organisation, and follow-through" },
-  { key: "extraversion", zh: "社交能量", en: "Social energy", zhLow: "可能更需要独处或小范围交流", enLow: "May prefer solitude or smaller conversations", zhHigh: "可能从更多社交互动中获得能量", enHigh: "May draw energy from more social interaction" },
-  { key: "agreeableness", zh: "合作与体谅", en: "Cooperation & consideration", zhLow: "可能更直接地坚持自己的判断", enLow: "May express independent views more directly", zhHigh: "可能更重视协调与理解他人", enHigh: "May place greater emphasis on harmony and understanding" },
-  { key: "emotionalBalance", zh: "压力应对", en: "Stress response", zhLow: "近期自我感受可能更容易受压力影响", enLow: "Your current self-view may be more affected by stress", zhHigh: "近期自我感受可能更能保持稳定", enHigh: "Your current self-view may feel relatively steady" },
+  { key: "openness", zh: "开放探索", en: "Openness", zhLow: "偏好熟悉、具体的方式", enLow: "May prefer familiar, concrete approaches", zhHigh: "乐于探索新想法与体验", enHigh: "May enjoy exploring new ideas and experiences", zhPrompt: "最近有什么新想法，值得你花一点时间去探索？", enPrompt: "What new idea might be worth exploring a little further?" },
+  { key: "conscientiousness", zh: "计划与执行", en: "Planning & follow-through", zhLow: "更偏向灵活、随性地推进", enLow: "May prefer a flexible, spontaneous approach", zhHigh: "更重视计划、组织与落实", enHigh: "May value planning, organisation, and follow-through", zhPrompt: "哪一件小事，如果提前安排，会让你这一周更轻松？", enPrompt: "What small task could you plan ahead to make this week easier?" },
+  { key: "extraversion", zh: "社交能量", en: "Social energy", zhLow: "可能更需要独处或小范围交流", enLow: "May prefer solitude or smaller conversations", zhHigh: "可能从更多社交互动中获得能量", enHigh: "May draw energy from more social interaction", zhPrompt: "什么样的交流方式最能让你感到自在、有连接感？", enPrompt: "What kind of interaction helps you feel comfortable and connected?" },
+  { key: "agreeableness", zh: "合作与体谅", en: "Cooperation & consideration", zhLow: "可能更直接地坚持自己的判断", enLow: "May express independent views more directly", zhHigh: "可能更重视协调与理解他人", enHigh: "May place greater emphasis on harmony and understanding", zhPrompt: "当意见不同时，你怎样既表达自己，也理解对方？", enPrompt: "When views differ, how can you express yourself and understand the other person?" },
+  { key: "emotionalBalance", zh: "压力应对", en: "Stress response", zhLow: "近期自我感受可能更容易受压力影响", enLow: "Your current self-view may be more affected by stress", zhHigh: "近期自我感受可能更能保持稳定", enHigh: "Your current self-view may feel relatively steady", zhPrompt: "当压力出现时，哪一种支持或习惯能帮助你恢复？", enPrompt: "When stress appears, what support or habit helps you recover?" },
 ];
 
 const copy = {
@@ -50,7 +50,7 @@ const copy = {
     back: "上一题", next: "下一题", finish: "查看演示结果", resume: "继续上次进度", restart: "重新开始", exit: "返回首页",
     required: "请选择一个选项后继续。", resultLabel: "你的演示画像", resultTitle: "一份用于反思的起点", resultIntro: "这些条形图只汇总你在本次演示题目中的选择，不代表经过验证的人格分数，也不与任何人群常模比较。",
     lower: "相对较低", higher: "相对较高", middle: "中间范围", resultDisclaimer: "请注意：这是用于测试产品流程的自编演示题目，不是经验证的心理测量工具。结果不用于诊断、招聘筛选或重大决策。",
-    localSave: "答题进度仅保存在当前浏览器中。", progress: "完成进度", agree: "我了解这是演示版本", startAgain: "再体验一次",
+    localSave: "答题进度仅保存在当前浏览器中。", progress: "完成进度", agree: "我了解这是演示版本", startAgain: "再体验一次", reportSave: "打印 / 保存为 PDF", reflection: "自我反思",
   },
   en: {
     navAbout: "Our approach", navScience: "Scientific principles", navPrivacy: "Privacy", eyebrow: "PERSONALITY · WITH PERSPECTIVE",
@@ -67,7 +67,7 @@ const copy = {
     back: "Previous", next: "Next", finish: "View demo results", resume: "Resume previous progress", restart: "Start over", exit: "Home",
     required: "Choose an option to continue.", resultLabel: "YOUR DEMO PROFILE", resultTitle: "A starting point for reflection", resultIntro: "These bars summarise your choices in this demo only. They are not validated personality scores and are not compared with population norms.",
     lower: "Relatively lower", higher: "Relatively higher", middle: "Middle range", resultDisclaimer: "Please note: these original demo items are for testing the product flow, not a validated psychometric instrument. Do not use these results for diagnosis, hiring, or major decisions.",
-    localSave: "Your progress is saved only in this browser.", progress: "Progress", agree: "I understand this is a demo", startAgain: "Try again",
+    localSave: "Your progress is saved only in this browser.", progress: "Progress", agree: "I understand this is a demo", startAgain: "Try again", reportSave: "Print / Save as PDF", reflection: "Reflection prompt",
   },
 };
 
@@ -155,8 +155,8 @@ export default function Home() {
     <main className="app-shell">
       <header className="topbar"><a className="brand" href="#" onClick={(e) => { e.preventDefault(); goHome(); }}><span className="brand-mark">P</span><span>persona<span className="brand-dot">.</span></span></a><div className="nav-actions"><button className="language-toggle" onClick={() => setLocale(locale === "zh" ? "en" : "zh")}>{locale === "zh" ? "EN" : "中文"} ↗</button><button className="language-toggle" onClick={goHome}>{t.exit} ×</button></div></header>
       <section className="results-wrap"><div className="eyebrow"><span className="eyebrow-line" />{t.resultLabel}</div><h1>{t.resultTitle}</h1><p className="results-intro">{t.resultIntro}</p>
-        <div className="results-grid">{scores.map((score) => <article className="result-card" key={score.key}><div className="result-title-row"><h2>{locale === "zh" ? score.zh : score.en}</h2><span>{score.value}%</span></div><div className="result-track"><span style={{ width: `${score.value}%` }} /></div><div className="result-range"><span>{t.lower}</span><span>{t.higher}</span></div><p>{score.value < 40 ? (locale === "zh" ? score.zhLow : score.enLow) : score.value > 60 ? (locale === "zh" ? score.zhHigh : score.enHigh) : t.middle}</p></article>)}</div>
-        <div className="results-disclaimer"><span>✳</span><p>{t.resultDisclaimer}</p></div><div className="results-actions"><button className="button-primary" onClick={restart}>{t.startAgain}<span>↻</span></button><button className="button-secondary" onClick={goHome}>{t.exit}</button></div>
+        <div className="results-grid">{scores.map((score) => <article className="result-card" key={score.key}><div className="result-title-row"><h2>{locale === "zh" ? score.zh : score.en}</h2><span>{score.value}%</span></div><div className="result-track"><span style={{ width: `${score.value}%` }} /></div><div className="result-range"><span>{t.lower}</span><span>{t.higher}</span></div><p>{score.value < 40 ? (locale === "zh" ? score.zhLow : score.enLow) : score.value > 60 ? (locale === "zh" ? score.zhHigh : score.enHigh) : t.middle}</p><div className="reflection-prompt"><span>{t.reflection}</span><p>{locale === "zh" ? score.zhPrompt : score.enPrompt}</p></div></article>)}</div>
+        <div className="results-disclaimer"><span>✳</span><p>{t.resultDisclaimer}</p></div><div className="results-actions"><button className="button-primary" onClick={restart}>{t.startAgain}<span>↻</span></button><button className="button-secondary" onClick={() => window.print()}>{t.reportSave} ↗</button><button className="button-secondary" onClick={goHome}>{t.exit}</button></div>
       </section>
       <footer><a className="brand footer-brand" href="#" onClick={(e) => { e.preventDefault(); goHome(); }}><span className="brand-mark">P</span><span>persona<span className="brand-dot">.</span></span></a><span>{t.footer}</span><span>© 2026</span></footer>
     </main>
