@@ -4,6 +4,8 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "Persona | Personality Insight Lab",
   description: "A thoughtful, evidence-informed personality insight experience.",
+  applicationName: "Persona",
+  icons: { icon: "/favicon.svg", shortcut: "/favicon.svg" },
   robots: { index: false, follow: false },
 };
 
