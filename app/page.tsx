@@ -529,6 +529,7 @@ export default function Home() {
               </button>
             ))}
           </div>
+        {sensoryAnswers.colour && <div className="method-debrief"><h4>{locale === "zh" ? "完成后的说明 · 颜色选择" : "After-task debrief · Colour choice"}</h4><p>{locale === "zh" ? "你记录的是本次情境下主动选择的颜色。它可以成为个人联想的起点，但没有经验证的评分规则能从这个选择判断你的性格、情绪或潜意识。" : "You recorded the colour you chose in this context. It can prompt personal reflection, but no validated scoring rule lets this choice determine your personality, mood, or subconscious."}</p></div>}
         </div>
         <div className="sensory-card">
           <span className="insight-kicker">{locale === "zh" ? "02 · 图片联想" : "02 · IMAGE ASSOCIATION"}</span>
@@ -542,6 +543,7 @@ export default function Home() {
           </div>
           <label className="sensory-label" htmlFor="scene-reflection">{locale === "zh" ? "你为什么先注意到它？（可选）" : "Why did it catch your attention? (optional)"}</label>
           <textarea id="scene-reflection" className="reflection-textarea" maxLength={500} value={sensoryAnswers.sceneNote || ""} onChange={(event) => setSensoryAnswers((old) => ({ ...old, sceneNote: event.target.value }))} placeholder={locale === "zh" ? "例如：它让我想到一个熟悉的地方……" : "For example: it reminds me of a familiar place…"} />
+        {sensoryAnswers.scene && <div className="method-debrief"><h4>{locale === "zh" ? "完成后的说明 · 场景第一印象" : "After-task debrief · First impression"}</h4><p>{locale === "zh" ? "你报告的是自己对这幅自制插画的第一印象，文字说明可帮助你表达个人联想。选中某个元素不代表特定人格，也不能据此进行投射测验式解释。" : "You reported your first impression of this custom illustration; your optional note can describe your own associations. Selecting an element does not indicate a specific personality and cannot be interpreted as a projective test."}</p></div>}
         </div>
         <div className="sensory-card">
           <span className="insight-kicker">{locale === "zh" ? "03 · 味觉偏好自述" : "03 · TASTE PREFERENCE SELF-REPORT"}</span>
@@ -550,6 +552,7 @@ export default function Home() {
           <div className="taste-options" role="group" aria-label={locale === "zh" ? "味觉偏好" : "Taste preference"}>
             {[{key:"sweet",symbol:"✳",zh:"甜",en:"Sweet"},{key:"sour",symbol:"◌",zh:"酸",en:"Sour"},{key:"salty",symbol:"⁙",zh:"咸",en:"Salty"},{key:"bitter",symbol:"⌁",zh:"苦",en:"Bitter"},{key:"umami",symbol:"❋",zh:"鲜",en:"Umami"},{key:"varies",symbol:"↔",zh:"看情境",en:"It varies"}].map((item) => <button type="button" key={item.key} className={sensoryAnswers.taste === item.key ? "taste-choice selected" : "taste-choice"} onClick={() => setSensoryAnswers((old) => ({ ...old, taste: item.key }))} aria-pressed={sensoryAnswers.taste === item.key}><span>{item.symbol}</span>{locale === "zh" ? item.zh : item.en}</button>)}
           </div>
+        {sensoryAnswers.taste && <div className="method-debrief"><h4>{locale === "zh" ? "完成后的说明 · 味觉偏好" : "After-task debrief · Taste preference"}</h4><p>{locale === "zh" ? "这是一项日常偏好自述，不是味觉能力测试。它适合帮助你描述个人口味及其情境变化，不适合推断人格或健康状态。" : "This is an everyday preference report, not a taste-ability test. It can help you describe your preferences and how they vary by context, but not infer personality or health."}</p></div>}
         </div>
         <div className="sensory-card">
           <span className="insight-kicker">{locale === "zh" ? "04 · 身体感受觉察" : "04 · BODY-SENSATION CHECK-IN"}</span>
@@ -558,6 +561,7 @@ export default function Home() {
           <div className="sensation-options" role="group" aria-label={locale === "zh" ? "身体感受" : "Body sensation"}>
             {[{key:"tension",zh:"肩颈紧绷",en:"Muscle tension"},{key:"energy",zh:"精力变化",en:"Energy changes"},{key:"breathing",zh:"呼吸节奏",en:"Breathing rhythm"},{key:"stomach",zh:"胃口或胃部感觉",en:"Appetite or stomach"},{key:"rest",zh:"想休息或安静一下",en:"Need for rest or quiet"},{key:"none",zh:"没有特别注意到",en:"Nothing in particular"}].map((item) => <button type="button" key={item.key} className={sensoryAnswers.body === item.key ? "sensation-choice selected" : "sensation-choice"} onClick={() => setSensoryAnswers((old) => ({ ...old, body: item.key }))} aria-pressed={sensoryAnswers.body === item.key}>{locale === "zh" ? item.zh : item.en}</button>)}
           </div>
+        {sensoryAnswers.body && <div className="method-debrief"><h4>{locale === "zh" ? "完成后的说明 · 身体感受" : "After-task debrief · Body awareness"}</h4><p>{locale === "zh" ? "你回顾并报告了一项近期身体体验。这可用于自我观察，但不是生理测量或诊断工具；如果症状持续或令人担忧，请咨询合适的医疗专业人士。" : "You reported a bodily experience from recent days. This can support self-observation, but it is not a physiological measure or diagnostic tool. Consult an appropriate healthcare professional about persistent or concerning symptoms."}</p></div>}
         </div>
         <div className="sensory-actions">
           <span>{locale === "zh" ? `已完成 ${["colour","scene","taste","body"].filter((key) => sensoryAnswers[key]).length}/4 个选择` : `${["colour","scene","taste","body"].filter((key) => sensoryAnswers[key]).length}/4 selections complete`}</span>
