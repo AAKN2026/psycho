@@ -256,6 +256,29 @@ export default function Home() {
       <header className="topbar"><a className="brand" href="#" onClick={(e) => { e.preventDefault(); goHome(); }}><span className="brand-mark">P</span><span>persona<span className="brand-dot">.</span></span></a><div className="nav-actions"><button className="language-toggle" onClick={() => setLocale(locale === "zh" ? "en" : "zh")}>{locale === "zh" ? "EN" : "中文"} ↗</button><button className="language-toggle" onClick={goHome}>{t.exit} ×</button></div></header>
       <section className="results-wrap"><div className="eyebrow"><span className="eyebrow-line" />{t.resultLabel}</div><h1>{t.resultTitle}</h1><p className="results-intro">{t.resultIntro}</p>
         <div className="results-grid">{scores.map((score) => <article className="result-card" key={score.key}><div className="result-title-row"><h2>{locale === "zh" ? score.zh : score.en}</h2><span>{score.value}%</span></div><div className="result-track"><span style={{ width: `${score.value}%` }} /></div><div className="result-range"><span>{t.lower}</span><span>{t.higher}</span></div><p>{score.value < 40 ? (locale === "zh" ? score.zhLow : score.enLow) : score.value > 60 ? (locale === "zh" ? score.zhHigh : score.enHigh) : t.middle}</p><div className="reflection-prompt"><span>{t.reflection}</span><p>{locale === "zh" ? score.zhPrompt : score.enPrompt}</p></div></article>)}</div>
+        <section className="insight-summary" aria-labelledby="insight-summary-title">
+          <div className="eyebrow"><span className="eyebrow-line" />{locale === "zh" ? "把分数转化为行动" : "FROM SCORES TO ACTION"}</div>
+          <h2 id="insight-summary-title">{locale === "zh" ? "你的本次观察重点" : "Your reflection highlights"}</h2>
+          <p className="insight-summary-intro">{locale === "zh" ? "以下内容只根据本次演示分数生成，用来帮助你提出问题，而不是给你定型。" : "Generated from this demo's scores to help you ask better questions—not to define you."}</p>
+          <div className="insight-highlight-grid">
+            <article className="insight-highlight">
+              <span className="insight-kicker">{locale === "zh" ? "相对突出的维度" : "RELATIVE HIGH POINT"}</span>
+              <h3>{locale === "zh" ? [...scores].sort((a, b) => b.value - a.value)[0].zh : [...scores].sort((a, b) => b.value - a.value)[0].en}</h3>
+              <p>{locale === "zh" ? [...scores].sort((a, b) => b.value - a.value)[0].value + "% · 试着回想最近一个你自然运用这项倾向的具体时刻。" : [...scores].sort((a, b) => b.value - a.value)[0].value + "% · Recall a recent moment when this tendency came naturally to you."}</p>
+            </article>
+            <article className="insight-highlight">
+              <span className="insight-kicker">{locale === "zh" ? "值得多留意的维度" : "A DIMENSION TO EXPLORE"}</span>
+              <h3>{locale === "zh" ? [...scores].sort((a, b) => a.value - b.value)[0].zh : [...scores].sort((a, b) => a.value - b.value)[0].en}</h3>
+              <p>{locale === "zh" ? [...scores].sort((a, b) => a.value - b.value)[0].value + "% · 这不代表缺点；想想在什么情境下，你会希望采用不同做法。" : [...scores].sort((a, b) => a.value - b.value)[0].value + "% · This is not a weakness; consider when a different approach might help."}</p>
+            </article>
+          </div>
+          <div className="insight-practice">
+            <div><span>01</span><p>{locale === "zh" ? "找一个真实例子：最近何时这项倾向帮助了你？" : "Find one real example: when did this tendency help you recently?"}</p></div>
+            <div><span>02</span><p>{locale === "zh" ? "换个情境思考：如果对象、压力或目标改变，结果会不同吗？" : "Change the context: would things differ with another person, level of pressure, or goal?"}</p></div>
+            <div><span>03</span><p>{locale === "zh" ? "选一个微行动：未来七天尝试一次，并记录实际感受。" : "Choose one small experiment for the next seven days and note what you actually experience."}</p></div>
+          </div>
+          <p className="insight-footnote">{locale === "zh" ? "提示：分数相近时，不必强行区分高低。人格表现会随情境、角色与时间变化；本演示结果未经心理测量验证。" : "When scores are close, there may be no meaningful distinction. Behaviour varies by context, role, and time; this demo is not a validated psychometric assessment."}</p>
+        </section>
         <section className="cloud-save-panel" aria-labelledby="cloud-save-title">
           <div className="reflection-heading">
             <div className="eyebrow"><span className="eyebrow-line" />{locale === "zh" ? "可选 · Google Sheets" : "OPTIONAL · GOOGLE SHEETS"}</div>
@@ -314,7 +337,7 @@ export default function Home() {
         </div>
         <div className="faq-list">
           <details className="faq-item"><summary>{locale === "zh" ? "这是一份正式、经过科学验证的心理测评吗？" : "Is this a validated psychological assessment?"}<span>＋</span></summary><p>{locale === "zh" ? "不是。当前版本是用于体验产品流程的自编演示问卷，题目与分数尚未经过正式信效度研究，也没有人群常模。正式测评需要先核实量表、授权、翻译与评分方法。" : "No. This is an original demo questionnaire for testing the product experience. Its items and scores have not undergone formal reliability or validity studies and have no population norms. A formal assessment requires a reviewed instrument, appropriate licensing, translation review, and scoring methodology."}</p></details>
-          <details className="faq-item"><summary>{locale === "zh" ? "我的回答会被上传或分享吗？" : "Are my answers uploaded or shared?"}<span>＋</span></summary><p>{locale === "zh" ? "答题进度与反思笔记保存在当前浏览器本地。只有当你在结果页主动填写 Apps Script 接口、勾选同意并点击保存时，系统才会尝试把演示分数与基本记录写入你配置的 Google Sheets；不会发送原始答案、反思笔记、姓名、邮箱或电话。由于浏览器跨域限制，页面提示发送后仍需到表格确认是否新增记录。" : "Assessment progress and reflection notes are stored locally in your current browser. Only if you enter an Apps Script endpoint on the results page, give consent, and click save will the app attempt to send demo scores and a basic record to the Google Sheet you configured. It does not send raw answers, reflection notes, your name, email, or phone number. Because of browser cross-origin limits, verify the new row in the sheet even if the page says the request was sent."}</p></details>
+          <details className="faq-item"><summary>{locale === "zh" ? "我的回答会被上传或分享吗？" : "Are my answers uploaded or shared?"}<span>＋</span></summary><p>{locale === "zh" ? "答题进度与反思笔记保存在当前浏览器本地。只有当你在结果页勾选同意并点击保存时，系统才会尝试把演示分数与基本记录写入网站统一配置的 Google Sheets；不会发送原始答案、反思笔记、姓名、邮箱或电话。由于浏览器跨域限制，页面提示发送后仍需到表格确认是否新增记录。" : "Assessment progress and reflection notes are stored locally in your current browser. Only if you enter an Apps Script endpoint on the results page, give consent, and click save will the app attempt to send demo scores and a basic record to the Google Sheet you configured. It does not send raw answers, reflection notes, your name, email, or phone number. Because of browser cross-origin limits, verify the new row in the sheet even if the page says the request was sent."}</p></details>
           <details className="faq-item"><summary>{locale === "zh" ? "结果可以用来判断我适合什么工作或关系吗？" : "Can the results tell me which job or relationship suits me?"}<span>＋</span></summary><p>{locale === "zh" ? "不可以。这里的结果不是经过验证的测量，不能作为招聘、诊断、升学、关系或其他重大决定的依据。你可以把反思问题当作自我观察的起点，再结合真实经历与具体情境。" : "No. These results are not validated measurements and should not guide hiring, diagnosis, education, relationship, or other consequential decisions. Use the reflection prompts only as a starting point for self-observation alongside real experiences and context."}</p></details>
           <details className="faq-item"><summary>{locale === "zh" ? "为什么提供中英文切换？" : "Why offer both Chinese and English?"}<span>＋</span></summary><p>{locale === "zh" ? "为了让不同语言背景的使用者更容易体验产品。不过，同一题目的翻译并不自动代表两种语言版本具有相同的测量效果；正式发布前仍需进行语言审校与相应验证。" : "To make the experience accessible across language preferences. However, translating an item does not automatically make both language versions equivalent measures; language review and appropriate validation are still needed before formal release."}</p></details>
         </div>
