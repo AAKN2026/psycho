@@ -461,3 +461,12 @@
  .sound-choice { padding: 11px 8px; }
 }
 @media print { .sound-lab { break-inside: avoid; } .sound-controls, .sound-skip, .sound-result-actions, .sound-start button { display: none; } }
+
+
+/* Evidence and interpretation debrief shown after each optional activity. */
+.method-debrief { margin: 22px 0 4px; padding: 20px 22px; border: 1px solid #dfe5da; background: #f5f7f1; text-align: left; }
+.method-debrief h4 { margin: 0 0 12px; color: #344336; font-size: 14px; font-weight: 600; }
+.method-debrief p { max-width: none; margin: 9px 0; color: #5f6d60; font-size: 12px; line-height: 1.85; }
+.method-debrief strong { color: #344336; }
+@media (max-width: 600px) { .method-debrief { padding: 16px; } }
+@media print { .method-debrief { break-inside: avoid; } }
