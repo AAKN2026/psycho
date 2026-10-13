@@ -376,7 +376,7 @@ export default function Home() {
     <main className="app-shell">
       <header className="topbar"><a className="brand" href="#" onClick={(e) => { e.preventDefault(); goHome(); }}><span className="brand-mark">P</span><span>persona<span className="brand-dot">.</span></span></a><div className="nav-actions"><button className="language-toggle" onClick={() => setLocale(locale === "zh" ? "en" : "zh")}>{locale === "zh" ? "EN" : "中文"} ↗</button><button className="language-toggle" onClick={goHome}>{t.exit} ×</button></div></header>
       <section className="results-wrap"><div className="eyebrow"><span className="eyebrow-line" />{t.resultLabel}</div><h1>{t.resultTitle}</h1><p className="results-intro">{t.resultIntro}</p>
-        <div className="results-grid">{scores.map((score) => <article className="result-card" key={score.key}><div className="result-title-row"><h2>{locale === "zh" ? score.zh : score.en}</h2><span>{score.value}/100</span></div><div className="result-track"><span style={{ width: `${score.value}%` }} /></div><div className="result-range"><span>{t.lower}</span><span>{t.higher}</span></div><p>{score.value < 40 ? (locale === "zh" ? score.zhLow : score.enLow) : score.value > 60 ? (locale === "zh" ? score.zhHigh : score.enHigh) : t.middle}</p><div className="reflection-prompt"><span>{t.reflection}</span><p>{locale === "zh" ? score.zhPrompt : score.enPrompt}</p></div></article>)}</div>
+        <div className="results-grid">{scores.map((score) => <article className="result-card" key={score.key}><div className="result-title-row"><h2>{locale === "zh" ? score.zh : score.en}</h2><span>{score.value}/100</span></div><div className="result-track"><span style={{ width: `${score.value}%` }} /></div><div className="result-range"><span>{locale === "zh" ? "较低的反应刻度" : "Lower response index"}</span><span>{locale === "zh" ? "较高的反应刻度" : "Higher response index"}</span></div><p>{locale === "zh" ? "这是你在本次量表上的反应刻度，不是人群排名，也不能单独判断某项特质“高”或“低”。请结合下面的具体描述与生活情境理解。" : "This is your response-scale index for this inventory—not a population rank, and not by itself a basis for classifying a trait as high or low. Interpret it alongside the description and your real-life context."}</p><div className="reflection-prompt"><span>{t.reflection}</span><p>{locale === "zh" ? score.zhPrompt : score.enPrompt}</p></div></article>)}</div>
          {!retrievedScores && <section className="facet-results" aria-labelledby="facet-results-title">
            <div className="eyebrow"><span className="eyebrow-line" />{locale === "zh" ? "30 个细分侧面" : "30 PERSONALITY FACETS"}</div>
            <h2 id="facet-results-title">{locale === "zh" ? "更细致地看见人格倾向" : "A more detailed view of your tendencies"}</h2>
@@ -387,18 +387,29 @@ export default function Home() {
           <div className="eyebrow"><span className="eyebrow-line" />{locale === "zh" ? "把分数转化为行动" : "FROM SCORES TO ACTION"}</div>
           <h2 id="insight-summary-title">{locale === "zh" ? "你的本次观察重点" : "Your reflection highlights"}</h2>
           <p className="insight-summary-intro">{locale === "zh" ? "以下反思提示根据本次量表分数生成，用来帮助你提出问题，而不是给你定型。" : "These prompts use your inventory scores to help you ask better questions—not to define you."}</p>
-          <div className="insight-highlight-grid">
-            <article className="insight-highlight">
-              <span className="insight-kicker">{locale === "zh" ? "相对突出的维度" : "RELATIVE HIGH POINT"}</span>
-              <h3>{locale === "zh" ? [...scores].sort((a, b) => b.value - a.value)[0].zh : [...scores].sort((a, b) => b.value - a.value)[0].en}</h3>
-              <p>{locale === "zh" ? [...scores].sort((a, b) => b.value - a.value)[0 ].value + "/100 · 试着回想最近一个你自然运用这项倾向的具体时刻。" : [...scores].sort((a, b) => b.value - a.value)[0 ].value + "/100 · Recall a recent moment when this tendency came naturally to you."}</p>
-            </article>
-            <article className="insight-highlight">
-              <span className="insight-kicker">{locale === "zh" ? "值得多留意的维度" : "A DIMENSION TO EXPLORE"}</span>
-              <h3>{locale === "zh" ? [...scores].sort((a, b) => a.value - b.value)[0].zh : [...scores].sort((a, b) => a.value - b.value)[0].en}</h3>
-              <p>{locale === "zh" ? [...scores].sort((a, b) => a.value - b.value)[0 ].value + "/100 · 这不代表缺点；想想在什么情境下，你会希望采用不同做法。" : [...scores].sort((a, b) => a.value - b.value)[0 ].value + "/100 · This is not a weakness; consider when a different approach might help."}</p>
-            </article>
-          </div>
+          {(() => {
+            const ordered = [...scores].sort((a, b) => b.value - a.value);
+            const top = ordered[0];
+            const bottom = ordered[ordered.length - 1];
+            const spread = top.value - bottom.value;
+            const hasMeaningfulSeparation = spread >= 10;
+            return <div className="insight-highlight-grid">
+              <article className="insight-highlight">
+                <span className="insight-kicker">{locale === "zh" ? "本次画像中的相对高点" : "RELATIVE HIGH POINT IN THIS PROFILE"}</span>
+                <h3>{hasMeaningfulSeparation ? (locale === "zh" ? top.zh : top.en) : (locale === "zh" ? "暂不突出" : "No clear standout")}</h3>
+                <p>{hasMeaningfulSeparation
+                  ? (locale === "zh" ? `${top.value}/100 · 只表示它在你本次五个维度中相对较高，不代表绝对高水平或优点。` : `${top.value}/100 · Relatively higher within your own five-factor profile; not an absolute high score or a virtue.`)
+                  : (locale === "zh" ? "五个维度的分数彼此接近，因此不强行排出高低。可结合具体情境理解各维度。" : "Your five factor scores are close, so this report avoids forcing a rank. Interpret them in context.")}</p>
+              </article>
+              <article className="insight-highlight">
+                <span className="insight-kicker">{locale === "zh" ? "可探索的相对低点" : "RELATIVE LOW POINT TO EXPLORE"}</span>
+                <h3>{hasMeaningfulSeparation ? (locale === "zh" ? bottom.zh : bottom.en) : (locale === "zh" ? "暂不突出" : "No clear standout")}</h3>
+                <p>{hasMeaningfulSeparation
+                  ? (locale === "zh" ? `${bottom.value}/100 · 只表示它在你本次画像中相对较低，不代表缺点、能力不足或需要改变。` : `${bottom.value}/100 · Relatively lower within your own profile; not a weakness, deficit, or a requirement to change.`)
+                  : (locale === "zh" ? "分数接近时，差异可能没有实际意义。请选择一个你自己最想理解的情境，而不是追逐排名。" : "When scores are close, differences may not be meaningful. Choose a situation you want to understand rather than chasing a rank.")}</p>
+              </article>
+            </div>;
+          })()}
           <div className="insight-practice">
             <div><span>01</span><p>{locale === "zh" ? "找一个真实例子：最近何时这项倾向帮助了你？" : "Find one real example: when did this tendency help you recently?"}</p></div>
             <div><span>02</span><p>{locale === "zh" ? "换个情境思考：如果对象、压力或目标改变，结果会不同吗？" : "Change the context: would things differ with another person, level of pressure, or goal?"}</p></div>
