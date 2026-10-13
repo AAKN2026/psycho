@@ -51,7 +51,7 @@ const copy = {
     back: "上一题", next: "下一题", finish: "查看演示结果", resume: "继续上次进度", restart: "重新开始", exit: "返回首页",
     required: "请选择一个选项后继续。", resultLabel: "你的演示画像", resultTitle: "一份用于反思的起点", resultIntro: "这些条形图只汇总你在本次演示题目中的选择，不代表经过验证的人格分数，也不与任何人群常模比较。",
     lower: "相对较低", higher: "相对较高", middle: "中间范围", resultDisclaimer: "请注意：这是用于测试产品流程的自编演示题目，不是经验证的心理测量工具。结果不用于诊断、招聘筛选或重大决策。",
-    localSave: "答题进度仅保存在当前浏览器中。", progress: "完成进度", agree: "我了解这是演示版本", startAgain: "再体验一次", reportSave: "打印 / 保存为 PDF", reflection: "自我反思",
+    localSave: "答题进度仅保存在当前浏览器中。", progress: "完成进度", agree: "我了解这是演示版本", startAgain: "再体验一次", reportSave: "打印 / 保存为 PDF", reflection: "自我反思", clearLocal: "清除本机保存的数据",
   },
   en: {
     navAbout: "Our approach", navScience: "Scientific principles", navPrivacy: "Privacy", eyebrow: "PERSONALITY · WITH PERSPECTIVE",
@@ -68,7 +68,7 @@ const copy = {
     back: "Previous", next: "Next", finish: "View demo results", resume: "Resume previous progress", restart: "Start over", exit: "Home",
     required: "Choose an option to continue.", resultLabel: "YOUR DEMO PROFILE", resultTitle: "A starting point for reflection", resultIntro: "These bars summarise your choices in this demo only. They are not validated personality scores and are not compared with population norms.",
     lower: "Relatively lower", higher: "Relatively higher", middle: "Middle range", resultDisclaimer: "Please note: these original demo items are for testing the product flow, not a validated psychometric instrument. Do not use these results for diagnosis, hiring, or major decisions.",
-    localSave: "Your progress is saved only in this browser.", progress: "Progress", agree: "I understand this is a demo", startAgain: "Try again", reportSave: "Print / Save as PDF", reflection: "Reflection prompt",
+    localSave: "Your progress is saved only in this browser.", progress: "Progress", agree: "I understand this is a demo", startAgain: "Try again", reportSave: "Print / Save as PDF", reflection: "Reflection prompt", clearLocal: "Clear data on this device",
   },
 };
 
@@ -164,18 +164,28 @@ export default function Home() {
     const formattedCode = `${code.slice(0,4)}-${code.slice(4,8)}-${code.slice(8,12)}`;
     const callbackName = `personaCallback_${Date.now()}_${Math.random().toString(36).slice(2,8)}`;
     const globalWindow = window as unknown as Record<string, unknown>;
-    const callback = (result: { ok?: boolean; locale?: Locale; scores?: Record<Dimension, number> }) => {
+    let timeoutId: number | undefined;
+    let script: HTMLScriptElement | undefined;
+    const cleanup = () => {
+      if (timeoutId !== undefined) window.clearTimeout(timeoutId);
+      if (script) script.remove();
       delete globalWindow[callbackName];
-      if (!result?.ok || !result.scores) { setLookupStatus("error"); return; }
-      setRetrievedScores(result.scores);
+    };
+    const callback = (result: { ok?: boolean; locale?: Locale; scores?: Record<Dimension, number> }) => {
+      cleanup();
+      const keys: Dimension[] = ["openness", "conscientiousness", "extraversion", "agreeableness", "emotionalBalance"];
+      const validScores = result?.scores && keys.every((key) => Number.isFinite(result.scores?.[key]) && result.scores![key] >= 0 && result.scores![key] <= 100);
+      if (!result?.ok || !validScores) { setLookupStatus("error"); return; }
+      setRetrievedScores(result.scores as Record<Dimension, number>);
       if (result.locale === "zh" || result.locale === "en") setLocale(result.locale);
       setLookupStatus("idle");
       setView("results");
     };
     globalWindow[callbackName] = callback;
-    const script = document.createElement("script");
+    script = document.createElement("script");
     script.src = `${PUBLIC_APPS_SCRIPT_ENDPOINT}?action=retrieve&code=${encodeURIComponent(formattedCode)}&callback=${callbackName}`;
-    script.onerror = () => { delete globalWindow[callbackName]; setLookupStatus("error"); };
+    script.onerror = () => { cleanup(); setLookupStatus("error"); };
+    timeoutId = window.setTimeout(() => { cleanup(); setLookupStatus("error"); }, 12000);
     document.body.appendChild(script);
   }
 
@@ -231,6 +241,24 @@ export default function Home() {
   function restart() {
     setRetrievedScores(null); setAccessCode(""); setAnswers({}); setIndex(0); setHasSaved(false); setView("assessment"); setShowValidation(false);
     try { window.localStorage.removeItem(STORAGE_KEY); } catch { /* Ignore unavailable storage. */ }
+  }
+  function clearLocalData() {
+    const message = locale === "zh"
+      ? "确定清除此设备浏览器中的答题进度和反思笔记吗？此操作不会删除已保存到 Google Sheets 的记录。"
+      : "Clear assessment progress and reflection notes from this browser? This will not delete records already saved to Google Sheets.";
+    if (!window.confirm(message)) return;
+    setAnswers({});
+    setIndex(0);
+    setHasSaved(false);
+    setReflectionNote("");
+    setRetrievedScores(null);
+    setAccessCode("");
+    setCloudConsent(false);
+    setCloudSaveStatus("idle");
+    try {
+      window.localStorage.removeItem(STORAGE_KEY);
+      window.localStorage.removeItem("persona-reflection-note-v1");
+    } catch { /* The in-memory state is still cleared. */ }
   }
 
   if (view === "assessment") return (
@@ -320,6 +348,7 @@ export default function Home() {
         <div className="hero-copy"><div className="eyebrow"><span className="eyebrow-line" />{t.eyebrow}</div><h1>{t.title.split("\n").map((line, i) => <span key={i}>{line}{i === 0 && <br />}</span>)}</h1><p className="hero-subtitle">{t.subtitle}</p>
           <div className="hero-actions"><button className="button-primary" onClick={() => startAssessment()}>{t.start}<span>↗</span></button><a className="button-text" href="#science">{t.learn}<span>↓</span></a></div>
           {hasSaved && <button className="resume-button" onClick={() => startAssessment(true)}>{t.resume} · {answeredCount}/{questions.length}</button>}
+          {(hasSaved || reflectionNote) && <button className="clear-local-button" onClick={clearLocalData}>{t.clearLocal}</button>}
           <p className="preview-note"><span className="status-dot" />{t.note}</p>
         </div>
         <div className="hero-art" aria-label="Abstract layered personality profile illustration"><div className="art-orbit orbit-one" /><div className="art-orbit orbit-two" /><div className="art-orbit orbit-three" /><div className="art-disc"><div className="disc-inner"><span className="disc-caption">A LITTLE CLOSER</span><span className="disc-title">to<br />yourself.</span><span className="disc-star">✳</span></div></div><div className="floating-card card-top"><span className="mini-label">SELF · AWARENESS</span><span className="mini-line" /><span className="mini-line short" /></div><div className="floating-card card-bottom"><span className="card-spark">✳</span><span><strong>Room to grow</strong><small>Every trait has context.</small></span></div><div className="art-index">01 — 05<br />A PERSONAL JOURNEY</div></div>
@@ -337,7 +366,7 @@ export default function Home() {
         </div>
         <div className="faq-list">
           <details className="faq-item"><summary>{locale === "zh" ? "这是一份正式、经过科学验证的心理测评吗？" : "Is this a validated psychological assessment?"}<span>＋</span></summary><p>{locale === "zh" ? "不是。当前版本是用于体验产品流程的自编演示问卷，题目与分数尚未经过正式信效度研究，也没有人群常模。正式测评需要先核实量表、授权、翻译与评分方法。" : "No. This is an original demo questionnaire for testing the product experience. Its items and scores have not undergone formal reliability or validity studies and have no population norms. A formal assessment requires a reviewed instrument, appropriate licensing, translation review, and scoring methodology."}</p></details>
-          <details className="faq-item"><summary>{locale === "zh" ? "我的回答会被上传或分享吗？" : "Are my answers uploaded or shared?"}<span>＋</span></summary><p>{locale === "zh" ? "答题进度与反思笔记保存在当前浏览器本地。只有当你在结果页勾选同意并点击保存时，系统才会尝试把演示分数与基本记录写入网站统一配置的 Google Sheets；不会发送原始答案、反思笔记、姓名、邮箱或电话。由于浏览器跨域限制，页面提示发送后仍需到表格确认是否新增记录。" : "Assessment progress and reflection notes are stored locally in your current browser. Only if you enter an Apps Script endpoint on the results page, give consent, and click save will the app attempt to send demo scores and a basic record to the Google Sheet you configured. It does not send raw answers, reflection notes, your name, email, or phone number. Because of browser cross-origin limits, verify the new row in the sheet even if the page says the request was sent."}</p></details>
+          <details className="faq-item"><summary>{locale === "zh" ? "我的回答会被上传或分享吗？" : "Are my answers uploaded or shared?"}<span>＋</span></summary><p>{locale === "zh" ? "答题进度与反思笔记保存在当前浏览器本地。只有当你在结果页勾选同意并点击保存时，系统才会尝试把演示分数与基本记录写入网站统一配置的 Google Sheets；不会发送原始答案、反思笔记、姓名、邮箱或电话。由于浏览器跨域限制，页面提示发送后仍需到表格确认是否新增记录。" : "Assessment progress and reflection notes are stored locally in your current browser. Only after you give consent and click save on the results page will the app attempt to send demo scores and a basic record to the Google Sheet configured by the site operator. It does not send raw answers, reflection notes, your name, email, or phone number. Because of browser cross-origin limits, verify the new row in the sheet even if the page says the request was sent."}</p></details>
           <details className="faq-item"><summary>{locale === "zh" ? "结果可以用来判断我适合什么工作或关系吗？" : "Can the results tell me which job or relationship suits me?"}<span>＋</span></summary><p>{locale === "zh" ? "不可以。这里的结果不是经过验证的测量，不能作为招聘、诊断、升学、关系或其他重大决定的依据。你可以把反思问题当作自我观察的起点，再结合真实经历与具体情境。" : "No. These results are not validated measurements and should not guide hiring, diagnosis, education, relationship, or other consequential decisions. Use the reflection prompts only as a starting point for self-observation alongside real experiences and context."}</p></details>
           <details className="faq-item"><summary>{locale === "zh" ? "为什么提供中英文切换？" : "Why offer both Chinese and English?"}<span>＋</span></summary><p>{locale === "zh" ? "为了让不同语言背景的使用者更容易体验产品。不过，同一题目的翻译并不自动代表两种语言版本具有相同的测量效果；正式发布前仍需进行语言审校与相应验证。" : "To make the experience accessible across language preferences. However, translating an item does not automatically make both language versions equivalent measures; language review and appropriate validation are still needed before formal release."}</p></details>
         </div>
