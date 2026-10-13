@@ -1,7 +1,7 @@
 # IPIP-NEO-120 Mapping Audit
 
 **Audit date:** 2026-10-13  
-**Status:** Structural mapping corrected; CI verification pending. Authoritative item-key comparison and independent psychometric validation remain required.
+**Status:** Source item order and Mandarin/English wording manually compared with the official IPIP Mandarin page; the 55 reverse-keyed item IDs and 30 facet item groups are encoded as regression-test snapshots. CI execution is required for each release. This is a scoring-implementation audit, not independent psychometric validation.
 
 ## Item order and mapping
 
@@ -27,17 +27,19 @@ This matters because grouping every four items within a trait would incorrectly 
 - Emotional Stability is the reverse direction of the original Neuroticism dimension. The six emotion-related facets retain original Neuroticism direction and must be described that way.
 - The 0–100 scale is a rescaled response index, not a normed score, percentile, diagnosis, clinical severity measure, or Singapore population rank.
 
-## Automated structural checks
+## Automated and known-pattern checks
 
 `npm run audit` checks:
 - 120 inventory items exist.
-- Reverse-key IDs are unique and within range.
+- Reverse-key IDs exactly match the 55-item key snapshot transcribed from the official 30-facet key; IDs are unique and in range.
 - There are 30 facets, each with four distinct items.
-- Facet assignments do not overlap and cover all 120 item IDs.
+- All 30 facets match explicit four-item ID snapshots from the published facet order; assignments do not overlap and cover all 120 item IDs.
 - Broad factors each receive 24 items.
-- The code includes the Emotional Stability direction inversion.
+- The code uses the same tested scoring module for broad factors and facets; Emotional Stability direction inversion is explicit.
+- Synthetic all-3 responses produce 50 for every factor and facet.
+- Synthetic responses that key every original trait item high produce 100 for every original facet and all non-emotional-stability factors, while Emotional Stability correctly returns 0; the inverse pattern returns the opposite endpoints.
 
-These checks verify internal structure only. They do **not** establish that each item is assigned to the correct published facet, that every reverse-key ID matches the authoritative source, or that the site is psychometrically validated.
+These tests verify the local implementation against the reviewed source snapshots and known answer patterns. They do **not** establish clinical utility, population norms, measurement invariance, or psychometric validation of Persona.
 
 ## Authoritative reference
 
@@ -47,7 +49,7 @@ These checks verify internal structure only. They do **not** establish that each
 
 ## Remaining release gates
 
-- [ ] Compare every English item and reverse-key direction against the authoritative source key.
+- [x] Manually compare the 120 English/Mandarin item pairs and order against the official Mandarin IPIP-NEO-120 page.\n- [x] Compare the 55 reverse-keyed items and the 30 four-item facet sets against the official facet key.\n- [x] Add automated known-pattern tests for the shared scoring module.
 - [ ] Have a second reviewer independently verify all 30 facet mappings and all reverse-keyed items.
-- [ ] Run automated tests and inspect the actual deployed report for a synthetic answer pattern with known expected results.
+- [x] Add automated synthetic answer-pattern tests to CI.\n- [ ] Inspect the actual deployed report in a browser using a synthetic answer pattern.
 - [ ] Conduct language, accessibility, privacy/security, and expert review.
