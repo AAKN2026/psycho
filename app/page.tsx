@@ -29,36 +29,36 @@ const copy = {
   zh: {
     navAbout: "产品理念", navScience: "科学原则", navPrivacy: "隐私保护", eyebrow: "人格探索 · 更有深度",
     title: "理解自己，\n不被标签定义。", subtitle: "以有研究依据的人格量表为核心，查看五大人格维度与细分侧面，并把结果转化为具体的自我反思。",
-    start: "开始体验测评", learn: "了解科学原则", note: "基于公开研究的人格量表 · 结果用于自我理解；新加坡双语常模与本地验证仍需进一步研究。",
+    start: "开始人格测评", learn: "了解科学原则", note: "基于公开研究的人格量表 · 结果用于自我理解；新加坡双语常模与本地验证仍需进一步研究。",
     trust1: "以证据为基础", trust2: "隐私优先设计", trust3: "洞察而非诊断", sectionLabel: "更审慎的人格测评体验",
     sectionTitle: "不急着给你贴标签，\n而是帮助你理解自己。", card1Title: "看见更完整的自己", card1Text: "探索不同人格维度及其可能呈现的倾向，而不是用一个结果定义你是谁。",
     card2Title: "方法有据可查", card2Text: "正式上线前，题目、评分规则和解释方式都将经过相应审核。", card3Title: "让洞察走进生活", card3Text: "把自我反思转化为工作、人际关系和日常选择中的小行动。",
     processLabel: "测评体验", processTitle: "每一步，都认真对待", step1: "按自己的节奏作答", step1Text: "为手机和电脑设计的清晰双语体验。",
-    step2: "了解人格画像", step2Text: "查看本次测评有依据支持的人格维度结果。", step3: "深入理解与实践", step3Text: "未来的深度报告将基于已核实的结果，提供审慎而实用的解释。",
+    step2: "了解人格画像", step2Text: "查看五大人格维度与 30 个细分侧面的作答结果。", step3: "深入理解与实践", step3Text: "未来的深度报告将基于已核实的结果，提供审慎而实用的解释。",
     disclaimer: "本体验采用 IPIP-NEO-120 公开人格量表的普通话题目与英文原题。结果用于个人反思，不是诊断；新加坡本地双语常模与独立验证尚未建立。",
     footer: "PERSONA · 人格洞察实验室", footerText: "认真构建，帮助你看见更多可能。",
     assessmentLabel: "IPIP-NEO-120 · 约 15–20 分钟", qOf: "第", of: "/", question: "题", scale: ["非常不准确", "比较不准确", "中等 / 不确定", "比较准确", "非常准确"],
     back: "上一题", next: "下一题", finish: "查看测评结果", resume: "继续上次进度", restart: "重新开始", exit: "返回首页",
     required: "请选择一个选项后继续。", resultLabel: "你的五大人格画像", resultTitle: "理解倾向，而不是给自己定型", resultIntro: "分数按量表评分规则计算，并将 1–5 的平均反应换算为 0–100 方便阅读；这不是百分位，也不代表你相对于新加坡人群的位置。",
     lower: "相对较低", higher: "相对较高", middle: "中间范围", resultDisclaimer: "本报告不是临床诊断，也不应用于招聘、升学筛选或其他重大决策。量表虽有公开研究及普通话版本资料，但本网站尚未完成新加坡样本的独立验证；分数会受作答情境、语言理解和当下状态影响。",
-    localSave: "答题进度仅保存在当前浏览器中。", progress: "完成进度", agree: "我了解这是演示版本", startAgain: "再体验一次", reportSave: "打印 / 保存为 PDF", reflection: "自我反思", clearLocal: "清除本机保存的数据",
+    localSave: "答题进度仅保存在当前浏览器中。", progress: "完成进度", agree: "我了解结果仅供个人反思，不是诊断或本地常模排名", startAgain: "再体验一次", reportSave: "打印 / 保存为 PDF", reflection: "自我反思", clearLocal: "清除本机保存的数据",
   },
   en: {
     navAbout: "Our approach", navScience: "Scientific principles", navPrivacy: "Privacy", eyebrow: "PERSONALITY · WITH PERSPECTIVE",
     title: "Understand yourself.\nBeyond a label.", subtitle: "A research-based personality inventory with five broad factors, 30 facets, transparent limitations, and practical reflection.",
-    start: "Try the demo assessment", learn: "Our scientific approach", note: "Research-based personality inventory · For self-understanding; local Singapore bilingual norms and validation remain to be established.",
+    start: "Start personality assessment", learn: "Our scientific approach", note: "Research-based personality inventory · For self-understanding; local Singapore bilingual norms and validation remain to be established.",
     trust1: "Evidence-informed", trust2: "Private by design", trust3: "Insight, not diagnosis", sectionLabel: "A more thoughtful kind of assessment",
     sectionTitle: "Not a personality box.\nA starting point for insight.", card1Title: "A clearer picture", card1Text: "Explore broad personality dimensions and the patterns they may describe—not a fixed definition of who you are.",
     card2Title: "Grounded in method", card2Text: "Assessment items, scoring rules, and interpretations will be reviewed before release.", card3Title: "Made for real life", card3Text: "Turn reflection into small, practical experiments for work, relationships, and everyday choices.",
     processLabel: "THE EXPERIENCE", processTitle: "Considered at every step", step1: "Answer at your own pace", step1Text: "A clear, bilingual experience designed for mobile and desktop.",
-    step2: "See your profile", step2Text: "Review the dimensions shown by this demo experience.", step3: "Go deeper, thoughtfully", step3Text: "Future in-depth reports will connect verified results to careful, practical explanations.",
+    step2: "See your profile", step2Text: "Review your five broad factors and 30 personality facets.", step3: "Go deeper, thoughtfully", step3Text: "Future in-depth reports will connect verified results to careful, practical explanations.",
     disclaimer: "This experience uses the public-domain IPIP-NEO-120 items in English and Mandarin. Results are for reflection, not diagnosis; independent Singapore bilingual norms and validation have not been established.",
     footer: "PERSONA · PERSONALITY INSIGHT LAB", footerText: "Built with care. Designed for perspective.",
     assessmentLabel: "IPIP-NEO-120 · ABOUT 15–20 MIN", qOf: "Question", of: "of", question: "", scale: ["Very inaccurate", "Somewhat inaccurate", "Neither / unsure", "Somewhat accurate", "Very accurate"],
     back: "Previous", next: "Next", finish: "View results", resume: "Resume previous progress", restart: "Start over", exit: "Home",
     required: "Choose an option to continue.", resultLabel: "YOUR FIVE-FACTOR PROFILE", resultTitle: "Understand tendencies, not labels", resultIntro: "Scores follow the inventory scoring key. Mean responses on the 1–5 scale are displayed as 0–100 for readability; these are not percentiles and do not rank you against a Singapore population norm.",
     lower: "Relatively lower", higher: "Relatively higher", middle: "Middle range", resultDisclaimer: "This is not a clinical diagnosis and should not be used for hiring, admissions screening, or other consequential decisions. Although the inventory has published research and Mandarin-version evidence, this site has not independently validated it in a Singapore sample; responses can vary with context, language, and current state.",
-    localSave: "Your progress is saved only in this browser.", progress: "Progress", agree: "I understand this is a demo", startAgain: "Try again", reportSave: "Print / Save as PDF", reflection: "Reflection prompt", clearLocal: "Clear data on this device",
+    localSave: "Your progress is saved only in this browser.", progress: "Progress", agree: "I understand results are for reflection, not diagnosis or local norm ranking", startAgain: "Try again", reportSave: "Print / Save as PDF", reflection: "Reflection prompt", clearLocal: "Clear data on this device",
   },
 };
 
@@ -464,7 +464,7 @@ export default function Home() {
         </div>
         <div className="faq-list">
           <details className="faq-item"><summary>{locale === "zh" ? "这是一份正式、经过科学验证的心理测评吗？" : "Is this a validated psychological assessment?"}<span>＋</span></summary><p>{locale === "zh" ? "当前版本已改用 IPIP-NEO-120 的公开题目与固定评分规则；原始研究及普通话翻译资料提供了心理测量证据。但本网站尚未在新加坡双语人群中独立验证，也没有在此网站建立本地常模，因此结果用于个人反思，而非诊断或重大决策。" : "The current version uses the public IPIP-NEO-120 items and a fixed scoring key, supported by published research and Mandarin translation evidence. However, this site has not independently validated the inventory in a Singapore bilingual sample or established local norms. Results are for reflection, not diagnosis or consequential decisions."}</p></details>
-          <details className="faq-item"><summary>{locale === "zh" ? "我的回答会被上传或分享吗？" : "Are my answers uploaded or shared?"}<span>＋</span></summary><p>{locale === "zh" ? "答题进度与反思笔记保存在当前浏览器本地。只有当你在结果页勾选同意并点击保存时，系统才会尝试把演示分数与基本记录写入网站统一配置的 Google Sheets；不会发送原始答案、反思笔记、姓名、邮箱或电话。由于浏览器跨域限制，页面提示发送后仍需到表格确认是否新增记录。" : "Assessment progress and reflection notes are stored locally in your current browser. Only after you give consent and click save on the results page will the app attempt to send demo scores and a basic record to the Google Sheet configured by the site operator. It does not send raw answers, reflection notes, your name, email, or phone number. Because of browser cross-origin limits, verify the new row in the sheet even if the page says the request was sent."}</p></details>
+          <details className="faq-item"><summary>{locale === "zh" ? "我的回答会被上传或分享吗？" : "Are my answers uploaded or shared?"}<span>＋</span></summary><p>{locale === "zh" ? "答题进度与反思笔记保存在当前浏览器本地。只有当你在结果页勾选同意并点击保存时，系统才会尝试把五大维度汇总分数与基本记录写入网站统一配置的 Google Sheets；不会发送原始答案、反思笔记、姓名、邮箱或电话。由于浏览器跨域限制，页面提示发送后仍需到表格确认是否新增记录。" : "Assessment progress and reflection notes are stored locally in your current browser. Only after you give consent and click save on the results page will the app attempt to send aggregate factor scores and a basic record to the Google Sheet configured by the site operator. It does not send raw answers, reflection notes, your name, email, or phone number. Because of browser cross-origin limits, verify the new row in the sheet even if the page says the request was sent."}</p></details>
           <details className="faq-item"><summary>{locale === "zh" ? "结果可以用来判断我适合什么工作或关系吗？" : "Can the results tell me which job or relationship suits me?"}<span>＋</span></summary><p>{locale === "zh" ? "不可以。这里的结果不是经过验证的测量，不能作为招聘、诊断、升学、关系或其他重大决定的依据。你可以把反思问题当作自我观察的起点，再结合真实经历与具体情境。" : "No. These results are not validated measurements and should not guide hiring, diagnosis, education, relationship, or other consequential decisions. Use the reflection prompts only as a starting point for self-observation alongside real experiences and context."}</p></details>
           <details className="faq-item"><summary>{locale === "zh" ? "为什么提供中英文切换？" : "Why offer both Chinese and English?"}<span>＋</span></summary><p>{locale === "zh" ? "为了让不同语言背景的使用者更容易体验产品。不过，同一题目的翻译并不自动代表两种语言版本具有相同的测量效果；正式发布前仍需进行语言审校与相应验证。" : "To make the experience accessible across language preferences. However, translating an item does not automatically make both language versions equivalent measures; language review and appropriate validation are still needed before formal release."}</p></details>
         </div>
@@ -604,7 +604,7 @@ export default function Home() {
       <section className="closing-cta">
         <div className="eyebrow light"><span className="eyebrow-line" />{locale === "zh" ? "留一点空间给自己" : "MAKE ROOM FOR REFLECTION"}</div>
         <h2>{locale === "zh" ? "不必急着定义自己。\n先从一个好问题开始。" : "You don't need a label.\nStart with a better question."}</h2>
-        <p>{locale === "zh" ? "用几分钟完成演示体验，带着一个值得思考的问题回到日常生活。" : "Spend a few minutes with the demo, and take one useful question back into everyday life."}</p>
+        <p>{locale === "zh" ? "约 15–20 分钟完成 120 道题，带着更具体的自我观察问题回到日常生活。" : "Allow about 15–20 minutes for 120 items, then take a more specific self-reflection question into everyday life."}</p>
         <button className="button-primary" onClick={() => startAssessment()}>{t.start}<span>↗</span></button>
       </section>
             <footer><a className="brand footer-brand" href="#"><span className="brand-mark">P</span><span>persona<span className="brand-dot">.</span></span></a><span>{t.footer}</span><span>{t.footerText}</span><a href="/psycho/privacy/">{locale === "zh" ? "隐私说明" : "Privacy notice"}</a><span>© 2026</span></footer>
