@@ -41,6 +41,12 @@ The former visual accuracy quiz has been replaced by a visual-choice reflection 
 
 These theme labels are reflective prompts, not validated scales. Autonomy and relatedness are established topics in motivation research, but the app's visual composition-to-theme mapping is custom and unvalidated. Do not treat the most-selected theme as a stable need or personality trait. The choices may be affected by wording, current context, culture, visual preference, and order effects.
 
+### Reflective closure and participant meaning
+
+The visual-choice activity now includes a participant-led check-in after the descriptive theme distribution. The participant selects which theme, if any, feels most relevant to their current life; “it depends” is an explicit option. This is not treated as a correct answer and does not change inventory scores. Its purpose is to compare the product's descriptive summary with the participant's own interpretation, not to claim that either reveals a hidden truth.
+
+A complete reflective loop is: disclose the activity's purpose and data handling → present context-based choices without right/wrong framing → summarize the choices descriptively → invite the participant to select or reject a possible meaning → offer a small, optional reflection prompt → explain limitations and privacy. Keep each stage distinct. The app must not infer deception, subconscious motives, or diagnosis from visual or audio choices.
+
 ### Visual-choice reflection design notes
 
 - **Purpose:** Invite users to notice which kinds of scenes they choose across different everyday contexts.
