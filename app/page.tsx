@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { IPIP_FACETS, IPIP_NEO_120, IPIP_REVERSE_KEYED } from "../data/ipip-neo-120";
+import { facetItemIds, factorItemIds, scoreItemIds } from "../lib/scoring.mjs";
 
 type Locale = "en" | "zh";
 type Answer = 1 | 2 | 3 | 4 | 5;
@@ -289,23 +290,19 @@ export default function Home() {
   const answeredCount = Object.keys(answers).length;
   const current = questions[index];
   const scores = useMemo(() => retrievedScores ? dimensions.map((dimension) => ({ ...dimension, value: retrievedScores[dimension.key] })) : dimensions.map((dimension) => {
-    const related = questions.filter((q) => q.dimension === dimension.key);
-    const values = related.filter((q) => answers[q.id] !== undefined).map((q) => { const answer = answers[q.id] as Answer; return q.reverse ? 6 - answer : answer; });
-    const average = values.length ? values.reduce((sum, value) => sum + value, 0) / values.length : 3;
-    return { ...dimension, value: Math.round(((average - 1) / 4) * 100) };
+    const ids = factorItemIds(dimension.key);
+    const value = Object.keys(answers).length === 120
+      ? scoreItemIds(ids, answers as Record<number, number>, IPIP_REVERSE_KEYED, dimension.key === "emotionalBalance")
+      : 50;
+    return { ...dimension, value };
   }), [answers, retrievedScores]);
 
   const facetScores = useMemo(() => IPIP_FACETS.map((facet, facetPosition) => {
-    const offsets: Record<string, number> = { emotionalBalance: 1, extraversion: 2, openness: 3, agreeableness: 4, conscientiousness: 5 };
-    const offset = offsets[facet.trait];
-    const withinTraitFacet = facetPosition % 6;
-    const ids = [0, 1, 2, 3].map((step) => offset + withinTraitFacet * 5 + step * 30);
-    const values = ids.map((id) => {
-      const answer = answers[id] as Answer;
-      return IPIP_REVERSE_KEYED.has(id) ? 6 - answer : answer;
-    });
-    const average = values.reduce((sum, value) => sum + value, 0) / values.length;
-    return { ...facet, value: Math.round(((average - 1) / 4) * 100) };
+    const ids = facetItemIds(facetPosition % 6, facet.trait);
+    const value = Object.keys(answers).length === 120
+      ? scoreItemIds(ids, answers as Record<number, number>, IPIP_REVERSE_KEYED)
+      : 50;
+    return { ...facet, value };
   }), [answers]);
 
   function startAssessment(resume = false) {
