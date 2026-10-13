@@ -78,6 +78,7 @@ export default function Home() {
   const [answers, setAnswers] = useState<Record<number, Answer>>({});
   const [hasSaved, setHasSaved] = useState(false);
   const [showValidation, setShowValidation] = useState(false);
+  const [reflectionNote, setReflectionNote] = useState("");
   const t = copy[locale];
 
   useEffect(() => {
@@ -106,6 +107,20 @@ export default function Home() {
       } catch { /* The assessment remains usable without local storage. */ }
     }
   }, [answers, index]);
+
+  useEffect(() => {
+    try {
+      setReflectionNote(window.localStorage.getItem("persona-reflection-note-v1") || "");
+    } catch { /* Reflection notes remain optional when storage is unavailable. */ }
+  }, []);
+
+  function saveReflectionNote(value: string) {
+    setReflectionNote(value);
+    try {
+      if (value.trim()) window.localStorage.setItem("persona-reflection-note-v1", value);
+      else window.localStorage.removeItem("persona-reflection-note-v1");
+    } catch { /* Keep the current note in memory if local storage is unavailable. */ }
+  }
 
   const answeredCount = Object.keys(answers).length;
   const current = questions[index];
@@ -160,6 +175,17 @@ export default function Home() {
       <header className="topbar"><a className="brand" href="#" onClick={(e) => { e.preventDefault(); goHome(); }}><span className="brand-mark">P</span><span>persona<span className="brand-dot">.</span></span></a><div className="nav-actions"><button className="language-toggle" onClick={() => setLocale(locale === "zh" ? "en" : "zh")}>{locale === "zh" ? "EN" : "中文"} ↗</button><button className="language-toggle" onClick={goHome}>{t.exit} ×</button></div></header>
       <section className="results-wrap"><div className="eyebrow"><span className="eyebrow-line" />{t.resultLabel}</div><h1>{t.resultTitle}</h1><p className="results-intro">{t.resultIntro}</p>
         <div className="results-grid">{scores.map((score) => <article className="result-card" key={score.key}><div className="result-title-row"><h2>{locale === "zh" ? score.zh : score.en}</h2><span>{score.value}%</span></div><div className="result-track"><span style={{ width: `${score.value}%` }} /></div><div className="result-range"><span>{t.lower}</span><span>{t.higher}</span></div><p>{score.value < 40 ? (locale === "zh" ? score.zhLow : score.enLow) : score.value > 60 ? (locale === "zh" ? score.zhHigh : score.enHigh) : t.middle}</p><div className="reflection-prompt"><span>{t.reflection}</span><p>{locale === "zh" ? score.zhPrompt : score.enPrompt}</p></div></article>)}</div>
+        <section className="personal-reflection" aria-labelledby="personal-reflection-title">
+          <div className="reflection-heading">
+            <div className="eyebrow"><span className="eyebrow-line" />{locale === "zh" ? "给未来的自己" : "A NOTE TO YOURSELF"}</div>
+            <h2 id="personal-reflection-title">{locale === "zh" ? "把洞察写下来。" : "Make space to reflect."}</h2>
+            <p>{locale === "zh" ? "写下一件你想留意的事，或一个准备尝试的小行动。内容只保存在当前浏览器，不会上传。" : "Capture something you want to notice or one small action to try. This note stays in this browser and is not uploaded."}</p>
+          </div>
+          <label className="reflection-label" htmlFor="personal-reflection-note">{locale === "zh" ? "我的反思记录" : "MY REFLECTION NOTE"}</label>
+          <textarea id="personal-reflection-note" className="reflection-textarea" value={reflectionNote} onChange={(event) => saveReflectionNote(event.target.value)} maxLength={3000} placeholder={locale === "zh" ? "例如：当我更早安排重要任务时，我会感到……" : "For example: When I plan an important task earlier, I notice…"} />
+          <div className="reflection-note-footer"><span>{locale === "zh" ? "仅本地保存 · 最多 3,000 字符" : "Saved locally · Up to 3,000 characters"}</span><span>{reflectionNote.length}/3000</span></div>
+          <div className="reflection-note-actions"><button className="button-secondary" onClick={() => saveReflectionNote("")}>{locale === "zh" ? "清空记录" : "Clear note"}</button><span>{locale === "zh" ? "重新打开此浏览器时，记录通常仍会保留。" : "Your note should remain when you return in this browser."}</span></div>
+        </section>
         <div className="results-disclaimer"><span>✳</span><p>{t.resultDisclaimer}</p></div><div className="results-actions"><button className="button-primary" onClick={restart}>{t.startAgain}<span>↻</span></button><button className="button-secondary" onClick={() => window.print()}>{t.reportSave} ↗</button><button className="button-secondary" onClick={goHome}>{t.exit}</button></div>
       </section>
       <footer><a className="brand footer-brand" href="#" onClick={(e) => { e.preventDefault(); goHome(); }}><span className="brand-mark">P</span><span>persona<span className="brand-dot">.</span></span></a><span>{t.footer}</span><span>© 2026</span></footer>
