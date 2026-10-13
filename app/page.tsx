@@ -107,7 +107,7 @@ export default function Home() {
   const current = questions[index];
   const scores = useMemo(() => dimensions.map((dimension) => {
     const related = questions.filter((q) => q.dimension === dimension.key);
-    const values = related.filter((q) => answers[q.id] !== undefined).map((q) => q.reverse ? 6 - answers[q.id] : answers[q.id]);
+    const values = related.filter((q) => answers[q.id] !== undefined).map((q) => { const answer = answers[q.id] as Answer; return q.reverse ? 6 - answer : answer; });
     const average = values.length ? values.reduce((sum, value) => sum + value, 0) / values.length : 3;
     return { ...dimension, value: Math.round(((average - 1) / 4) * 100) };
   }), [answers]);
