@@ -19,6 +19,9 @@ A bilingual (Simplified Chinese / English), responsive web app MVP for evidence-
 - [x] Dimension-specific reflection prompts in the demo report
 - [x] Browser print / Save as PDF action with print-friendly layout
 - [x] Branded responsive 404 page
+- [x] Branded loading state and recoverable application-error screen
+- [x] Document language attribute follows the selected Chinese / English locale
+- [x] ESLint configuration for Next.js Core Web Vitals rules
 - [ ] Payment provider, verified webhooks and paid report entitlements
 - [ ] AI report generation with schema validation and audit trail
 - [ ] Secure PDF delivery, deletion workflow and admin dashboard
