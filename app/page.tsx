@@ -113,7 +113,7 @@ export default function Home() {
   }), [answers]);
 
   function startAssessment(resume = false) {
-    if (!resume) { setAnswers({}); setIndex(0); }
+    if (!resume) { setAnswers({}); setIndex(0); try { window.localStorage.removeItem(STORAGE_KEY); } catch { /* Ignore unavailable storage. */ } }
     setShowValidation(false);
     setView("assessment");
   }
