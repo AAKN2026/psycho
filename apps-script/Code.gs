@@ -9,7 +9,8 @@
  * 2. Paste this file into Code.gs.
  * 3. Run setupPersonaDatabase() once and authorize spreadsheet access.
  * 4. Deploy > New deployment > Web app; Execute as: Me.
- *    Access: Anyone. Copy the /exec URL into Persona's result screen.
+ *    Access: Anyone. Configure the /exec URL centrally in app/page.tsx
+ *    as PUBLIC_APPS_SCRIPT_ENDPOINT; visitors should never enter it.
  *
  * IMPORTANT: a public Apps Script web app is not a private/authenticated API.
  * This endpoint is intended only for low-risk demo data. Review privacy,
@@ -131,7 +132,7 @@ function doGet(event) {
     ok: true,
     service: "persona-demo-results",
     schemaVersion: 1,
-    message: "Endpoint is running. Submit demo results with POST."
+    message: "Endpoint is running. POST demo results or use the retrieval action."
   });
 }
 
