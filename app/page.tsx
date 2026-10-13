@@ -122,6 +122,21 @@ export default function Home() {
     } catch { /* Keep the current note in memory if local storage is unavailable. */ }
   }
 
+  function downloadReflectionNote() {
+    if (!reflectionNote.trim()) return;
+    const title = locale === "zh" ? "Persona 个人反思记录" : "Persona Reflection Note";
+    const content = `${title}\n${new Date().toLocaleString(locale === "zh" ? "zh-SG" : "en-SG")}\n\n${reflectionNote}\n\n${locale === "zh" ? "仅供个人反思；不构成心理诊断。" : "For personal reflection only; not a psychological diagnosis."}\n`;
+    const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = locale === "zh" ? "persona-个人反思.txt" : "persona-reflection-note.txt";
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+  }
+
   const answeredCount = Object.keys(answers).length;
   const current = questions[index];
   const scores = useMemo(() => dimensions.map((dimension) => {
@@ -184,7 +199,7 @@ export default function Home() {
           <label className="reflection-label" htmlFor="personal-reflection-note">{locale === "zh" ? "我的反思记录" : "MY REFLECTION NOTE"}</label>
           <textarea id="personal-reflection-note" className="reflection-textarea" value={reflectionNote} onChange={(event) => saveReflectionNote(event.target.value)} maxLength={3000} placeholder={locale === "zh" ? "例如：当我更早安排重要任务时，我会感到……" : "For example: When I plan an important task earlier, I notice…"} />
           <div className="reflection-note-footer"><span>{locale === "zh" ? "仅本地保存 · 最多 3,000 字符" : "Saved locally · Up to 3,000 characters"}</span><span>{reflectionNote.length}/3000</span></div>
-          <div className="reflection-note-actions"><button className="button-secondary" onClick={() => saveReflectionNote("")}>{locale === "zh" ? "清空记录" : "Clear note"}</button><span>{locale === "zh" ? "重新打开此浏览器时，记录通常仍会保留。" : "Your note should remain when you return in this browser."}</span></div>
+          <div className="reflection-note-actions"><div className="reflection-note-buttons"><button className="button-secondary" onClick={() => saveReflectionNote("")}>{locale === "zh" ? "清空记录" : "Clear note"}</button><button className="button-secondary" onClick={downloadReflectionNote} disabled={!reflectionNote.trim()}>{locale === "zh" ? "下载 TXT" : "Download TXT"} ↗</button></div><span>{locale === "zh" ? "重新打开此浏览器时，记录通常仍会保留。" : "Your note should remain when you return in this browser."}</span></div>
         </section>
         <div className="results-disclaimer"><span>✳</span><p>{t.resultDisclaimer}</p></div><div className="results-actions"><button className="button-primary" onClick={restart}>{t.startAgain}<span>↻</span></button><button className="button-secondary" onClick={() => window.print()}>{t.reportSave} ↗</button><button className="button-secondary" onClick={goHome}>{t.exit}</button></div>
       </section>
