@@ -25,7 +25,7 @@ for (const [position, facet] of facets.entries()) {
   const offset = offsets[facet.trait];
   if (!offset) throw new Error(`Unknown trait for facet ${facet.id}: ${facet.trait}`);
   const withinTraitFacet = position % 6;
-  const ids = [0, 1, 2, 3].map((step) => offset + (withinTraitFacet * 4 + step) * 5);
+  const ids = [0, 1, 2, 3].map((step) => offset + withinTraitFacet * 5 + step * 30);
   if (new Set(ids).size !== 4) throw new Error(`Facet ${facet.id} repeats an item.`);
   for (const id of ids) {
     if (id < 1 || id > 120) throw new Error(`Facet ${facet.id} has out-of-range item ${id}.`);
