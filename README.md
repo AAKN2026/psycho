@@ -1,44 +1,25 @@
 # Persona — Personality Insight Lab
 
-A bilingual (Simplified Chinese / English), responsive web app MVP for evidence-informed adult personality assessment and paid in-depth reports.
+A bilingual (Simplified Chinese / English), responsive Next.js MVP for a thoughtful personality-insight experience.
 
-## Current status
+## Release status
 
-- [x] Initial Next.js + TypeScript scaffold
-- [x] Responsive bilingual landing page prototype
-- [x] Interactive bilingual demo questionnaire (15 original demo items)
-- [x] Previous / next navigation, progress indicator and required-answer validation
-- [x] Browser-local progress saving and resume
-- [x] Demo result visualisation across five illustrative dimensions
-- [x] MVP disclaimer and science-first positioning
-- [ ] Expert-approved assessment instrument and licensed/verified language versions
-- [ ] Supabase Auth, schema, RLS policies and migrations
-- [ ] Server-backed assessment sessions, item delivery and response persistence (the current demo is browser-local only)
-- [ ] Deterministic scoring engine with versioned scoring keys
-- [x] Demo results page (illustrative only; not validated psychometric scores)
-- [x] Dimension-specific reflection prompts in the demo report
-- [x] Browser print / Save as PDF action with print-friendly layout
-- [x] Branded responsive 404 page
-- [x] Branded loading state and recoverable application-error screen
-- [x] Document language attribute follows the selected Chinese / English locale
-- [x] ESLint configuration for Next.js Core Web Vitals rules
-- [ ] Payment provider, verified webhooks and paid report entitlements
-- [ ] AI report generation with schema validation and audit trail
-- [ ] Secure PDF delivery, deletion workflow and admin dashboard
-- [ ] Psychometric, security, accessibility and bilingual QA
-- [ ] Run production build and browser end-to-end checks before public launch
+**Current release: demo only. Not a validated psychometric assessment.**
+
+The app currently includes a bilingual landing page, 15 original demo questions, illustrative five-dimension results, browser-local progress saving, print-friendly results, and branded loading/error/not-found states.
+
+It has **no production database, authentication, admin console, payments, server-side scoring, or AI report service**. Do not collect sensitive assessment data or sell reports on this prototype. Demo scores are not validated measurements and must not be used for diagnosis, hiring, or consequential decisions.
 
 ## Stack
 
-- Next.js App Router + TypeScript
-- Supabase (Auth + PostgreSQL + Row Level Security), to be configured
-- Server-side scoring and AI report generation
-- Payment provider integration, to be selected and configured
-- Responsive CSS; bilingual copy and demo items are currently held in the frontend
+- Next.js App Router 14 + React 18 + TypeScript
+- Responsive CSS; demo content currently lives in the frontend
+- Vercel-compatible deployment configuration
+- No environment variables are required to run the demo
 
 ## Local development
 
-Requirements: Node.js 20+.
+Requirements: Node.js 20 or later.
 
 ```bash
 npm install
@@ -47,22 +28,56 @@ npm run dev
 
 Open http://localhost:3000.
 
-## Environment configuration
+## Checks before release
 
-Copy `.env.example` to `.env.local` and fill in values only after the corresponding services are created. Never expose `SUPABASE_SERVICE_ROLE_KEY`, payment secrets, webhook secrets, or AI provider keys to browser code.
+```bash
+npm run typecheck
+npm run lint
+npm run build
+npm start
+```
 
-## Demo limitations
+A successful type check or lint is not a substitute for a production build and browser-based end-to-end checks. Run all commands in an environment with dependencies installed before calling the release verified.
 
-The current questionnaire is a product-flow prototype. Its original demo items, simple illustrative scoring, and dimension descriptions are not a validated psychometric instrument, do not use population norms, and must not be used for diagnosis, hiring, or consequential decisions. Progress is saved only in the current browser and is not sent to a database. Clearing browser storage removes the saved demo progress.
+## Deploy a demo with Vercel
 
-## Scientific and safety guardrails
+1. Sign in to Vercel and choose **Add New → Project**.
+2. Import the GitHub repository `AAKN2026/psycho` and select the `main` branch.
+3. Keep the detected Next.js framework and use `npm run build` as the build command.
+4. No environment variables are needed for this demo.
+5. Deploy, then open the generated URL and test the complete flow on desktop and mobile: landing page, Chinese/English switch, every question, required-answer validation, browser refresh/resume, results, print/save PDF, and unknown-route 404.
+6. Check the deployment logs and browser console. Do not announce launch until the build succeeds and the deployed URL has been tested.
 
-1. Do not launch a paid assessment until the exact instrument, item set, scoring rules, language rights, interpretation boundaries and norms (if any) have been reviewed.
-2. English evidence does not automatically validate a translated Chinese version.
-3. AI must explain verified scores; it must never calculate or invent psychometric scores, norms, percentiles or diagnoses.
-4. Clearly state that personality insights are not a clinical diagnosis.
-5. Apply least privilege, RLS, retention limits, deletion workflows, and secure payment verification before collecting real assessment data.
+After initial import, Vercel can create preview deployments for commits and production deployments from the configured production branch. Deployment depends on access to the Vercel account and permission to connect this repository; repository commits alone do not publish the site.
 
-## Deployment
+## GitHub Pages
 
-This is a Next.js application, not a static GitHub Pages site. Deploy to a compatible host such as Vercel or another Node.js hosting provider. GitHub remains the source-code repository.
+This project uses the Next.js App Router and is **not configured as a static GitHub Pages site**. Use Vercel or a compatible Node.js host rather than expecting GitHub Pages to serve the app automatically.
+
+## Environment configuration for future backend work
+
+`.env.example` is a planning template only. Do not add placeholder secrets or copy server-only secrets into variables prefixed with `NEXT_PUBLIC_`. Before connecting real services, configure them in the hosting provider's encrypted environment settings and implement authentication, authorization, server-side validation, data retention, and deletion flows.
+
+## Scientific, privacy, and product guardrails
+
+1. Review the exact assessment instrument, scoring rules, language rights, interpretation boundaries, and norms (if any) before offering a formal assessment.
+2. Evidence for English items does not automatically validate a Chinese translation.
+3. Never invent scores, norms, percentiles, diagnoses, or scientific validity.
+4. State clearly that personality insights are not a clinical diagnosis.
+5. Before storing real responses, implement least-privilege access, row-level security, retention limits, deletion workflows, and security testing.
+6. Before charging users, implement server-verified payment webhooks, entitlement checks, and secure report access.
+
+## Current feature checklist
+
+- [x] Responsive bilingual landing page
+- [x] Demo questionnaire and required-answer validation
+- [x] Browser-local save/resume
+- [x] Illustrative results and reflection prompts
+- [x] Print-friendly report
+- [x] Branded loading, error, and 404 states
+- [x] Basic security response headers
+- [x] Vercel deployment configuration and documented release checklist
+- [ ] Production build and browser E2E tests executed
+- [ ] Successful hosted deployment verified
+- [ ] Expert-reviewed and licensed assessment instrument
+- [ ] Backend, authentication, privacy controls, payments, and paid reports
