@@ -222,6 +222,12 @@ export default function Home() {
   }), [answers, retrievedScores]);
 
   function startAssessment(resume = false) {
+    if (!resume && Object.keys(answers).length > 0) {
+      const message = locale === "zh"
+        ? "当前浏览器已有答题进度。重新开始会清除这份未完成进度，是否继续？"
+        : "There is saved assessment progress in this browser. Starting over will clear it. Continue?";
+      if (!window.confirm(message)) return;
+    }
     setRetrievedScores(null);
     if (!resume) { setAnswers({}); setIndex(0); try { window.localStorage.removeItem(STORAGE_KEY); } catch { /* Ignore unavailable storage. */ } }
     setShowValidation(false);
