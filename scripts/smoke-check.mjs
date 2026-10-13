@@ -4,6 +4,7 @@ import { join } from "node:path";
 const outDir = join(process.cwd(), "out");
 const checks = [
   { path: "index.html", label: "homepage export" },
+  { path: "practice/index.html", label: "guided practice route export" },
   { path: "404.html", label: "not-found export" },
   { path: "favicon.svg", label: "favicon export" },
   { path: "robots.txt", label: "robots policy export" },
@@ -27,6 +28,12 @@ try {
     console.error("FAIL GitHub Pages asset base path: expected /psycho/_next/");
   } else {
     console.log("PASS GitHub Pages asset base path");
+  }
+  if (!html.includes("/psycho/practice/")) {
+    failed = true;
+    console.error("FAIL homepage practice entry: expected /psycho/practice/ link");
+  } else {
+    console.log("PASS homepage links to guided practice");
   }
   if (!html.includes("Persona")) {
     failed = true;
