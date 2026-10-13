@@ -81,6 +81,10 @@ A feature is not “psychologically validated” merely because it has a plausib
 
 ## 7. Evidence and references
 
+- Johnson, J. A. (2014). *Measuring thirty facets of the Five Factor Model with a 120-item public domain inventory: Development of the IPIP-NEO-120.* Journal of Research in Personality, 51, 78–89. https://doi.org/10.1016/j.jrp.2014.05.003. Reports development and psychometric evaluation of the 120-item, 30-facet inventory.
+- International Personality Item Pool (IPIP). *Mandarin Chinese Translation and Validation of Johnson's (2014) IPIP-NEO-120.* Item wording, factor/facet reliability statistics, and correlations with a Chinese-language Big Five measure: https://ipip.ori.org/Mandarin%20translation%20of%20IPIP-NEO-120.htm and https://ipip.ori.org/ChineseIPIP-120reliability.htm.
+- International Personality Item Pool (IPIP). *Obtaining Permission.* IPIP items, scales, and inventories are public domain: https://ipip.ori.org/newPermission.htm.
+
 - American Psychological Association. (2020). *APA Guidelines for Psychological Assessment and Evaluation.* Emphasizes validity evidence for the intended score interpretation/use, the limits of individual evidence sources, fairness, and integration of evidence. https://www.apa.org/about/policy/guidelines-psychological-assessment-evaluation.pdf
 - Meyer, G. J., Finn, S. E., Eyde, L. D., et al. (2001). *Psychological testing and psychological assessment: A review of evidence and issues.* American Psychologist, 56(2), 128–165. DOI: https://doi.org/10.1037/0003-066X.56.2.128. Reviews the value of multimethod assessment while supporting evidence-based interpretation rather than assuming every method adds validity.
 - McGrath, R. E., Mitchell, M., Kim, B. H., & Hough, L. (2010). *Evidence for response bias as a source of error variance in applied assessment.* Psychological Bulletin, 136(3), 450–470. https://pubmed.ncbi.nlm.nih.gov/20438146/. Notes that evidence for many response-bias indicators is limited; do not claim that indirect tasks automatically detect faking.
