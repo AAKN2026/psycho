@@ -299,7 +299,7 @@ export default function Home() {
     const offsets: Record<string, number> = { emotionalBalance: 1, extraversion: 2, openness: 3, agreeableness: 4, conscientiousness: 5 };
     const offset = offsets[facet.trait];
     const withinTraitFacet = facetPosition % 6;
-    const ids = [0, 1, 2, 3].map((step) => offset + (withinTraitFacet * 4 + step) * 5);
+    const ids = [0, 1, 2, 3].map((step) => offset + withinTraitFacet * 5 + step * 30);
     const values = ids.map((id) => {
       const answer = answers[id] as Answer;
       return IPIP_REVERSE_KEYED.has(id) ? 6 - answer : answer;
