@@ -30,7 +30,8 @@ const CONFIG = {
     "extraversion",
     "agreeableness",
     "emotional_balance",
-    "consent"
+    "consent",
+    "access_code"
   ]
 };
 
@@ -59,6 +60,13 @@ function setupPersonaDatabase() {
     sheet.setFrozenRows(1);
     sheet.getRange(1, 1, 1, CONFIG.headers.length).setFontWeight("bold");
     sheet.autoResizeColumns(1, CONFIG.headers.length);
+  } else {
+    // Add the extraction-code column when upgrading an existing sheet.
+    const lastColumn = sheet.getLastColumn();
+    const existingHeaders = sheet.getRange(1, 1, 1, lastColumn).getDisplayValues()[0];
+    if (!existingHeaders.includes("access_code")) {
+      sheet.getRange(1, lastColumn + 1).setValue("access_code").setFontWeight("bold");
+    }
   }
 
   Logger.log("Persona spreadsheet: " + spreadsheet.getUrl());
@@ -107,7 +115,18 @@ function installPersonaDailyRetentionTrigger() {
   Logger.log("Daily 90-day retention cleanup is " + (exists ? "already installed." : "installed."));
 }
 
-function doGet() {
+function doGet(event) {
+  const params = event && event.parameter ? event.parameter : {};
+  if (params.action === "retrieve") {
+    const callback = String(params.callback || "");
+    if (!/^personaCallback_[A-Za-z0-9_]+$/.test(callback)) {
+      return jsonResponse({ ok: false, error: "invalid_callback" });
+    }
+    const code = String(params.code || "").toUpperCase().replace(/[^A-Z0-9-]/g, "");
+    const result = retrieveByCode(code);
+    return ContentService.createTextOutput(callback + "(" + JSON.stringify(result) + ");")
+      .setMimeType(ContentService.MimeType.JAVASCRIPT);
+  }
   return jsonResponse({
     ok: true,
     service: "persona-demo-results",
@@ -156,6 +175,16 @@ function doPost(event) {
     }
 
     const score = validated.scores;
+    if (!/^[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}$/.test(validated.accessCode)) {
+      return jsonResponse({ ok: false, error: "invalid_access_code" });
+    }
+    const codeColumn = CONFIG.headers.indexOf("access_code") + 1;
+    if (lastRow > 1) {
+      const existingCodes = sheet.getRange(2, codeColumn, lastRow - 1, 1).getDisplayValues().flat();
+      if (existingCodes.includes(validated.accessCode)) {
+        return jsonResponse({ ok: false, error: "access_code_conflict" });
+      }
+    }
     sheet.appendRow([
       validated.recordId,
       validated.createdAt,
@@ -166,7 +195,8 @@ function doPost(event) {
       score.extraversion,
       score.agreeableness,
       score.emotionalBalance,
-      true
+      true,
+      validated.accessCode
     ]);
 
     return jsonResponse({ ok: true, recordId: validated.recordId });
@@ -213,11 +243,43 @@ function validatePayload(payload) {
   return {
     ok: true,
     recordId: payload.recordId,
+    accessCode: String(payload.accessCode || ""),
     createdAt: payload.createdAt,
     locale: payload.locale,
     schemaVersion: 1,
     scores: scores
   };
+}
+
+function retrieveByCode(code) {
+  if (!/^[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}$/.test(code)) {
+    return { ok: false, error: "not_found" };
+  }
+  const spreadsheetId = PropertiesService.getScriptProperties().getProperty(CONFIG.spreadsheetProperty);
+  if (!spreadsheetId) return { ok: false, error: "not_found" };
+  const sheet = SpreadsheetApp.openById(spreadsheetId).getSheetByName(CONFIG.sheetName);
+  if (!sheet || sheet.getLastRow() < 2) return { ok: false, error: "not_found" };
+  const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getDisplayValues()[0];
+  const codeColumn = headers.indexOf("access_code") + 1;
+  if (!codeColumn) return { ok: false, error: "not_found" };
+  const rows = sheet.getRange(2, 1, sheet.getLastRow() - 1, sheet.getLastColumn()).getDisplayValues();
+  for (let i = rows.length - 1; i >= 0; i--) {
+    if (String(rows[i][codeColumn - 1]).toUpperCase() === code) {
+      return {
+        ok: true,
+        locale: rows[i][2] || "zh",
+        createdAt: rows[i][1],
+        scores: {
+          openness: Number(rows[i][4]),
+          conscientiousness: Number(rows[i][5]),
+          extraversion: Number(rows[i][6]),
+          agreeableness: Number(rows[i][7]),
+          emotionalBalance: Number(rows[i][8])
+        }
+      };
+    }
+  }
+  return { ok: false, error: "not_found" };
 }
 
 function jsonResponse(value) {
