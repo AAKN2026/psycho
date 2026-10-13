@@ -91,7 +91,10 @@ try {
       !discoverSource.includes("not a validated personality measure") ||
       !discoverSource.includes("does not save or upload") ||
       discoverSource.includes("localStorage") ||
-      discoverSource.includes("fetch(")) {
+      discoverSource.includes("fetch(") ||
+      !discoverSource.includes("function createShareCard()") ||
+      !discoverSource.includes("Save image card") ||
+      !discoverSource.includes("navigator.canShare")) {
     failed = true;
     console.error("FAIL discovery bilingual, interpretation-boundary, or privacy checks");
   } else {
